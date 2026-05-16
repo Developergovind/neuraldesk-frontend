@@ -31,7 +31,8 @@ const navItems = [
 export const Sidebar = () => {
   const pathname = usePathname();
   const { sidebarOpen, toggleSidebar } = useUIStore();
-  const { data: tenant } = useMe();
+  const { data } = useMe();
+  const tenant = data as any;
   const logout = useLogout();
   const { data: activeSessions = [] } = useQuery({
     queryKey: ['active-sessions'],

@@ -31,7 +31,7 @@ export default function NewBotPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     createBot.mutate(formData, {
-      onSuccess: (data) => {
+      onSuccess: (data: any) => {
         router.push(`/dashboard/bots/${data.id}`);
       }
     });

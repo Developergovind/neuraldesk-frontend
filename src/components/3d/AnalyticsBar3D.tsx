@@ -16,7 +16,7 @@ const Bar = ({ position, height, color, delay }: { position: [number, number, nu
 
   return (
     <motion.mesh
-      ref={meshRef}
+      ref={meshRef as any}
       position={position}
       initial={{ scaleY: 0, y: position[1] }}
       animate={{ 

@@ -2,8 +2,9 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { motion, HTMLMotionProps } from 'framer-motion';
 
-export interface CardProps extends HTMLMotionProps<"div"> {
+export interface CardProps extends Omit<HTMLMotionProps<"div">, "children"> {
   hoverEffect?: boolean;
+  children?: React.ReactNode;
 }
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(

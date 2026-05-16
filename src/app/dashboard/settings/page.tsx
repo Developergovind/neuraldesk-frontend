@@ -16,7 +16,8 @@ import {
 import toast from "react-hot-toast";
 
 export default function SettingsPage() {
-  const { data: tenant, refetch } = useMe();
+  const { data, refetch } = useMe();
+  const tenant = data as any;
   const [activeTab, setActiveTab] = useState("profile");
   const [isLoading, setIsLoading] = useState(false);
 

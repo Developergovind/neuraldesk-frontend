@@ -13,7 +13,8 @@ import {
 } from "@heroicons/react/24/outline";
 
 export function Navbar() {
-  const { data: user, isLoading } = useMe();
+  const { data, isLoading } = useMe();
+  const user = data as any;
   const logout = useLogout();
   const [showDropdown, setShowDropdown] = useState(false);
 
