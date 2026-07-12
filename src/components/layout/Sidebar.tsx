@@ -34,12 +34,12 @@ export const Sidebar = () => {
   const { data } = useMe();
   const tenant = data as any;
   const logout = useLogout();
-  const { data: activeSessions = [] } = useQuery({
+  const { data: activeSessions = { data: [] } as { data: any[] } } = useQuery({
     queryKey: ['active-sessions'],
     queryFn: () => api.get('/chat/active-sessions').then(res => res.data),
     refetchInterval: 10000,
   });
-  const activeCount = activeSessions.length;
+  const activeCount = activeSessions.data?.length || 0;
 
   return (
     <motion.aside
