@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { motion, AnimatePresence } from "framer-motion";
 import { PaperAirplaneIcon, UserIcon } from "@heroicons/react/24/solid";
-import { api } from "@/lib/api";
+import { api, WS_BASE } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -30,7 +30,7 @@ export function LiveChat({ botId, botName, accentColor, greeting }: { botId: str
     });
 
     // Setup socket
-    const s = io(process.env.NEXT_PUBLIC_WS_URL || "http://localhost:5001", {
+    const s = io(WS_BASE, {
       transports: ["websocket"],
     });
 

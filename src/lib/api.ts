@@ -2,7 +2,18 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
-export const WS_BASE  = process.env.NEXT_PUBLIC_WS_URL  || 'http://localhost:5001';
+
+const deriveWsBase = () => {
+  if (process.env.NEXT_PUBLIC_WS_URL) {
+    return process.env.NEXT_PUBLIC_WS_URL;
+  }
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, '');
+  }
+  return 'http://localhost:5001';
+};
+
+export const WS_BASE = deriveWsBase();
 
 export const api = axios.create({
   baseURL: API_BASE,

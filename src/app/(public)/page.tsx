@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { usePublicContent, usePublicPlans } from "@/lib/hooks/usePublic";
 import { MockWebsite } from "@/components/demo/MockWebsite";
 import { Check, ChevronDown, Copy } from "lucide-react";
+import { WS_BASE } from "@/lib/api";
 
 export default function LandingPage() {
   const [mounted, setMounted] = useState(false);
@@ -82,7 +83,7 @@ export default function LandingPage() {
     accentColor: demoColor,
   };
   const words = headline.split(" ");
-  const htmlSnippet = `<script src="${process.env.NEXT_PUBLIC_WS_URL || "http://localhost:5001"}/widget.js?botId=${effectiveDemoConfig.botId}" defer></script>`;
+  const htmlSnippet = `<script src="${WS_BASE}/widget.js?botId=${effectiveDemoConfig.botId}" defer></script>`;
   const installSnippets: Record<"html" | "wordpress" | "shopify" | "webflow", string> = {
     html: htmlSnippet,
     wordpress: `<!-- In WordPress: Appearance > Theme File Editor > footer.php -->\n${htmlSnippet}`,
@@ -273,7 +274,7 @@ export default function LandingPage() {
                   <pre className="p-4 overflow-x-auto text-sm leading-relaxed">
                     <code>
                       <span className="text-violet-400">&lt;script</span>{" "}
-                      <span className="text-cyan-400">src</span>=<span className="text-emerald-400">"{`${process.env.NEXT_PUBLIC_WS_URL || "http://localhost:5001"}/widget.js?botId=${effectiveDemoConfig.botId}`}"</span>{" "}
+                      <span className="text-cyan-400">src</span>=<span className="text-emerald-400">"{`${WS_BASE}/widget.js?botId=${effectiveDemoConfig.botId}`}"</span>{" "}
                       <span className="text-cyan-400">defer</span>
                       <span className="text-violet-400">&gt;&lt;/script&gt;</span>
                     </code>
