@@ -130,7 +130,10 @@ api.interceptors.response.use(
         Cookies.remove('refreshToken');
         Cookies.remove('tenant');
         if (typeof window !== 'undefined') {
-          window.location.href = '/login';
+          const isDashboard = window.location.pathname.startsWith('/dashboard');
+          if (isDashboard) {
+            window.location.href = '/login';
+          }
         }
         return Promise.reject(error);
       }
@@ -154,7 +157,10 @@ api.interceptors.response.use(
         Cookies.remove('refreshToken');
         Cookies.remove('tenant');
         if (typeof window !== 'undefined') {
-          window.location.href = '/login';
+          const isDashboard = window.location.pathname.startsWith('/dashboard');
+          if (isDashboard) {
+            window.location.href = '/login';
+          }
         }
         return Promise.reject(err);
       } finally {
