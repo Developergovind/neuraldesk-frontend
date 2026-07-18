@@ -2,8 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 function resolvePublicApiBase() {
-  const rawBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
-  const normalized = rawBase.replace(/\/+$/, "");
+  let rawBase = process.env.NEXT_PUBLIC_API_URL;
+  if (typeof window !== 'undefined') {
+    const isCurrentSiteLocalhost = 
+      window.location.hostname === 'localhost' || 
+      window.location.hostname === '127.0.0.1';
+    if (!isCurrentSiteLocalhost && rawBase && (rawBase.includes('localhost') || rawBase.includes('127.0.0.1'))) {
+      rawBase = undefined;
+    }
+  }
+  const base = rawBase || "http://localhost:5001/api";
+  const normalized = base.replace(/\/+$/, "");
   return normalized.endsWith("/api") ? normalized : `${normalized}/api`;
 }
 

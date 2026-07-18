@@ -1,19 +1,55 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-export const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
-
-const deriveWsBase = () => {
-  if (process.env.NEXT_PUBLIC_WS_URL) {
-    return process.env.NEXT_PUBLIC_WS_URL;
+const getApiBase = () => {
+  let url = process.env.NEXT_PUBLIC_API_URL;
+  if (typeof window !== 'undefined') {
+    const isCurrentSiteLocalhost = 
+      window.location.hostname === 'localhost' || 
+      window.location.hostname === '127.0.0.1';
+    if (!isCurrentSiteLocalhost && url && (url.includes('localhost') || url.includes('127.0.0.1'))) {
+      url = undefined;
+    }
   }
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, '');
+  return url || 'http://localhost:5001/api';
+};
+
+export const API_BASE = getApiBase();
+
+const getWsBase = () => {
+  let wsUrl = process.env.NEXT_PUBLIC_WS_URL;
+  let apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  if (typeof window !== 'undefined') {
+    const isCurrentSiteLocalhost = 
+      window.location.hostname === 'localhost' || 
+      window.location.hostname === '127.0.0.1';
+
+    if (!isCurrentSiteLocalhost) {
+      if (wsUrl && (wsUrl.includes('localhost') || wsUrl.includes('127.0.0.1'))) {
+        wsUrl = undefined;
+      }
+      if (apiUrl && (apiUrl.includes('localhost') || apiUrl.includes('127.0.0.1'))) {
+        apiUrl = undefined;
+      }
+    }
+  }
+
+  if (wsUrl) return wsUrl;
+  if (apiUrl) return apiUrl.replace(/\/api\/?$/, '');
+  
+  if (typeof window !== 'undefined') {
+    const isCurrentSiteLocalhost = 
+      window.location.hostname === 'localhost' || 
+      window.location.hostname === '127.0.0.1';
+    if (!isCurrentSiteLocalhost) {
+      return window.location.origin;
+    }
   }
   return 'http://localhost:5001';
 };
 
-export const WS_BASE = deriveWsBase();
+export const WS_BASE = getWsBase();
 
 export const api = axios.create({
   baseURL: API_BASE,
