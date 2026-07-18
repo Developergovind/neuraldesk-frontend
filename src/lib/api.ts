@@ -35,8 +35,19 @@ const getWsBase = () => {
     }
   }
 
-  if (wsUrl) return wsUrl;
-  if (apiUrl) return apiUrl.replace(/\/api\/?$/, '');
+  const getOrigin = (urlStr: string) => {
+    try {
+      if (urlStr.startsWith('http')) {
+        return new URL(urlStr).origin;
+      }
+      return urlStr;
+    } catch {
+      return urlStr;
+    }
+  };
+
+  if (wsUrl) return getOrigin(wsUrl);
+  if (apiUrl) return getOrigin(apiUrl);
   
   if (typeof window !== 'undefined') {
     const isCurrentSiteLocalhost = 
