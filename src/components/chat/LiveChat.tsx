@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { PaperAirplaneIcon, UserIcon } from "@heroicons/react/24/solid";
 import { api, WS_BASE } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 interface Message {
   role: "user" | "assistant";
@@ -31,7 +32,19 @@ export function LiveChat({ botId, botName, accentColor, greeting }: { botId: str
 
     // Setup socket
     const s = io(WS_BASE, {
-      transports: ["websocket"],
+      transports: ["polling", "websocket"],
+    });
+
+    s.on("connect_error", (err) => {
+      console.error("LiveChat Socket connection error:", err);
+      toast.error(`Chat connection failed: ${err.message}`);
+      setIsTyping(false);
+    });
+
+    s.on("error", (err: any) => {
+      console.error("LiveChat Socket error:", err);
+      toast.error(err.message || "An error occurred in chat");
+      setIsTyping(false);
     });
 
     s.on("chunk", (data) => {

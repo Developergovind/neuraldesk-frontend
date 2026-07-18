@@ -209,11 +209,19 @@ function KnowledgeTab({ botId, sources, isLoading }: { botId: string, sources: a
     if (!token) return;
 
     const socket = io(WS_BASE, {
-      transports: ["websocket"],
+      transports: ["polling", "websocket"],
     });
 
     socket.on("connect", () => {
       socket.emit("dashboard:join", { agentToken: token });
+    });
+
+    socket.on("connect_error", (err) => {
+      console.error("Dashboard page socket connection error:", err);
+    });
+
+    socket.on("error", (err) => {
+      console.error("Dashboard page socket error:", err);
     });
 
     socket.on("knowledge:status", (data: { sourceId: string; botId: string; status: string; chunkCount: number }) => {

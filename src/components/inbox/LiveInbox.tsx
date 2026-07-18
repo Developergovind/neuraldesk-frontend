@@ -123,7 +123,7 @@ export default function LiveInbox() {
     if (!token) return;
 
     const s = io(WS_BASE, {
-      transports: ['websocket'],
+      transports: ['polling', 'websocket'],
       reconnection: true,
       reconnectionAttempts: 5,
     });
@@ -131,6 +131,14 @@ export default function LiveInbox() {
 
     s.on('connect', () => {
       s.emit('dashboard:join', { agentToken: token });
+    });
+
+    s.on('connect_error', (err) => {
+      console.error('LiveInbox Socket connection error:', err);
+    });
+
+    s.on('error', (err) => {
+      console.error('LiveInbox Socket error:', err);
     });
 
     s.on('session:update', (data: Partial<LiveSession> & { sessionId: string }) => {
