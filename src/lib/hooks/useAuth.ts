@@ -3,6 +3,7 @@ import { api, post, get } from "@/lib/api";
 import { saveTokens, clearTokens } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 
 export function useLogin() {
   const router = useRouter();
@@ -50,5 +51,6 @@ export function useMe() {
     queryKey: ["me"],
     queryFn: () => get("/auth/me"),
     retry: false,
+    enabled: typeof window !== "undefined" && !!Cookies.get("accessToken"),
   });
 }
