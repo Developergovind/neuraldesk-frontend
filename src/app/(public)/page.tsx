@@ -50,7 +50,11 @@ export default function LandingPage() {
   }, []);
 
   useEffect(() => {
-    fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api").replace(/\/+$/, "")}/public/demo-config`)
+    let apiBase = process.env.NEXT_PUBLIC_API_URL || "https://neuraldesk-api.duckdns.org/api";
+    if (apiBase.includes('neuraldeskapp.duckdns.org')) {
+      apiBase = apiBase.replace('neuraldeskapp.duckdns.org', 'neuraldesk-api.duckdns.org');
+    }
+    fetch(`${apiBase.replace(/\/+$/, "")}/public/demo-config`)
       .then((response) => response.json())
       .then((data) => setPublicDemoConfig(data))
       .catch(() => setPublicDemoConfig(null));

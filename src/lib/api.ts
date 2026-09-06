@@ -3,15 +3,20 @@ import Cookies from 'js-cookie';
 
 const getApiBase = () => {
   let url = process.env.NEXT_PUBLIC_API_URL;
+  if (url && url.includes('neuraldeskapp.duckdns.org')) {
+    url = url.replace('neuraldeskapp.duckdns.org', 'neuraldesk-api.duckdns.org');
+  }
   if (typeof window !== 'undefined') {
     const isCurrentSiteLocalhost = 
       window.location.hostname === 'localhost' || 
       window.location.hostname === '127.0.0.1';
-    if (!isCurrentSiteLocalhost && url && (url.includes('localhost') || url.includes('127.0.0.1'))) {
-      url = undefined;
+    if (!isCurrentSiteLocalhost) {
+      if (!url || url.includes('localhost') || url.includes('127.0.0.1')) {
+        url = 'https://neuraldesk-api.duckdns.org/api';
+      }
     }
   }
-  return url || 'http://localhost:5001/api';
+  return url || 'https://neuraldesk-api.duckdns.org/api';
 };
 
 export const API_BASE = getApiBase();
@@ -19,6 +24,13 @@ export const API_BASE = getApiBase();
 const getWsBase = () => {
   let wsUrl = process.env.NEXT_PUBLIC_WS_URL;
   let apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  if (wsUrl && wsUrl.includes('neuraldeskapp.duckdns.org')) {
+    wsUrl = wsUrl.replace('neuraldeskapp.duckdns.org', 'neuraldesk-api.duckdns.org');
+  }
+  if (apiUrl && apiUrl.includes('neuraldeskapp.duckdns.org')) {
+    apiUrl = apiUrl.replace('neuraldeskapp.duckdns.org', 'neuraldesk-api.duckdns.org');
+  }
 
   if (typeof window !== 'undefined') {
     const isCurrentSiteLocalhost = 
@@ -31,6 +43,9 @@ const getWsBase = () => {
       }
       if (apiUrl && (apiUrl.includes('localhost') || apiUrl.includes('127.0.0.1'))) {
         apiUrl = undefined;
+      }
+      if (!wsUrl && !apiUrl) {
+        return 'https://neuraldesk-api.duckdns.org';
       }
     }
   }
@@ -54,7 +69,7 @@ const getWsBase = () => {
       window.location.hostname === 'localhost' || 
       window.location.hostname === '127.0.0.1';
     if (!isCurrentSiteLocalhost) {
-      return window.location.origin;
+      return 'https://neuraldesk-api.duckdns.org';
     }
   }
   return 'http://localhost:5001';
