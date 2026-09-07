@@ -62,33 +62,33 @@ export default function NewBotPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-20">
-      <div className="flex items-center gap-4">
-        <Link href="/dashboard/bots" className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/60 hover:text-white">
+    <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8 pb-20">
+      <div className="flex items-center gap-3 sm:gap-4">
+        <Link href="/dashboard/bots" className="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/60 hover:text-white shrink-0">
           <ArrowLeftIcon className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-3xl font-heading font-bold text-white">Create New Bot</h1>
-          <p className="text-white/40">Configure your AI assistant's personality and appearance.</p>
+          <h1 className="text-2xl sm:text-3xl font-heading font-bold text-white">Create New Bot</h1>
+          <p className="text-white/40 text-xs sm:text-sm">Configure your AI assistant's personality and appearance.</p>
         </div>
       </div>
 
       {/* Upgrade Banner if user has reached plan bot limit */}
       {isAtLimit && (
-        <Card className="p-6 bg-gradient-to-r from-coral-500/15 via-obsidian-900/60 to-blush-500/15 border-coral-500/30 relative overflow-hidden shadow-[0_0_30px_rgba(245,143,124,0.15)]">
+        <Card className="p-4 sm:p-6 bg-gradient-to-r from-coral-500/15 via-obsidian-900/60 to-blush-500/15 border-coral-500/30 relative overflow-hidden shadow-[0_0_30px_rgba(245,143,124,0.15)]">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-coral-500/20 text-coral-400 flex items-center justify-center shrink-0 border border-coral-500/30 shadow-[0_0_15px_rgba(245,143,124,0.2)]">
-                <SparklesIcon className="w-6 h-6 animate-pulse" />
+            <div className="flex items-start gap-3.5 sm:gap-4">
+              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-2xl bg-coral-500/20 text-coral-400 flex items-center justify-center shrink-0 border border-coral-500/30 shadow-[0_0_15px_rgba(245,143,124,0.2)]">
+                <SparklesIcon className="w-5 sm:w-6 h-5 sm:h-6 animate-pulse" />
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="font-heading font-bold text-lg text-white">Free Plan Bot Limit Reached</h3>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="font-heading font-bold text-base sm:text-lg text-white">Free Plan Bot Limit Reached</h3>
                   <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-coral-500/20 text-coral-300 border border-coral-500/30">
                     {existingBotsCount}/{maxBots} Used
                   </span>
                 </div>
-                <p className="text-sm text-white/70 mt-1 max-w-xl">
+                <p className="text-xs sm:text-sm text-white/70 mt-1 max-w-xl">
                   Your current subscription permits 1 active AI bot. Upgrade to <span className="text-coral-400 font-semibold">Pro</span> to build up to 5 custom bots with 50,000 monthly messages and live inbox access.
                 </p>
               </div>
@@ -96,7 +96,7 @@ export default function NewBotPage() {
 
             <div className="flex items-center gap-3 w-full sm:w-auto shrink-0">
               <Link href="/dashboard/settings?tab=billing" className="w-full sm:w-auto">
-                <Button variant="primary" className="w-full sm:w-auto gap-2 shadow-[0_0_20px_rgba(245,143,124,0.35)]">
+                <Button variant="primary" className="w-full sm:w-auto gap-2 shadow-[0_0_20px_rgba(245,143,124,0.35)] justify-center">
                   <CreditCardIcon className="w-4 h-4" />
                   Upgrade Subscription
                   <ArrowRightIcon className="w-4 h-4 ml-1" />
@@ -107,12 +107,12 @@ export default function NewBotPage() {
         </Card>
       )}
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <Card className="p-8 bg-white/[0.02] border-white/5">
-            <h3 className="text-lg font-heading font-bold text-white mb-6">General Settings</h3>
+          <Card className="p-5 sm:p-8 bg-white/[0.02] border-white/5">
+            <h3 className="text-base sm:text-lg font-heading font-bold text-white mb-5 sm:mb-6">General Settings</h3>
             
-            <div className="space-y-6">
+            <div className="space-y-5 sm:space-y-6">
               <div>
                 <label className="block text-sm font-medium text-white/70 mb-2">Bot Name</label>
                 <input
@@ -120,7 +120,7 @@ export default function NewBotPage() {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition-colors"
+                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
                   placeholder="Support Assistant"
                 />
               </div>
@@ -132,10 +132,10 @@ export default function NewBotPage() {
                   required
                   value={formData.greeting}
                   onChange={(e) => setFormData({ ...formData, greeting: e.target.value })}
-                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition-colors"
+                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
                   placeholder="Hello! How can I help you today?"
                 />
-                <p className="mt-2 text-xs text-white/30 italic">This is the first message your users will see.</p>
+                <p className="mt-1.5 text-xs text-white/30 italic">This is the first message your users will see.</p>
               </div>
 
               <div>
@@ -145,16 +145,16 @@ export default function NewBotPage() {
                   rows={4}
                   value={formData.persona}
                   onChange={(e) => setFormData({ ...formData, persona: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition-colors resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition-colors resize-none text-sm"
                   placeholder="Define how the bot should behave..."
                 />
-                <p className="mt-2 text-xs text-white/30 italic">Be specific. E.g., 'You are a technical support agent for a SaaS platform. Use a friendly but professional tone.'</p>
+                <p className="mt-1.5 text-xs text-white/30 italic">Be specific. E.g., 'You are a technical support agent for a SaaS platform. Use a friendly but professional tone.'</p>
               </div>
             </div>
           </Card>
 
-          <Card className="p-8 bg-white/[0.02] border-white/5">
-            <h3 className="text-lg font-heading font-bold text-white mb-6">Visual Customization</h3>
+          <Card className="p-5 sm:p-8 bg-white/[0.02] border-white/5">
+            <h3 className="text-base sm:text-lg font-heading font-bold text-white mb-5 sm:mb-6">Visual Customization</h3>
             <BotColorPicker
               value={formData.accentColor}
               onChange={(color) => setFormData({ ...formData, accentColor: color })}

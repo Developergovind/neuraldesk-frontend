@@ -57,17 +57,17 @@ function ConversationsTrendChart() {
   });
 
   return (
-    <div className="rounded-2xl p-6 bg-white/[0.02] border border-white/5">
+    <div className="rounded-2xl p-4 sm:p-6 bg-white/[0.02] border border-white/5">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 sm:mb-8">
         <div>
-          <h3 className="text-white font-heading font-bold text-xl">Conversations Trend</h3>
-          <p className="text-white/40 text-sm mt-0.5">
+          <h3 className="text-white font-heading font-bold text-lg sm:text-xl">Conversations Trend</h3>
+          <p className="text-white/40 text-xs sm:text-sm mt-0.5">
             Activity over the last {days} days
           </p>
         </div>
         {/* Day selector */}
-        <div className="flex gap-1">
+        <div className="flex gap-1.5 self-start sm:self-auto">
           {[7, 14, 30].map(d => (
             <button key={d} onClick={() => setDays(d)}
               className="px-3 py-1 rounded-lg text-xs font-medium transition-all"
@@ -84,10 +84,10 @@ function ConversationsTrendChart() {
 
       {/* Chart */}
       {isLoading ? (
-        <div className="h-64 rounded-xl animate-pulse"
+        <div className="h-60 sm:h-64 rounded-xl animate-pulse"
              style={{ background: 'rgba(255,255,255,0.04)' }} />
       ) : data.length === 0 ? (
-        <div className="h-64 flex items-center justify-center">
+        <div className="h-60 sm:h-64 flex items-center justify-center">
           <p className="text-white/25 text-sm">No data yet — start chatting with your bot!</p>
         </div>
       ) : (
@@ -197,10 +197,10 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-8 animate-pulse">
+      <div className="space-y-6 sm:space-y-8 animate-pulse">
         <div className="h-12 w-48 bg-white/5 rounded-lg" />
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map(i => <div key={i} className="h-32 bg-white/5 rounded-2xl" />)}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          {[1, 2, 3, 4].map(i => <div key={i} className="h-28 sm:h-32 bg-white/5 rounded-2xl" />)}
         </div>
         <div className="h-64 bg-white/5 rounded-2xl" />
       </div>
@@ -208,24 +208,24 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 sm:space-y-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-white">Dashboard Overview</h1>
-          <p className="text-white/40">Welcome back! Your AI agents are performing well.</p>
+          <h1 className="text-2xl sm:text-3xl font-heading font-bold text-white">Dashboard Overview</h1>
+          <p className="text-white/40 text-sm mt-0.5">Welcome back! Your AI agents are performing well.</p>
         </div>
         {isAtLimit ? (
           <Button 
             variant="primary" 
-            className="gap-2 shadow-[0_0_20px_rgba(245,143,124,0.35)]"
+            className="gap-2 shadow-[0_0_20px_rgba(245,143,124,0.35)] w-full sm:w-auto justify-center"
             onClick={() => setShowUpgradeModal(true)}
           >
             <SparklesIcon className="w-5 h-5 text-coral-300 animate-pulse" />
             Upgrade Plan
           </Button>
         ) : (
-          <Link href="/dashboard/bots/new">
-            <Button variant="primary" className="gap-2">
+          <Link href="/dashboard/bots/new" className="w-full sm:w-auto">
+            <Button variant="primary" className="gap-2 w-full sm:w-auto justify-center">
               <PlusIcon className="w-5 h-5" />
               Create New Bot
             </Button>
@@ -234,7 +234,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {stats.map((stat, i) => (
           <Card key={i} className="p-6 bg-white/[0.02] border-white/5 relative overflow-hidden group">
             <div className="flex items-center gap-4">

@@ -31,29 +31,29 @@ export default function BotsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-4xl font-heading font-bold text-white tracking-tight">My AI Assistants</h1>
+          <div className="flex items-center gap-3 flex-wrap">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-white tracking-tight">My AI Assistants</h1>
             {bots && bots.length > 0 && (
               <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/5 border border-white/10 text-white/70">
                 {existingBotsCount} / {maxBots === -1 ? "∞" : maxBots} Bots
               </span>
             )}
           </div>
-          <p className="text-white/40 mt-2">Manage and deploy your custom-trained neural models.</p>
+          <p className="text-white/40 text-sm mt-1 sm:mt-2">Manage and deploy your custom-trained neural models.</p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
           {isAtLimit ? (
             <Button 
               onClick={() => setShowUpgradeModal(true)}
-              className="gap-2 px-6 shadow-[0_0_20px_rgba(245,143,124,0.35)]"
+              className="gap-2 px-6 shadow-[0_0_20px_rgba(245,143,124,0.35)] w-full sm:w-auto justify-center"
             >
               <SparklesIcon className="w-5 h-5 text-coral-300 animate-pulse" />
               Upgrade to Add Bots
             </Button>
           ) : (
-            <Link href="/dashboard/bots/new">
-              <Button className="gap-2 px-6 shadow-[0_0_20px_rgba(245,143,124,0.35)]">
+            <Link href="/dashboard/bots/new" className="w-full sm:w-auto">
+              <Button className="gap-2 px-6 shadow-[0_0_20px_rgba(245,143,124,0.35)] w-full sm:w-auto justify-center">
                 <PlusIcon className="w-5 h-5" />
                 Create New Bot
               </Button>
@@ -64,22 +64,22 @@ export default function BotsPage() {
 
       {/* Upgrade Banner if at limit */}
       {isAtLimit && (
-        <Card className="p-5 bg-gradient-to-r from-coral-500/10 via-obsidian-900/60 to-blush-500/10 border-coral-500/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <Card className="p-4 sm:p-5 bg-gradient-to-r from-coral-500/10 via-obsidian-900/60 to-blush-500/10 border-coral-500/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="p-2.5 rounded-xl bg-coral-500/20 text-coral-400">
+            <div className="p-2.5 rounded-xl bg-coral-500/20 text-coral-400 shrink-0">
               <SparklesIcon className="w-5 h-5" />
             </div>
             <div>
               <p className="text-sm font-bold text-white">
                 You've utilized all {maxBots} bot slot{maxBots > 1 ? 's' : ''} on your {billingInfo?.plan || 'Free'} plan
               </p>
-              <p className="text-xs text-white/50">
+              <p className="text-xs text-white/50 mt-0.5">
                 Ready to deploy more assistants? Upgrade your subscription to Pro for 5 bots, 50k messages, and live chat inbox.
               </p>
             </div>
           </div>
-          <Link href="/dashboard/settings?tab=billing" className="shrink-0">
-            <Button variant="primary" size="sm" className="gap-2">
+          <Link href="/dashboard/settings?tab=billing" className="shrink-0 w-full sm:w-auto">
+            <Button variant="primary" size="sm" className="gap-2 w-full sm:w-auto justify-center">
               <CreditCardIcon className="w-4 h-4" />
               Upgrade Subscription
             </Button>
@@ -89,24 +89,24 @@ export default function BotsPage() {
 
       {/* Grid */}
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-64 rounded-3xl bg-white/5 animate-pulse border border-white/5" />
           ))}
         </div>
       ) : bots?.length === 0 ? (
-        <Card className="flex flex-col items-center justify-center p-20 text-center border-dashed border-white/10 bg-transparent">
-          <div className="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mb-6">
-            <ChatBubbleLeftRightIcon className="w-10 h-10 text-white/20" />
+        <Card className="flex flex-col items-center justify-center p-10 sm:p-20 text-center border-dashed border-white/10 bg-transparent">
+          <div className="w-16 sm:w-20 h-16 sm:h-20 rounded-3xl bg-white/5 flex items-center justify-center mb-6">
+            <ChatBubbleLeftRightIcon className="w-8 sm:w-10 h-8 sm:h-10 text-white/20" />
           </div>
           <h3 className="text-xl font-bold text-white">No neural desk bots yet</h3>
-          <p className="text-white/40 mt-2 max-w-sm">Create your first AI assistant and feed it some knowledge to get started.</p>
+          <p className="text-white/40 mt-2 max-w-sm text-sm">Create your first AI assistant and feed it some knowledge to get started.</p>
           <Link href="/dashboard/bots/new" className="mt-8">
             <Button variant="secondary">Start Building</Button>
           </Link>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {bots?.map((bot, index) => (
             <motion.div
               key={bot.id}
@@ -115,14 +115,14 @@ export default function BotsPage() {
               transition={{ delay: index * 0.1 }}
             >
               <Link href={`/dashboard/bots/${bot.id}`}>
-                <Card hoverEffect className="group relative p-8 hover:border-coral-500/50 transition-all duration-500 hover:shadow-[0_0_30px_rgba(245,143,124,0.15)] overflow-hidden h-full">
+                <Card hoverEffect className="group relative p-6 sm:p-8 hover:border-coral-500/50 transition-all duration-500 hover:shadow-[0_0_30px_rgba(245,143,124,0.15)] overflow-hidden h-full rounded-2xl sm:rounded-3xl">
                   {/* Background Glow */}
                   <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-coral-500/10 blur-[60px] group-hover:bg-coral-500/20 transition-colors duration-500" />
                   
                   <div className="relative flex flex-col h-full">
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center justify-between mb-5 sm:mb-6">
                       <div 
-                        className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg transition-transform group-hover:scale-110"
+                        className="w-12 sm:w-14 h-12 sm:h-14 rounded-2xl flex items-center justify-center text-white text-xl sm:text-2xl font-bold shadow-lg transition-transform group-hover:scale-110"
                         style={{ background: bot.accentColor }}
                       >
                         {bot.name[0]}
@@ -136,21 +136,21 @@ export default function BotsPage() {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-heading font-bold text-xl text-white truncate mb-2 group-hover:text-coral-400 transition-colors">
+                      <h3 className="font-heading font-bold text-lg sm:text-xl text-white truncate mb-2 group-hover:text-coral-400 transition-colors">
                         {bot.name}
                       </h3>
-                      <p className="text-sm text-white/40 line-clamp-2 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-white/40 line-clamp-2 leading-relaxed">
                         {bot.persona}
                       </p>
                     </div>
 
-                    <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
+                    <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-white/5 flex items-center justify-between">
                       <div className="flex flex-col">
                         <span className="text-[10px] text-white/20 uppercase tracking-widest font-bold">Created</span>
                         <span className="text-xs text-white/60 font-medium">{formatDate(bot.createdAt)}</span>
                       </div>
-                      <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/20 group-hover:text-white group-hover:bg-coral-500/20 transition-all">
-                        <ArrowRightIcon className="w-5 h-5 transition-transform group-hover:translate-x-0.5" />
+                      <div className="w-9 sm:w-10 h-9 sm:h-10 rounded-full bg-white/5 flex items-center justify-center text-white/20 group-hover:text-white group-hover:bg-coral-500/20 transition-all">
+                        <ArrowRightIcon className="w-4 sm:w-5 h-4 sm:h-5 transition-transform group-hover:translate-x-0.5" />
                       </div>
                     </div>
                   </div>

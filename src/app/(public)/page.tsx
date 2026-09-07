@@ -109,21 +109,21 @@ export default function LandingPage() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[85vh] lg:min-h-screen py-24 sm:py-32 flex items-center justify-center overflow-hidden">
         <NeuralMesh />
         
-        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto mt-16">
+        <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto mt-8 sm:mt-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-6 backdrop-blur-sm">
-              <span className="w-2 h-2 rounded-full bg-coral-400 animate-pulse" />
-              <span className="text-xs font-medium text-white/80 uppercase tracking-wider">Enterprise-Grade RAG is Here</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-6 backdrop-blur-sm max-w-full">
+              <span className="w-2 h-2 rounded-full bg-coral-400 animate-pulse shrink-0" />
+              <span className="text-[11px] sm:text-xs font-medium text-white/80 uppercase tracking-wider truncate">Enterprise-Grade RAG is Here</span>
             </div>
             
-            <h1 className="text-5xl md:text-8xl font-heading font-bold leading-tight mb-8 tracking-tight">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-bold leading-[1.15] mb-6 sm:mb-8 tracking-tight break-words">
               {words.map((word: string, i: number) => (
                 <motion.span
                   key={i}
@@ -143,18 +143,18 @@ export default function LandingPage() {
               ))}
             </h1>
             
-            <p className="text-lg md:text-xl text-white/60 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-white/60 mb-8 sm:mb-10 max-w-2xl mx-auto font-light leading-relaxed px-2">
               {subheadline}
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/register">
-                <Button variant="primary" size="lg" className="px-10 h-14 text-lg">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full max-w-md mx-auto sm:max-w-none">
+              <Link href="/register" className="w-full sm:w-auto">
+                <Button variant="primary" size="lg" className="w-full sm:w-auto px-8 sm:px-10 h-12 sm:h-14 text-base sm:text-lg justify-center shadow-[0_0_25px_rgba(245,143,124,0.35)]">
                   {cms?.["hero.cta_primary"] || "Get Started for Free"}
                 </Button>
               </Link>
-              <button onClick={scrollToDemo}>
-                <Button variant="glass" size="lg" className="px-10 h-14 text-lg group">
+              <button onClick={scrollToDemo} className="w-full sm:w-auto">
+                <Button variant="glass" size="lg" className="w-full sm:w-auto px-8 sm:px-10 h-12 sm:h-14 text-base sm:text-lg group justify-center">
                   {cms?.["hero.cta_secondary"] || "Live Demo"}
                 </Button>
               </button>
@@ -163,7 +163,8 @@ export default function LandingPage() {
               onClick={scrollToDemo}
               animate={{ y: [0, 8, 0] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
-              className="mx-auto mt-8 text-white/40 hover:text-white/70 transition-colors"
+              className="mx-auto mt-8 text-white/40 hover:text-white/70 transition-colors p-2"
+              aria-label="Scroll to demo section"
             >
               <ChevronDown className="w-6 h-6" />
             </motion.button>
@@ -171,7 +172,7 @@ export default function LandingPage() {
         </div>
 
         <motion.div 
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-white/30 flex flex-col items-center"
+          className="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-white/30 flex-col items-center"
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
         >
@@ -182,16 +183,16 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-32 px-6 relative z-10 bg-obsidian-950">
+      <section id="features" className="py-20 sm:py-32 px-4 sm:px-6 relative z-10 bg-obsidian-950">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24">
-            <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6">Built for Scale</h2>
-            <p className="text-white/50 max-w-2xl mx-auto text-xl">
+          <div className="text-center mb-16 sm:mb-24">
+            <h2 className="text-3xl sm:text-4xl md:text-6xl font-heading font-bold mb-4 sm:mb-6">Built for Scale</h2>
+            <p className="text-white/50 max-w-2xl mx-auto text-base sm:text-xl px-2">
               Powerful tools to transform your business data into conversational intelligence.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-8">
             {[
               { title: "Gemini 1.5 Pro", desc: "Powered by Google's latest model for unprecedented reasoning and speed.", icon: "M13 10V3L4 14h7v7l9-11h-7z", color: "text-coral-400" },
               { title: "Smart Ingestion", desc: "Upload PDFs, CSVs, or crawl entire domains with our advanced RAG pipeline.", icon: "M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12", color: "text-blush-400" },
@@ -207,16 +208,16 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
               >
-                <Card hoverEffect className="p-8 h-full bg-white/[0.02] border-white/5 relative overflow-hidden group">
-                  <div className={`w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-8 ${f.color} group-hover:scale-110 transition-transform duration-300`}>
-                    <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <Card hoverEffect className="p-6 sm:p-8 h-full bg-white/[0.02] border-white/5 relative overflow-hidden group">
+                  <div className={`w-12 sm:w-14 h-12 sm:h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 sm:mb-8 ${f.color} group-hover:scale-110 transition-transform duration-300`}>
+                    <svg className="w-6 sm:w-7 h-6 sm:h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={f.icon} />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-heading font-bold mb-4 text-white group-hover:text-coral-400 transition-colors">
+                  <h3 className="text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4 text-white group-hover:text-coral-400 transition-colors">
                     {f.title}
                   </h3>
-                  <p className="text-white/50 leading-relaxed">
+                  <p className="text-white/50 leading-relaxed text-sm sm:text-base">
                     {f.desc}
                   </p>
                 </Card>
@@ -228,19 +229,19 @@ export default function LandingPage() {
 
       {/* Interactive Embed & Live Demo Section */}
       {showDemo && (
-        <section id="demo-section" ref={demoRef} className="py-24 px-6 relative z-10">
+        <section id="demo-section" ref={demoRef} className="py-20 sm:py-24 px-4 sm:px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="max-w-7xl mx-auto"
           >
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-6xl font-heading font-bold mb-4">{demoHeadline}</h2>
-              <p className="text-white/50 max-w-2xl mx-auto text-lg">{demoSubheadline}</p>
+            <div className="text-center mb-12 sm:mb-16">
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-heading font-bold mb-3 sm:mb-4">{demoHeadline}</h2>
+              <p className="text-white/50 max-w-2xl mx-auto text-base sm:text-lg px-2">{demoSubheadline}</p>
             </div>
 
-            <div className="grid lg:grid-cols-12 gap-8 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-7">
                 <MockWebsite
                   botId={effectiveDemoConfig.botId}
@@ -253,13 +254,13 @@ export default function LandingPage() {
                 />
               </div>
 
-              <div className="lg:col-span-5 rounded-3xl border border-white/10 bg-white/[0.02] p-6 backdrop-blur-xl">
-                <h3 className="text-xl font-heading font-semibold text-white mb-2">Embed in 30 Seconds</h3>
-                <p className="text-white/50 text-sm mb-5">
+              <div className="lg:col-span-5 rounded-3xl border border-white/10 bg-white/[0.02] p-5 sm:p-6 backdrop-blur-xl">
+                <h3 className="text-lg sm:text-xl font-heading font-semibold text-white mb-2">Embed in 30 Seconds</h3>
+                <p className="text-white/50 text-xs sm:text-sm mb-5">
                   Choose your platform and copy one script tag. It will load automatically on your site.
                 </p>
 
-                <div className="grid grid-cols-4 gap-2 mb-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
                   {(["html", "wordpress", "shopify", "webflow"] as const).map((tab) => (
                     <button
                       key={tab}
@@ -275,21 +276,21 @@ export default function LandingPage() {
                   ))}
                 </div>
 
-                <div className="mt-6 space-y-3 text-sm">
-                  <p className="text-white/80 flex items-center gap-2"><Check className="w-4 h-4 text-coral-400" /> Step 1: Create your bot</p>
-                  <p className="text-white/80 flex items-center gap-2"><Check className="w-4 h-4 text-coral-400" /> Step 2: Train it with your content</p>
-                  <p className="text-white/80 flex items-center gap-2"><Check className="w-4 h-4 text-coral-400" /> Step 3: Copy this code</p>
+                <div className="mt-6 space-y-3 text-xs sm:text-sm">
+                  <p className="text-white/80 flex items-center gap-2"><Check className="w-4 h-4 text-coral-400 shrink-0" /> Step 1: Create your bot</p>
+                  <p className="text-white/80 flex items-center gap-2"><Check className="w-4 h-4 text-coral-400 shrink-0" /> Step 2: Train it with your content</p>
+                  <p className="text-white/80 flex items-center gap-2"><Check className="w-4 h-4 text-coral-400 shrink-0" /> Step 3: Copy this code</p>
                 </div>
 
                 <div className="mt-4 rounded-2xl border border-white/10 bg-[#1b1a1e] overflow-hidden">
                   <div className="px-4 py-2 border-b border-white/10 flex items-center justify-between">
-                    <span className="text-[11px] uppercase tracking-widest text-white/40">Install snippet</span>
+                    <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-white/40">Install snippet</span>
                     <button onClick={copySnippet} className="text-coral-400 text-xs flex items-center gap-1 font-semibold">
                       {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                       {copied ? "Copied" : "Copy"}
                     </button>
                   </div>
-                  <pre className="p-4 overflow-x-auto text-sm leading-relaxed">
+                  <pre className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed max-w-full">
                     <code>
                       <span className="text-blush-400">&lt;script</span>{" "}
                       <span className="text-coral-400">src</span>=<span className="text-emerald-400">"{`${WS_BASE}/widget.js?botId=${effectiveDemoConfig.botId}`}"</span>{" "}
@@ -299,11 +300,11 @@ export default function LandingPage() {
                   </pre>
                 </div>
 
-                <p className="mt-4 text-coral-300 text-sm font-medium">That is what you get: a live chatbot on your site.</p>
+                <p className="mt-4 text-coral-300 text-xs sm:text-sm font-medium">That is what you get: a live chatbot on your site.</p>
                 <div className="mt-8">
-                  <p className="text-white font-medium mb-3">Ready to build yours?</p>
+                  <p className="text-white font-medium mb-3 text-sm sm:text-base">Ready to build yours?</p>
                   <Link href="/register">
-                    <Button variant="primary">Get Started Free</Button>
+                    <Button variant="primary" className="w-full sm:w-auto">Get Started Free</Button>
                   </Link>
                 </div>
               </div>
@@ -313,28 +314,28 @@ export default function LandingPage() {
       )}
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-32 px-6">
+      <section id="pricing" className="py-20 sm:py-32 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl font-heading font-bold mb-8">Simple Pricing</h2>
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-6xl font-heading font-bold mb-6 sm:mb-8">Simple Pricing</h2>
             
             <div className="inline-flex items-center p-1 rounded-xl bg-white/5 border border-white/10">
               <button 
                 onClick={() => setBillingCycle("monthly")}
-                className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${billingCycle === "monthly" ? "bg-coral-500 text-white shadow-lg shadow-coral-500/20" : "text-white/50 hover:text-white"}`}
+                className={`px-4 sm:px-6 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${billingCycle === "monthly" ? "bg-coral-500 text-white shadow-lg shadow-coral-500/20" : "text-white/50 hover:text-white"}`}
               >
                 Monthly
               </button>
               <button 
                 onClick={() => setBillingCycle("annual")}
-                className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${billingCycle === "annual" ? "bg-coral-500 text-white shadow-lg shadow-coral-500/20" : "text-white/50 hover:text-white"}`}
+                className={`px-4 sm:px-6 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${billingCycle === "annual" ? "bg-coral-500 text-white shadow-lg shadow-coral-500/20" : "text-white/50 hover:text-white"}`}
               >
                 Annual <span className="text-[10px] ml-1 text-coral-200">Save 20%</span>
               </button>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {(plans || []).map((tier: any, i: number) => (
               <motion.div
                 key={tier.id}

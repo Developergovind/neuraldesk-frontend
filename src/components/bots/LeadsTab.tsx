@@ -39,7 +39,7 @@ export default function LeadsTab({ botId }: { botId: string }) {
   return (
     <div>
       {/* Header row */}
-      <div className="flex items-center justify-between gap-3 mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
         <div>
           <h3 className="text-white font-semibold text-base">
             Captured Leads
@@ -50,13 +50,13 @@ export default function LeadsTab({ botId }: { botId: string }) {
         </div>
         <button
           onClick={exportCSV}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium
-                     transition-all hover:opacity-80"
+          className="flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium
+                     transition-all hover:opacity-80 w-full sm:w-auto"
           style={{ background: 'rgba(245,143,124,0.15)',
                    border: '1px solid rgba(245,143,124,0.3)',
                    color: '#F58F7C' }}
         >
-          <Download size={12} /> Export CSV
+          <Download size={13} /> Export CSV
         </button>
       </div>
 

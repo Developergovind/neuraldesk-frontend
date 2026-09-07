@@ -61,38 +61,38 @@ export default function BotDetailsPage() {
   if (!bot) return <div className="text-white">Bot not found.</div>;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="flex items-center gap-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+        <div className="flex items-center gap-4 sm:gap-5">
           <div 
-            className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-3xl font-bold shadow-2xl"
+            className="w-14 sm:w-16 h-14 sm:h-16 rounded-2xl flex items-center justify-center text-white text-2xl sm:text-3xl font-bold shadow-2xl shrink-0"
             style={{ background: bot.accentColor }}
           >
             {bot.name[0]}
           </div>
-          <div>
-            <div className="flex items-center gap-3 mb-1">
-              <h1 className="text-3xl font-heading font-bold text-white">{bot.name}</h1>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2.5 sm:gap-3 mb-1 flex-wrap">
+              <h1 className="text-2xl sm:text-3xl font-heading font-bold text-white truncate">{bot.name}</h1>
               <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${bot.isActive ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'}`}>
                 {bot.isActive ? 'Active' : 'Inactive'}
               </span>
             </div>
-            <p className="text-white/40 text-sm">Created on {new Date(bot.createdAt).toLocaleDateString()}</p>
+            <p className="text-white/40 text-xs sm:text-sm">Created on {new Date(bot.createdAt).toLocaleDateString()}</p>
           </div>
         </div>
-        <div className="flex gap-3">
-          <Button variant="glass" size="sm" onClick={() => updateBot.mutate({ isActive: !bot.isActive })}>
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <Button variant="glass" size="sm" className="flex-1 sm:flex-initial justify-center" onClick={() => updateBot.mutate({ isActive: !bot.isActive })}>
             {bot.isActive ? "Deactivate" : "Activate"}
           </Button>
-          <Button variant="primary" size="sm" onClick={() => setActiveTab("embed")}>
+          <Button variant="primary" size="sm" className="flex-1 sm:flex-initial justify-center" onClick={() => setActiveTab("embed")}>
             Deploy Widget
           </Button>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex flex-wrap items-center gap-1 p-1 rounded-xl bg-white/5 border border-white/5 w-fit">
+      {/* Responsive Swipeable Tabs */}
+      <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-white/5 border border-white/5 overflow-x-auto custom-scrollbar max-w-full pb-2 sm:pb-1.5">
         {[
           { id: "overview", label: "Overview", icon: ChartPieIcon },
           { id: "conversations", label: "Conversations", icon: ChatBubbleLeftRightIcon },
@@ -105,13 +105,13 @@ export default function BotDetailsPage() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as Tab)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all shrink-0 whitespace-nowrap ${
               activeTab === tab.id 
-                ? "bg-white/10 text-white shadow-sm" 
+                ? "bg-white/10 text-white shadow-sm border border-white/10" 
                 : "text-white/40 hover:text-white hover:bg-white/5"
             }`}
           >
-            <tab.icon className="w-4 h-4" />
+            <tab.icon className="w-4 h-4 shrink-0" />
             {tab.label}
           </button>
         ))}
@@ -254,10 +254,10 @@ function KnowledgeTab({ botId, sources, isLoading }: { botId: string, sources: a
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 sm:space-y-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h2 className="text-xl font-heading font-bold text-white">Knowledge Sources</h2>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant="glass" size="sm" onClick={() => setIngestMode("file")}>Upload File</Button>
           <Button variant="glass" size="sm" onClick={() => setIngestMode("url")}>Add URL</Button>
           <Button variant="glass" size="sm" onClick={() => setIngestMode("text")}>Paste Text</Button>
@@ -273,44 +273,45 @@ function KnowledgeTab({ botId, sources, isLoading }: { botId: string, sources: a
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <Card className="p-8 bg-coral-500/5 border-coral-500/20">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="font-heading font-bold text-white uppercase tracking-wider text-sm">
+            <Card className="p-5 sm:p-8 bg-coral-500/5 border-coral-500/20">
+              <div className="flex items-center justify-between mb-5 sm:mb-6">
+                <h3 className="font-heading font-bold text-white uppercase tracking-wider text-xs sm:text-sm">
                   {ingestMode === "file" && "Upload Knowledge File"}
                   {ingestMode === "url" && "Crawl Website"}
                   {ingestMode === "text" && "Manual Text Entry"}
                 </h3>
-                <button onClick={() => setIngestMode(null)} className="text-white/40 hover:text-white">✕</button>
+                <button onClick={() => setIngestMode(null)} className="text-white/40 hover:text-white p-1">✕</button>
               </div>
 
               {ingestMode === "file" && (
-                <div className="border-2 border-dashed border-white/10 rounded-2xl p-12 text-center hover:border-cyan-500/50 transition-colors relative">
+                <div className="border-2 border-dashed border-white/10 rounded-2xl p-8 sm:p-12 text-center hover:border-cyan-500/50 transition-colors relative">
                   <input 
                     type="file" 
                     onChange={handleFileUpload} 
                     className="absolute inset-0 opacity-0 cursor-pointer"
                     accept=".pdf,.docx,.txt"
                   />
-                  <CloudArrowUpIcon className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
-                  <p className="text-white font-medium mb-1">Click or drag file to upload</p>
+                  <CloudArrowUpIcon className="w-10 sm:w-12 h-10 sm:h-12 text-cyan-400 mx-auto mb-4" />
+                  <p className="text-white font-medium mb-1 text-sm sm:text-base">Click or drag file to upload</p>
                   <p className="text-white/30 text-xs">PDF, DOCX, or TXT up to 10MB</p>
                   {uploadFile.isPending && <p className="mt-4 text-cyan-400 text-sm animate-pulse">Uploading...</p>}
                 </div>
               )}
 
               {ingestMode === "url" && (
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <input 
                     type="url" 
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     placeholder="https://example.com/docs"
-                    className="flex-1 h-12 px-4 rounded-xl bg-black/40 border border-white/10 text-white placeholder-white/20 focus:border-cyan-500/50 transition-colors"
+                    className="flex-1 h-12 px-4 rounded-xl bg-black/40 border border-white/10 text-white placeholder-white/20 focus:border-cyan-500/50 transition-colors text-sm"
                   />
                   <Button 
                     variant="primary" 
                     onClick={() => ingestUrl.mutate(url, { onSuccess: () => { setUrl(""); setIngestMode(null); } })}
                     isLoading={ingestUrl.isPending}
+                    className="justify-center h-12"
                   >
                     Add Source
                   </Button>

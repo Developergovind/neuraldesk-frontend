@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Bot, Circle, Send, User, Zap } from 'lucide-react';
+import { ArrowLeft, Bot, Circle, Send, User, Zap } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 import { api, WS_BASE } from '@/lib/api';
 import { getAccessToken } from '@/lib/auth';
@@ -301,9 +301,10 @@ export default function LiveInbox() {
   );
 
   return (
-    <div className="flex h-auto min-h-[calc(100vh-220px)] flex-col gap-4 lg:h-[calc(100vh-200px)] lg:flex-row">
-      <div className="flex max-h-[500px] w-full flex-col gap-3 lg:max-h-none lg:w-96">
-        <div className="sticky top-0 z-10 mb-2 flex gap-2 bg-obsidian-950/95 py-1">
+    <div className="flex h-auto min-h-[calc(100vh-180px)] flex-col gap-4 lg:h-[calc(100vh-160px)] lg:flex-row">
+      {/* Sessions Sidebar Column */}
+      <div className={`flex w-full flex-col gap-3 lg:w-96 ${selectedSession ? 'hidden lg:flex' : 'flex'}`}>
+        <div className="sticky top-0 z-10 mb-1 flex gap-2 bg-obsidian-950/95 py-1">
           {(['all', 'bot', 'human'] as const).map(item => (
             <button
               key={item}
@@ -320,7 +321,7 @@ export default function LiveInbox() {
           ))}
         </div>
 
-        <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-3">
+        <div className="flex-1 overflow-y-auto pr-1 sm:pr-2 custom-scrollbar space-y-2.5">
           {filteredSessions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <Circle size={32} className="mb-3 text-white/15" />
@@ -336,7 +337,7 @@ export default function LiveInbox() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   onClick={() => handleSessionClick(session.sessionId)}
-                  className="group relative cursor-pointer overflow-hidden rounded-xl border p-4 transition-all hover:scale-[1.01]"
+                  className="group relative cursor-pointer overflow-hidden rounded-xl border p-3.5 sm:p-4 transition-all hover:scale-[1.01]"
                   style={{
                     background: selectedSession === session.sessionId
                       ? 'rgba(245,143,124,0.08)'
@@ -396,20 +397,20 @@ export default function LiveInbox() {
 
         {/* Pagination UI */}
         {pagination.totalPages > 1 && (
-          <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-4">
+          <div className="mt-2 flex items-center justify-between border-t border-white/5 pt-3">
             <button
               disabled={page === 1}
               onClick={() => setPage(p => p - 1)}
-              className="rounded-lg bg-white/5 px-3 py-1.5 text-xs font-medium text-white/60 transition-all hover:bg-white/10 disabled:opacity-30 disabled:grayscale"
+              className="rounded-lg bg-white/5 px-2.5 py-1 text-xs font-medium text-white/60 transition-all hover:bg-white/10 disabled:opacity-30 disabled:grayscale"
             >
-              Previous
+              Prev
             </button>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5">
               {Array.from({ length: pagination.totalPages }).map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setPage(i + 1)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold transition-all ${
+                  className={`flex h-7 w-7 items-center justify-center rounded-lg text-xs font-bold transition-all ${
                     page === i + 1 
                       ? 'bg-coral-500 text-white shadow-[0_0_12px_rgba(245,143,124,0.4)]' 
                       : 'bg-white/5 text-white/40 hover:bg-white/10 hover:text-white'
@@ -422,7 +423,7 @@ export default function LiveInbox() {
             <button
               disabled={page === pagination.totalPages}
               onClick={() => setPage(p => p + 1)}
-              className="rounded-lg bg-white/5 px-3 py-1.5 text-xs font-medium text-white/60 transition-all hover:bg-white/10 disabled:opacity-30 disabled:grayscale"
+              className="rounded-lg bg-white/5 px-2.5 py-1 text-xs font-medium text-white/60 transition-all hover:bg-white/10 disabled:opacity-30 disabled:grayscale"
             >
               Next
             </button>
@@ -430,12 +431,13 @@ export default function LiveInbox() {
         )}
       </div>
 
-      <div className="flex min-h-[520px] flex-1 flex-col overflow-hidden rounded-3xl border border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-2xl relative">
+      {/* Main Conversation Column */}
+      <div className={`flex min-h-[500px] flex-1 flex-col overflow-hidden rounded-3xl border border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-2xl relative ${!selectedSession ? 'hidden lg:flex' : 'flex'}`}>
         <div className="absolute inset-0 bg-gradient-to-br from-coral-500/[0.03] to-blush-500/[0.03] pointer-events-none" />
         
         {!selectedSession ? (
-          <div className="flex h-full flex-col items-center justify-center p-12 text-center">
-            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl border border-coral-500/20 bg-coral-500/10 shadow-[0_0_30px_rgba(245,143,124,0.15)]">
+          <div className="flex h-full flex-col items-center justify-center p-8 sm:p-12 text-center">
+            <div className="mb-6 flex h-16 sm:h-20 w-16 sm:w-20 items-center justify-center rounded-3xl border border-coral-500/20 bg-coral-500/10 shadow-[0_0_30px_rgba(245,143,124,0.15)]">
               <User size={32} className="text-coral-400" />
             </div>
             <h3 className="text-xl font-heading font-bold text-white">Select a Conversation</h3>
@@ -443,39 +445,49 @@ export default function LiveInbox() {
           </div>
         ) : (
           <>
-            <div className="flex items-center justify-between gap-4 border-b border-white/5 bg-white/[0.02] px-8 py-5 z-10 backdrop-blur-md">
-              <div className="flex min-w-0 items-center gap-4">
-                <div className="relative">
-                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-coral-500/20 bg-coral-500/10 text-base font-black text-coral-400 shadow-inner">
+            {/* Conversation Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 bg-white/[0.02] p-4 sm:px-8 sm:py-5 z-10 backdrop-blur-md">
+              <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+                {/* Mobile Back Button */}
+                <button
+                  onClick={() => setSelectedSession(null)}
+                  className="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-white/70 hover:text-white shrink-0"
+                  aria-label="Back to conversations list"
+                >
+                  <ArrowLeft size={16} />
+                </button>
+
+                <div className="relative shrink-0">
+                  <div className="flex h-10 sm:h-12 w-10 sm:w-12 items-center justify-center rounded-2xl border border-coral-500/20 bg-coral-500/10 text-sm sm:text-base font-black text-coral-400 shadow-inner">
                     {currentSession?.visitorName?.slice(0, 2).toUpperCase() || '??'}
                   </div>
                   <div className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-obsidian-950 ${currentSession?.mode === 'closed' ? 'bg-red-500' : currentSession?.mode === 'human' ? 'bg-emerald-500' : 'bg-coral-500'}`} />
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-lg font-heading font-bold text-white leading-tight">
+                  <p className="truncate text-base sm:text-lg font-heading font-bold text-white leading-tight">
                     {currentSession?.visitorName || 'Anonymous Visitor'}
                   </p>
                   <div className="mt-1 flex items-center gap-2">
                     <p
-                      className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md"
+                      className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md truncate max-w-[200px] sm:max-w-none"
                       style={{ 
                         background: currentSession?.mode === 'closed' ? 'rgba(248,113,113,0.1)' : currentSession?.mode === 'human' ? 'rgba(34,197,94,0.1)' : 'rgba(245,143,124,0.12)',
                         color: currentSession?.mode === 'closed' ? '#f87171' : currentSession?.mode === 'human' ? '#22c55e' : '#F58F7C' 
                       }}
                     >
-                      {currentSession?.mode === 'closed' ? 'Chat Session Ended' : currentSession?.mode === 'human' ? 'Human Agent Intervened' : 'AI Assistant Handling'}
+                      {currentSession?.mode === 'closed' ? 'Chat Ended' : currentSession?.mode === 'human' ? 'Human Agent' : 'AI Assistant'}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
                 {currentSession?.mode !== 'closed' && (
                   <>
                     {currentSession?.mode === 'bot' ? (
                       <button
                         onClick={() => handleTakeover(selectedSession)}
-                        className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-emerald-500/20 transition-all hover:scale-105 hover:shadow-emerald-500/40 active:scale-95"
+                        className="flex flex-1 sm:flex-initial items-center justify-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 px-3.5 sm:px-5 py-2 sm:py-2.5 text-xs font-black uppercase tracking-wider sm:tracking-widest text-white shadow-xl shadow-emerald-500/20 transition-all hover:scale-105 hover:shadow-emerald-500/40 active:scale-95"
                       >
                         <Zap size={14} />
                         Take Over
@@ -483,7 +495,7 @@ export default function LiveInbox() {
                     ) : (
                       <button
                         onClick={() => handleHandback(selectedSession)}
-                        className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-gradient-to-r from-coral-500 to-blush-500 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-coral-500/20 transition-all hover:scale-105 hover:shadow-coral-500/40 active:scale-95"
+                        className="flex flex-1 sm:flex-initial items-center justify-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-coral-500 to-blush-500 px-3.5 sm:px-5 py-2 sm:py-2.5 text-xs font-black uppercase tracking-wider sm:tracking-widest text-white shadow-xl shadow-coral-500/20 transition-all hover:scale-105 hover:shadow-coral-500/40 active:scale-95"
                       >
                         <Bot size={14} />
                         Hand Back
@@ -491,7 +503,7 @@ export default function LiveInbox() {
                     )}
                     <button
                       onClick={() => handleCloseSession(selectedSession)}
-                      className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white/5 border border-red-500/20 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-red-400 transition-all hover:bg-red-500/10 active:scale-95"
+                      className="flex flex-1 sm:flex-initial items-center justify-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl bg-white/5 border border-red-500/20 px-3.5 sm:px-5 py-2 sm:py-2.5 text-xs font-black uppercase tracking-wider sm:tracking-widest text-red-400 transition-all hover:bg-red-500/10 active:scale-95"
                       title="End this session permanently"
                     >
                       Close Chat
@@ -501,14 +513,15 @@ export default function LiveInbox() {
               </div>
             </div>
 
-            <div className="flex-1 space-y-6 overflow-y-auto p-8 custom-scrollbar scroll-smooth">
+            {/* Conversation Messages */}
+            <div className="flex-1 space-y-4 sm:space-y-6 overflow-y-auto p-4 sm:p-8 custom-scrollbar scroll-smooth">
               {currentMessages.map((msg, index) => (
                 <div
                   key={msg.id || index}
-                  className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
+                  className={`flex gap-3 sm:gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
                 >
                   <div
-                    className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl border text-[10px] font-black shadow-lg"
+                    className="flex h-8 sm:h-9 w-8 sm:w-9 flex-shrink-0 items-center justify-center rounded-xl border text-[10px] font-black shadow-lg"
                     style={{
                       background: msg.role === 'user'
                         ? 'rgba(242,196,206,0.18)'
@@ -529,14 +542,14 @@ export default function LiveInbox() {
                   >
                     {msg.role === 'user' ? 'USR' : msg.senderType === 'human_agent' ? 'AGT' : 'BOT'}
                   </div>
-                  <div className={`max-w-[80%] ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+                  <div className={`max-w-[85%] sm:max-w-[80%] ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
                     {msg.senderType === 'human_agent' && (
-                      <p className="mb-1.5 text-[9px] font-black uppercase tracking-[0.2em] text-emerald-500/80">
+                      <p className="mb-1 text-[9px] font-black uppercase tracking-[0.2em] text-emerald-500/80">
                         {msg.agentName || currentSession?.agentName || 'Agent'}
                       </p>
                     )}
                     <div
-                      className="rounded-3xl px-5 py-3 text-[13px] leading-relaxed shadow-xl border border-white/5 transition-all hover:border-white/10"
+                      className="rounded-2xl sm:rounded-3xl px-4 sm:px-5 py-2.5 sm:py-3 text-[13px] leading-relaxed shadow-xl border border-white/5 transition-all hover:border-white/10"
                       style={{
                         background: msg.role === 'user'
                           ? 'rgba(124,58,237,0.08)'
@@ -544,13 +557,13 @@ export default function LiveInbox() {
                             ? 'rgba(34,197,94,0.06)'
                             : 'rgba(255,255,255,0.03)',
                         color: 'rgba(255,255,255,0.95)',
-                        borderRadius: msg.role === 'user' ? '24px 24px 4px 24px' : '24px 24px 24px 4px',
+                        borderRadius: msg.role === 'user' ? '20px 20px 4px 20px' : '20px 20px 20px 4px',
                       }}
                     >
                       {msg.content}
                     </div>
                     {msg.createdAt && (
-                      <p className="mt-2 text-[9px] font-medium text-white/20 uppercase tracking-widest">
+                      <p className="mt-1.5 text-[9px] font-medium text-white/20 uppercase tracking-widest">
                         {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     )}
@@ -560,16 +573,17 @@ export default function LiveInbox() {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="border-t border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
+            {/* Conversation Input Bar */}
+            <div className="border-t border-white/5 bg-white/[0.02] p-3.5 sm:p-6 backdrop-blur-md">
               {currentSession?.mode === 'closed' ? (
-                <div className="py-4 text-center rounded-2xl bg-red-500/5 border border-red-500/10">
-                  <p className="flex items-center justify-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-red-500/60">
-                    <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                <div className="py-3 sm:py-4 text-center rounded-2xl bg-red-500/5 border border-red-500/10">
+                  <p className="flex items-center justify-center gap-2 sm:gap-3 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-red-500/60">
+                    <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
                     This chat session is closed
                   </p>
                 </div>
               ) : currentSession?.mode === 'human' ? (
-                <div className="flex gap-4">
+                <div className="flex gap-2.5 sm:gap-4">
                   <div className="relative flex-1">
                     <input
                       value={replyText}
@@ -580,25 +594,25 @@ export default function LiveInbox() {
                           sendAgentMessage();
                         }
                       }}
-                      placeholder="Type your response as human agent..."
-                      className="w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-sm text-white outline-none transition-all focus:border-emerald-500/50 focus:bg-white/[0.08] shadow-inner"
+                      placeholder="Type response as agent..."
+                      className="w-full rounded-xl sm:rounded-2xl border border-white/10 bg-white/5 px-4 sm:px-6 py-3 sm:py-4 text-sm text-white outline-none transition-all focus:border-emerald-500/50 focus:bg-white/[0.08] shadow-inner"
                     />
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                       <span className="text-[10px] text-white/20 font-bold uppercase tracking-widest">Press Enter to send</span>
+                    <div className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 items-center gap-2">
+                       <span className="text-[10px] text-white/20 font-bold uppercase tracking-widest">Press Enter</span>
                     </div>
                   </div>
                   <button
                     onClick={sendAgentMessage}
                     disabled={!replyText.trim()}
-                    className="flex h-[52px] w-[52px] items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-xl shadow-emerald-500/20 transition-all hover:scale-105 hover:shadow-emerald-500/40 active:scale-95 disabled:opacity-30 disabled:grayscale disabled:scale-100"
+                    className="flex h-11 w-11 sm:h-[52px] sm:w-[52px] items-center justify-center rounded-xl sm:rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-xl shadow-emerald-500/20 transition-all hover:scale-105 hover:shadow-emerald-500/40 active:scale-95 disabled:opacity-30 disabled:grayscale disabled:scale-100 shrink-0"
                   >
-                    <Send size={20} />
+                    <Send size={18} />
                   </button>
                 </div>
               ) : (
-                <div className="py-4 text-center rounded-2xl bg-white/[0.01] border border-white/[0.03]">
-                  <p className="flex items-center justify-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-white/20">
-                    <div className="h-1.5 w-1.5 rounded-full bg-coral-500/50 animate-pulse" />
+                <div className="py-3 sm:py-4 text-center rounded-2xl bg-white/[0.01] border border-white/[0.03]">
+                  <p className="flex items-center justify-center gap-2 sm:gap-3 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-white/20">
+                    <span className="h-1.5 w-1.5 rounded-full bg-coral-500/50 animate-pulse" />
                     AI Assistant is managing this chat
                   </p>
                 </div>

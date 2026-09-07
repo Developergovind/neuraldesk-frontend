@@ -159,29 +159,29 @@ function SettingsContent() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div>
-        <h1 className="text-3xl font-heading font-bold text-white">Settings</h1>
-        <p className="text-white/40">Manage your account, organization, and subscription preferences.</p>
+        <h1 className="text-2xl sm:text-3xl font-heading font-bold text-white">Settings</h1>
+        <p className="text-white/40 text-xs sm:text-sm mt-0.5">Manage your account, organization, and subscription preferences.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Sidebar Nav */}
-        <div className="space-y-2">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
+        {/* Nav Tabs */}
+        <div className="flex lg:flex-col gap-2 overflow-x-auto custom-scrollbar pb-2 lg:pb-0">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+              className={`flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-medium transition-all shrink-0 whitespace-nowrap lg:w-full ${
                 activeTab === tab.id 
                   ? "bg-white/10 text-white border border-white/10 shadow-lg" 
                   : "text-white/40 hover:text-white hover:bg-white/5 border border-transparent"
               }`}
             >
-              <tab.icon className="w-5 h-5" />
+              <tab.icon className="w-4 sm:w-5 h-4 sm:h-5 shrink-0" />
               {tab.label}
               {tab.id === "billing" && (
-                <span className="ml-auto text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-coral-500/20 text-coral-400 border border-coral-500/30">
+                <span className="ml-auto text-[9px] sm:text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-coral-500/20 text-coral-400 border border-coral-500/30">
                   {tenant?.plan || 'Free'}
                 </span>
               )}
@@ -191,7 +191,7 @@ function SettingsContent() {
 
         {/* Content Area */}
         <div className="lg:col-span-3">
-          <Card className="p-8 bg-white/[0.02] border-white/5">
+          <Card className="p-5 sm:p-8 bg-white/[0.02] border-white/5">
             {activeTab === "profile" && (
               <div className="space-y-6">
                 <h3 className="text-xl font-heading font-bold text-white mb-6">Personal Information</h3>

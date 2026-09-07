@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { MessageSquare, Clock, User, Bot, Search, 
+import { ArrowLeft, MessageSquare, Clock, User, Bot, Search, 
          ChevronRight, Zap, TrendingUp, Calendar, Send, Loader2 } from 'lucide-react'
 import { formatDistanceToNow, format } from 'date-fns'
 import { api } from '@/lib/api'
@@ -25,24 +25,24 @@ function StatsCards({ botId }: { botId: string }) {
   ]
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mb-4 sm:mb-6">
       {stats.map((stat, i) => (
         <motion.div
           key={stat.label}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.08 }}
-          className="rounded-xl p-4 border"
+          className="rounded-xl p-3 sm:p-4 border"
           style={{
             background: 'rgba(255,255,255,0.03)',
             borderColor: 'rgba(255,255,255,0.08)',
           }}
         >
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
             <stat.icon size={14} style={{ color: stat.color }} />
-            <span className="text-xs text-white/40">{stat.label}</span>
+            <span className="text-[11px] sm:text-xs text-white/40 truncate">{stat.label}</span>
           </div>
-          <p className="text-2xl font-bold text-white">{stat.value}</p>
+          <p className="text-xl sm:text-2xl font-bold text-white">{stat.value}</p>
         </motion.div>
       ))}
     </div>
@@ -246,10 +246,10 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
       </div>
 
       {/* Split Layout */}
-      <div className="flex flex-col lg:flex-row gap-4 h-[600px]">
+      <div className="flex flex-col lg:flex-row gap-4 min-h-[500px] h-auto lg:h-[600px]">
 
         {/* Left: Sessions List */}
-        <div className="w-full lg:w-2/5 overflow-y-auto pr-1 flex flex-col">
+        <div className={`w-full lg:w-2/5 overflow-y-auto pr-1 flex flex-col ${selectedSessionId ? 'hidden lg:flex' : 'flex'}`}>
           {isLoading ? (
             // Skeleton
             Array.from({length: 5}).map((_, i) => (
@@ -257,7 +257,7 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
                    style={{ background: 'rgba(255,255,255,0.04)' }} />
             ))
           ) : sessionsData?.data?.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center">
+            <div className="flex flex-col items-center justify-center h-64 text-center">
               <MessageSquare size={32} className="text-white/20 mb-3" />
               <p className="text-white/40 text-sm">No conversations yet</p>
               <p className="text-white/25 text-xs mt-1">
@@ -303,7 +303,7 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
 
         {/* Right: Message Thread */}
         <div
-          className="flex-1 rounded-xl overflow-hidden flex flex-col"
+          className={`flex-1 rounded-2xl overflow-hidden flex flex-col min-h-[450px] ${!selectedSessionId ? 'hidden lg:flex' : 'flex'}`}
           style={{
             background: 'rgba(255,255,255,0.02)',
             border: '1px solid rgba(255,255,255,0.06)',
@@ -325,6 +325,15 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
               {/* Thread Header */}
               <div className="px-4 py-3 border-b flex items-center gap-3"
                    style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+                {/* Mobile Back Button */}
+                <button
+                  onClick={() => setSelectedSessionId(null)}
+                  className="lg:hidden p-1.5 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-white shrink-0"
+                  aria-label="Back to conversations"
+                >
+                  <ArrowLeft size={16} />
+                </button>
+
                 <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
                      style={{ 
                        background: 'rgba(245,143,124,0.18)', 
@@ -333,13 +342,13 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
                      }}>
                   {threadData?.session?.visitorName?.slice(0, 2).toUpperCase() || '??'}
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-white">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-white truncate">
                     {threadData?.session?.visitorName || 'Anonymous Visitor'}
                   </p>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                     {threadData?.session?.visitorEmail && (
-                      <p className="text-[11px]" style={{ color: 'rgba(245,143,124,0.8)' }}>
+                      <p className="text-[11px] truncate" style={{ color: 'rgba(245,143,124,0.8)' }}>
                         ✉ {threadData.session.visitorEmail}
                       </p>
                     )}
@@ -347,7 +356,7 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
                       {threadData?.session?.startedAt
                         ? format(new Date(threadData.session.startedAt), 'MMM d, h:mm a')
                         : ''}
-                      · {threadData?.messages?.length ?? 0} messages
+                      · {threadData?.messages?.length ?? 0} msgs
                     </p>
                   </div>
                 </div>

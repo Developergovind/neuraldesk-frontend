@@ -51,21 +51,21 @@ function UsageOverTimeChart() {
   };
 
   return (
-    <div className="rounded-2xl p-6 bg-white/[0.02] border border-white/5">
+    <div className="rounded-2xl p-4 sm:p-6 bg-white/[0.02] border border-white/5">
       {/* Header + Controls */}
-      <div className="flex items-center justify-between mb-8 flex-wrap gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-3">
         <div>
-          <h3 className="text-white font-heading font-bold text-xl">Usage Over Time</h3>
-          <p className="text-white/40 text-sm mt-0.5">
+          <h3 className="text-white font-heading font-bold text-lg sm:text-xl">Usage Over Time</h3>
+          <p className="text-white/40 text-xs sm:text-sm mt-0.5">
             Messages tracked in the last {days} days
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {/* Chart type toggle */}
           <div className="flex rounded-lg overflow-hidden border border-white/10">
             {(['area', 'bar'] as const).map(t => (
               <button key={t} onClick={() => setChartType(t)}
-                className="px-4 py-1.5 text-xs font-bold transition-all capitalize"
+                className="px-3 sm:px-4 py-1.5 text-xs font-bold transition-all capitalize"
                 style={{
                   background: chartType === t ? 'rgba(245,143,124,0.18)' : 'transparent',
                   color: chartType === t ? '#F58F7C' : 'rgba(255,255,255,0.4)',
@@ -78,7 +78,7 @@ function UsageOverTimeChart() {
           <div className="flex gap-1">
             {[7, 14, 30].map(d => (
               <button key={d} onClick={() => setDays(d)}
-                className="px-3 py-1 rounded-lg text-xs font-medium transition-all"
+                className="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
                 style={{
                   background: days === d ? 'rgba(245,143,124,0.18)' : 'rgba(255,255,255,0.05)',
                   color: days === d ? '#F58F7C' : 'rgba(255,255,255,0.4)',
@@ -93,11 +93,11 @@ function UsageOverTimeChart() {
 
       {/* Chart */}
       {isLoading ? (
-        <div className="h-64 rounded-xl animate-pulse"
+        <div className="h-60 sm:h-64 rounded-xl animate-pulse"
              style={{ background: 'rgba(255,255,255,0.04)' }} />
       ) : data.length === 0 || data.every((d: any) => d.messages === 0) ? (
-        <div className="h-64 flex flex-col items-center justify-center gap-2">
-          <p className="text-4xl">📊</p>
+        <div className="h-60 sm:h-64 flex flex-col items-center justify-center gap-2">
+          <p className="text-3xl sm:text-4xl">📊</p>
           <p className="text-white/40 text-sm">No activity in this period yet</p>
           <p className="text-white/25 text-xs">Chat with your bot to see data here</p>
         </div>
@@ -145,10 +145,8 @@ function UsageOverTimeChart() {
                   axisLine={false} tickLine={false} allowDecimals={false} />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend wrapperStyle={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', paddingTop: '20px' }} />
-                <Bar dataKey="userMessages" name="User Messages"
-                  fill="#F58F7C" fillOpacity={0.85} radius={[4,4,0,0]} />
-                <Bar dataKey="botMessages" name="Bot Replies"
-                  fill="#F2C4CE" fillOpacity={0.85} radius={[4,4,0,0]} />
+                <Bar dataKey="userMessages" name="User Messages" fill="#F58F7C" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="botMessages" name="Bot Replies" fill="#F2C4CE" radius={[4, 4, 0, 0]} />
               </BarChart>
             )}
           </ResponsiveContainer>
@@ -160,7 +158,7 @@ function UsageOverTimeChart() {
 
 export default function AnalyticsPage() {
   const { data: dashboardStats, isLoading } = useQuery({
-    queryKey: ['dashboard-stats'],
+    queryKey: ['analytics-dashboard-stats'],
     queryFn: () => api.get('/bots/stats/dashboard').then(r => r.data),
     staleTime: 60000,
   });
@@ -168,60 +166,60 @@ export default function AnalyticsPage() {
   const metrics = [
     { 
       label: "Total Conversations", 
-      value: dashboardStats?.totalSessions?.toLocaleString() || "0", 
+      value: dashboardStats?.totalSessions ? dashboardStats.totalSessions.toLocaleString() : "0", 
       trend: "+12.5%", 
-      icon: ChatBubbleLeftEllipsisIcon, 
-      color: "text-coral-400" 
+      icon: ChatBubbleLeftEllipsisIcon,
+      color: "text-coral-400"
     },
     { 
-      label: "Total Bots", 
-      value: dashboardStats?.totalBots?.toLocaleString() || "0", 
-      trend: "+5.2%", 
-      icon: UserGroupIcon, 
-      color: "text-blush-400" 
+      label: "Unique Visitors", 
+      value: dashboardStats?.totalVisitors ? dashboardStats.totalVisitors.toLocaleString() : "0", 
+      trend: "+8.2%", 
+      icon: UserGroupIcon,
+      color: "text-blush-400"
     },
     { 
       label: "Avg. Response Time", 
       value: `${dashboardStats?.avgResponseTime || 0}s`, 
-      trend: "-0.4s", 
-      icon: ClockIcon, 
-      color: "text-emerald-400" 
+      trend: "-4.1%", 
+      icon: ClockIcon,
+      color: "text-emerald-400"
     },
     { 
-      label: "Goal Completion", 
-      value: "85.4%", 
-      trend: "+2.1%", 
-      icon: CheckCircleIcon, 
-      color: "text-orange-400" 
+      label: "Resolution Rate", 
+      value: "94.2%", 
+      trend: "+2.3%", 
+      icon: CheckCircleIcon,
+      color: "text-amber-400"
     },
   ];
 
   if (isLoading) {
     return (
-      <div className="space-y-8 animate-pulse">
+      <div className="space-y-6 sm:space-y-8 animate-pulse">
         <div className="h-10 w-48 bg-white/5 rounded-lg" />
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map(i => <div key={i} className="h-32 bg-white/5 rounded-2xl" />)}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          {[1, 2, 3, 4].map(i => <div key={i} className="h-28 sm:h-32 bg-white/5 rounded-2xl" />)}
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 h-96 bg-white/5 rounded-2xl" />
-          <div className="h-96 bg-white/5 rounded-2xl" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div className="lg:col-span-2 h-80 sm:h-96 bg-white/5 rounded-2xl" />
+          <div className="h-80 sm:h-96 bg-white/5 rounded-2xl" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div>
-        <h1 className="text-3xl font-heading font-bold text-white">Analytics</h1>
-        <p className="text-white/40">Real-time performance insights across all your AI assistants.</p>
+        <h1 className="text-2xl sm:text-3xl font-heading font-bold text-white">Analytics</h1>
+        <p className="text-white/40 text-xs sm:text-sm mt-0.5">Real-time performance insights across all your AI assistants.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {metrics.map((m, i) => (
-          <Card key={i} className="p-6 bg-white/[0.02] border-white/5 group relative overflow-hidden">
-            <div className="flex items-center justify-between mb-4">
+          <Card key={i} className="p-5 sm:p-6 bg-white/[0.02] border-white/5 group relative overflow-hidden">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
               <div className={`p-2 rounded-lg bg-white/5 ${m.color} group-hover:scale-110 transition-transform`}>
                 <m.icon className="w-5 h-5" />
               </div>
@@ -229,29 +227,29 @@ export default function AnalyticsPage() {
                 {m.trend}
               </span>
             </div>
-            <p className="text-sm text-white/40 mb-1">{m.label}</p>
-            <p className="text-2xl font-heading font-bold text-white">{m.value}</p>
+            <p className="text-xs sm:text-sm text-white/40 mb-1">{m.label}</p>
+            <p className="text-xl sm:text-2xl font-heading font-bold text-white">{m.value}</p>
           </Card>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         <div className="lg:col-span-2">
           <UsageOverTimeChart />
         </div>
 
-        <Card className="p-8 bg-white/[0.02] border-white/5">
-          <h3 className="text-xl font-heading font-bold text-white mb-2">Bot Performance</h3>
-          <p className="text-sm text-white/40 mb-8">Engagement by bot</p>
-          <div className="space-y-6">
+        <Card className="p-5 sm:p-8 bg-white/[0.02] border-white/5">
+          <h3 className="text-lg sm:text-xl font-heading font-bold text-white mb-1 sm:mb-2">Bot Performance</h3>
+          <p className="text-xs sm:text-sm text-white/40 mb-6 sm:mb-8">Engagement by bot</p>
+          <div className="space-y-5 sm:space-y-6">
             {dashboardStats?.sessionsByBot?.map((bot: any, i: number) => {
               const total = dashboardStats.totalSessions || 1;
               const percentage = (bot.sessions / total) * 100;
               return (
                 <div key={i} className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/80 font-medium">{bot.botName}</span>
-                    <span className="text-white/40">{Math.round(percentage)}% of total</span>
+                  <div className="flex justify-between text-xs sm:text-sm">
+                    <span className="text-white/80 font-medium truncate mr-2">{bot.botName}</span>
+                    <span className="text-white/40 shrink-0">{Math.round(percentage)}% of total</span>
                   </div>
                   <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                     <motion.div 
@@ -264,9 +262,9 @@ export default function AnalyticsPage() {
               );
             })}
             {(!dashboardStats?.sessionsByBot || dashboardStats.sessionsByBot.length === 0) && (
-              <div className="text-center py-20 flex flex-col items-center gap-4">
-                <ChatBubbleLeftEllipsisIcon className="w-10 h-10 text-white/10" />
-                <p className="text-sm text-white/20">No session data available yet.</p>
+              <div className="text-center py-16 sm:py-20 flex flex-col items-center gap-3 sm:gap-4">
+                <ChatBubbleLeftEllipsisIcon className="w-8 sm:w-10 h-8 sm:h-10 text-white/10" />
+                <p className="text-xs sm:text-sm text-white/20">No session data available yet.</p>
               </div>
             )}
           </div>

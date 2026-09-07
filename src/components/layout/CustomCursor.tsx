@@ -14,7 +14,16 @@ export const CustomCursor = () => {
   const posRef = useRef({ x: -100, y: -100 });
   const trailPosRef = useRef({ x: -100, y: -100 });
 
+  const [isFinePointer, setIsFinePointer] = useState(false);
+
   useEffect(() => {
+    // Only enable custom cursor if device has fine pointer (mouse/trackpad) and not purely touch
+    const hasFinePointer = window.matchMedia("(pointer: fine)").matches && !("ontouchstart" in window && window.innerWidth < 1024);
+    if (!hasFinePointer) {
+      return;
+    }
+    setIsFinePointer(true);
+
     // Hide default system cursor so custom hardware-speed cursor takes over cleanly
     document.body.style.cursor = 'none';
     
@@ -93,7 +102,7 @@ export const CustomCursor = () => {
     };
   }, [isVisible]);
 
-  if (!isVisible) return null;
+  if (!isFinePointer || !isVisible) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[999999] overflow-hidden">

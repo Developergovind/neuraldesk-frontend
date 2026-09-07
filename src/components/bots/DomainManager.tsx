@@ -63,7 +63,7 @@ export default function DomainManager({ botId }: { botId: string }) {
 
   return (
     <div
-      className="rounded-3xl p-8"
+      className="rounded-3xl p-5 sm:p-8"
       style={{
         background: 'rgba(13,13,26,0.6)',
         border: '1px solid rgba(255,255,255,0.05)',
@@ -71,10 +71,10 @@ export default function DomainManager({ botId }: { botId: string }) {
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+        <div className="flex items-center gap-3.5 sm:gap-4">
           <div
-            className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
+            className="w-11 sm:w-12 h-11 sm:h-12 rounded-2xl flex items-center justify-center shadow-lg shrink-0"
             style={{
               background: 'rgba(245,143,124,0.12)',
               border: '1px solid rgba(245,143,124,0.25)',
@@ -83,7 +83,7 @@ export default function DomainManager({ botId }: { botId: string }) {
             <Shield size={20} className="text-coral-400" />
           </div>
           <div>
-            <h3 className="text-white font-heading font-bold text-lg">Domain Security</h3>
+            <h3 className="text-white font-heading font-bold text-base sm:text-lg">Domain Security</h3>
             <p className="text-white/40 text-xs">Control which websites can embed your bot</p>
           </div>
         </div>
@@ -92,7 +92,7 @@ export default function DomainManager({ botId }: { botId: string }) {
         <button
           onClick={toggleRestriction}
           disabled={isPending}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md active:scale-95"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md active:scale-95 w-full sm:w-auto"
           style={{
             background: restrictionEnabled ? 'rgba(16,185,129,0.15)' : 'rgba(255,255,255,0.05)',
             border: `1px solid ${restrictionEnabled ? 'rgba(16,185,129,0.3)' : 'rgba(255,255,255,0.1)'}`,
@@ -115,13 +115,13 @@ export default function DomainManager({ botId }: { botId: string }) {
 
       {/* Status Banner */}
       <div
-        className="mb-8 p-4 rounded-2xl flex items-start gap-3 transition-all duration-500"
+        className="mb-6 sm:mb-8 p-3.5 sm:p-4 rounded-2xl flex items-start gap-3 transition-all duration-500"
         style={{
           background: restrictionEnabled ? 'rgba(16,185,129,0.05)' : 'rgba(245,158,11,0.05)',
           border: `1px solid ${restrictionEnabled ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)'}`,
         }}
       >
-        <div className="mt-0.5">
+        <div className="mt-0.5 shrink-0">
           {restrictionEnabled ? (
             <Check size={16} className="text-emerald-400" />
           ) : (
@@ -145,11 +145,11 @@ export default function DomainManager({ botId }: { botId: string }) {
       </div>
 
       {/* Add domain input */}
-      <div className="mb-8">
-        <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-3 block">
+      <div className="mb-6 sm:mb-8">
+        <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-2.5 sm:mb-3 block">
           Whitelist New Domain
         </label>
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
           <div className="flex-1 relative group">
             <Globe
               size={14}
@@ -164,7 +164,7 @@ export default function DomainManager({ botId }: { botId: string }) {
               }}
               onKeyDown={(e) => e.key === 'Enter' && addDomain()}
               placeholder="e.g. yourwebsite.com"
-              className="w-full pl-10 pr-4 py-3.5 rounded-2xl text-sm outline-none text-white placeholder-white/20 transition-all"
+              className="w-full pl-10 pr-4 py-3 sm:py-3.5 rounded-2xl text-sm outline-none text-white placeholder-white/20 transition-all"
               style={{
                 background: 'rgba(255,255,255,0.03)',
                 border: `1px solid ${error ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'}`,
@@ -174,7 +174,7 @@ export default function DomainManager({ botId }: { botId: string }) {
           <button
             onClick={addDomain}
             disabled={!newDomain || isPending}
-            className="px-6 py-3.5 rounded-2xl text-sm font-bold flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
+            className="px-6 py-3 sm:py-3.5 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50 w-full sm:w-auto"
             style={{
               background: newDomain ? 'linear-gradient(135deg, #F58F7C, #F2C4CE)' : 'rgba(255,255,255,0.05)',
               color: newDomain ? '#fff' : 'rgba(255,255,255,0.2)',
