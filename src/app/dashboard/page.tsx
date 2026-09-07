@@ -8,8 +8,10 @@ import {
 } from "recharts";
 import { api } from "@/lib/api";
 import { useBots } from "@/lib/hooks/useBots";
+import { useBillingPlan } from "@/lib/hooks/useBilling";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { UpgradeModal } from "@/components/ui/UpgradeModal";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { 
@@ -18,7 +20,8 @@ import {
   ArrowRightIcon,
   UsersIcon,
   ClockIcon,
-  CheckCircleIcon
+  CheckCircleIcon,
+  SparklesIcon
 } from "@heroicons/react/24/outline";
 
 // ─── Custom Tooltip ────────────────────────────────────────
@@ -146,6 +149,13 @@ function ConversationsTrendChart() {
 
 export default function DashboardPage() {
   const { data: bots, isLoading: botsLoading } = useBots();
+  const { data: billingInfo } = useBillingPlan();
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  const existingBotsCount = bots?.length || 0;
+  const maxBots = billingInfo?.limits?.maxBots ?? 1;
+  const isAtLimit = maxBots !== -1 && existingBotsCount >= maxBots;
+
   const { data: dashboardStats, isLoading: statsLoading } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: () => api.get('/bots/stats/dashboard').then(r => r.data),
@@ -204,12 +214,23 @@ export default function DashboardPage() {
           <h1 className="text-3xl font-heading font-bold text-white">Dashboard Overview</h1>
           <p className="text-white/40">Welcome back! Your AI agents are performing well.</p>
         </div>
-        <Link href="/dashboard/bots/new">
-          <Button variant="primary" className="gap-2">
-            <PlusIcon className="w-5 h-5" />
-            Create New Bot
+        {isAtLimit ? (
+          <Button 
+            variant="primary" 
+            className="gap-2 shadow-[0_0_20px_rgba(245,143,124,0.35)]"
+            onClick={() => setShowUpgradeModal(true)}
+          >
+            <SparklesIcon className="w-5 h-5 text-coral-300 animate-pulse" />
+            Upgrade Plan
           </Button>
-        </Link>
+        ) : (
+          <Link href="/dashboard/bots/new">
+            <Button variant="primary" className="gap-2">
+              <PlusIcon className="w-5 h-5" />
+              Create New Bot
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Stats Grid */}
@@ -344,6 +365,14 @@ export default function DashboardPage() {
           </Card>
         )}
       </div>
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        currentCount={existingBotsCount}
+        maxLimit={maxBots}
+      />
     </div>
   );
 }

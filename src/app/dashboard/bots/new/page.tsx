@@ -2,16 +2,32 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useCreateBot } from "@/lib/hooks/useBots";
+import { useCreateBot, useBots } from "@/lib/hooks/useBots";
+import { useBillingPlan } from "@/lib/hooks/useBilling";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { UpgradeModal } from "@/components/ui/UpgradeModal";
+import { 
+  ArrowLeftIcon, 
+  SparklesIcon, 
+  CreditCardIcon, 
+  ShieldCheckIcon,
+  ArrowRightIcon 
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { BotColorPicker, SOLID_PALETTE } from "@/components/bots/BotColorPicker";
 
 export default function NewBotPage() {
   const router = useRouter();
   const createBot = useCreateBot();
+  const { data: bots } = useBots();
+  const { data: billingInfo } = useBillingPlan();
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  const existingBotsCount = bots?.length || 0;
+  const maxBots = billingInfo?.limits?.maxBots ?? 1;
+  const isAtLimit = maxBots !== -1 && existingBotsCount >= maxBots;
+
   const [formData, setFormData] = useState({
     name: "",
     greeting: "Hello! How can I help you today?",
@@ -21,9 +37,26 @@ export default function NewBotPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isAtLimit) {
+      setShowUpgradeModal(true);
+      return;
+    }
+
     createBot.mutate(formData, {
       onSuccess: (data: any) => {
         router.push(`/dashboard/bots/${data.id}`);
+      },
+      onError: (err: any) => {
+        const msg = err.response?.data?.message || "";
+        if (
+          err.response?.status === 403 || 
+          msg.toLowerCase().includes("limit") || 
+          msg.toLowerCase().includes("upgrade") || 
+          msg.toLowerCase().includes("plan")
+        ) {
+          setShowUpgradeModal(true);
+        }
       }
     });
   };
@@ -31,7 +64,7 @@ export default function NewBotPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-20">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard" className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/60 hover:text-white">
+        <Link href="/dashboard/bots" className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/60 hover:text-white">
           <ArrowLeftIcon className="w-5 h-5" />
         </Link>
         <div>
@@ -39,6 +72,40 @@ export default function NewBotPage() {
           <p className="text-white/40">Configure your AI assistant's personality and appearance.</p>
         </div>
       </div>
+
+      {/* Upgrade Banner if user has reached plan bot limit */}
+      {isAtLimit && (
+        <Card className="p-6 bg-gradient-to-r from-coral-500/15 via-obsidian-900/60 to-blush-500/15 border-coral-500/30 relative overflow-hidden shadow-[0_0_30px_rgba(245,143,124,0.15)]">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-coral-500/20 text-coral-400 flex items-center justify-center shrink-0 border border-coral-500/30 shadow-[0_0_15px_rgba(245,143,124,0.2)]">
+                <SparklesIcon className="w-6 h-6 animate-pulse" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-heading font-bold text-lg text-white">Free Plan Bot Limit Reached</h3>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-coral-500/20 text-coral-300 border border-coral-500/30">
+                    {existingBotsCount}/{maxBots} Used
+                  </span>
+                </div>
+                <p className="text-sm text-white/70 mt-1 max-w-xl">
+                  Your current subscription permits 1 active AI bot. Upgrade to <span className="text-coral-400 font-semibold">Pro</span> to build up to 5 custom bots with 50,000 monthly messages and live inbox access.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 w-full sm:w-auto shrink-0">
+              <Link href="/dashboard/settings?tab=billing" className="w-full sm:w-auto">
+                <Button variant="primary" className="w-full sm:w-auto gap-2 shadow-[0_0_20px_rgba(245,143,124,0.35)]">
+                  <CreditCardIcon className="w-4 h-4" />
+                  Upgrade Subscription
+                  <ArrowRightIcon className="w-4 h-4 ml-1" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </Card>
+      )}
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
@@ -96,11 +163,16 @@ export default function NewBotPage() {
           </Card>
 
           <div className="flex justify-end gap-4">
-            <Link href="/dashboard">
+            <Link href="/dashboard/bots">
               <Button type="button" variant="glass" size="lg">Cancel</Button>
             </Link>
-            <Button type="submit" variant="primary" size="lg" isLoading={createBot.isPending}>
-              Create Assistant
+            <Button 
+              type="submit" 
+              variant="primary" 
+              size="lg" 
+              isLoading={createBot.isPending}
+            >
+              {isAtLimit ? "Upgrade to Create" : "Create Assistant"}
             </Button>
           </div>
         </div>
@@ -157,6 +229,14 @@ export default function NewBotPage() {
           </div>
         </div>
       </form>
+
+      {/* Upgrade Subscription Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        currentCount={existingBotsCount}
+        maxLimit={maxBots}
+      />
     </div>
   );
 }

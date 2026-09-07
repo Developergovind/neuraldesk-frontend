@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useMe } from "@/lib/hooks/useAuth";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -11,15 +12,26 @@ import {
   BuildingOfficeIcon, 
   ShieldCheckIcon,
   CreditCardIcon,
-  KeyIcon
+  KeyIcon,
+  SparklesIcon
 } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 
-export default function SettingsPage() {
+function SettingsContent() {
   const { data, refetch } = useMe();
   const tenant = data as any;
-  const [activeTab, setActiveTab] = useState("profile");
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get("tab") || "profile";
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Sync tab with URL search params if changed
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab && ["profile", "company", "security", "billing"].includes(tab)) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
 
   // Profile/Company State
   const [profileData, setProfileData] = useState({
@@ -47,7 +59,6 @@ export default function SettingsPage() {
   // Billing State
   const [billingInfo, setBillingInfo] = useState<any>(null);
   const [isBillingLoading, setIsBillingLoading] = useState(false);
-
 
   useEffect(() => {
     if (activeTab === "billing") {
@@ -141,7 +152,6 @@ export default function SettingsPage() {
   };
 
   const tabs = [
-
     { id: "profile", label: "Profile", icon: UserIcon },
     { id: "company", label: "Company", icon: BuildingOfficeIcon },
     { id: "security", label: "Security", icon: ShieldCheckIcon },
@@ -170,6 +180,11 @@ export default function SettingsPage() {
             >
               <tab.icon className="w-5 h-5" />
               {tab.label}
+              {tab.id === "billing" && (
+                <span className="ml-auto text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-coral-500/20 text-coral-400 border border-coral-500/30">
+                  {tenant?.plan || 'Free'}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -255,7 +270,10 @@ export default function SettingsPage() {
             {activeTab === "billing" && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-heading font-bold text-white">Subscription & Plan</h3>
+                  <div>
+                    <h3 className="text-xl font-heading font-bold text-white">Subscription & Plan</h3>
+                    <p className="text-xs text-white/40 mt-1">Upgrade your tier to increase bot and message limits.</p>
+                  </div>
                   <div className="px-3 py-1 rounded-full bg-coral-500/20 text-coral-400 text-[10px] font-bold uppercase tracking-widest border border-coral-500/30">
                     {billingInfo?.plan || tenant?.plan || 'Free'}
                   </div>
@@ -275,20 +293,21 @@ export default function SettingsPage() {
                       <p className="text-xs text-white/40">
                         {billingInfo?.billing?.hasActiveSubscription 
                           ? `Active Subscription` 
-                          : 'Limited access to features'}
+                          : 'Limited access to features • 1 Bot Limit'}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex flex-wrap gap-4">
-                    {(billingInfo?.plan === 'free' || !billingInfo) && (
+                    {(billingInfo?.plan === 'free' || !billingInfo || tenant?.plan === 'free') && (
                       <Button 
                         variant="primary" 
-                        className="shadow-[0_0_20px_rgba(245,143,124,0.3)]"
+                        className="shadow-[0_0_20px_rgba(245,143,124,0.3)] gap-2"
                         onClick={() => handleUpgrade('pro')}
                         isLoading={isLoading}
                       >
-                        Upgrade to Pro
+                        <SparklesIcon className="w-4 h-4" />
+                        Upgrade to Pro ($29/mo)
                       </Button>
                     )}
                     {billingInfo?.billing?.hasActiveSubscription && (
@@ -356,14 +375,14 @@ export default function SettingsPage() {
                 </div>
                 
                 {/* Plan Comparison Shortcut */}
-                {billingInfo?.plan === 'free' && (
+                {(billingInfo?.plan === 'free' || !billingInfo || tenant?.plan === 'free') && (
                   <div className="p-6 rounded-2xl bg-gradient-to-br from-coral-500/10 to-blush-500/10 border border-coral-500/20">
                     <h4 className="text-sm font-bold text-white mb-2">Upgrade to Pro for:</h4>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {[
                         '50k messages / month',
                         'Up to 5 AI bots',
-                        'Custom branding',
+                        'Custom branding & styling',
                         'Live Inbox access',
                         'Advanced analytics',
                         'Priority support'
@@ -385,3 +404,10 @@ export default function SettingsPage() {
   );
 }
 
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={<div className="text-white text-center py-12">Loading settings...</div>}>
+      <SettingsContent />
+    </Suspense>
+  );
+}

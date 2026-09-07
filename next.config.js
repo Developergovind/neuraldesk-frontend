@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
+
+// 'standalone' output uses symlinks which fail on Windows (EPERM).
+// Only enable it in Linux/CI environments (e.g. Docker builds).
+const isStandalone = process.env.STANDALONE === 'true' || process.platform === 'linux';
+
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
@@ -10,7 +15,7 @@ const nextConfig = {
       { protocol: 'http', hostname: 'localhost' },
     ],
   },
-  output: 'standalone',
+  ...(isStandalone && { output: 'standalone' }),
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL,

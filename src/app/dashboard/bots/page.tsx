@@ -1,31 +1,91 @@
 "use client";
 
+import { useState } from "react";
 import { useBots } from "@/lib/hooks/useBots";
+import { useBillingPlan } from "@/lib/hooks/useBilling";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { PlusIcon, ChatBubbleLeftRightIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import { UpgradeModal } from "@/components/ui/UpgradeModal";
+import { 
+  PlusIcon, 
+  ChatBubbleLeftRightIcon, 
+  ArrowRightIcon,
+  SparklesIcon,
+  CreditCardIcon 
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { formatDate, cn } from "@/lib/utils";
 
 export default function BotsPage() {
   const { data: bots, isLoading } = useBots();
+  const { data: billingInfo } = useBillingPlan();
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  const existingBotsCount = bots?.length || 0;
+  const maxBots = billingInfo?.limits?.maxBots ?? 1;
+  const isAtLimit = maxBots !== -1 && existingBotsCount >= maxBots;
 
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-heading font-bold text-white tracking-tight">My AI Assistants</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-4xl font-heading font-bold text-white tracking-tight">My AI Assistants</h1>
+            {bots && bots.length > 0 && (
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/5 border border-white/10 text-white/70">
+                {existingBotsCount} / {maxBots === -1 ? "∞" : maxBots} Bots
+              </span>
+            )}
+          </div>
           <p className="text-white/40 mt-2">Manage and deploy your custom-trained neural models.</p>
         </div>
-        <Link href="/dashboard/bots/new">
-          <Button className="gap-2 px-6 shadow-[0_0_20px_rgba(245,143,124,0.35)]">
-            <PlusIcon className="w-5 h-5" />
-            Create New Bot
-          </Button>
-        </Link>
+
+        <div className="flex items-center gap-3">
+          {isAtLimit ? (
+            <Button 
+              onClick={() => setShowUpgradeModal(true)}
+              className="gap-2 px-6 shadow-[0_0_20px_rgba(245,143,124,0.35)]"
+            >
+              <SparklesIcon className="w-5 h-5 text-coral-300 animate-pulse" />
+              Upgrade to Add Bots
+            </Button>
+          ) : (
+            <Link href="/dashboard/bots/new">
+              <Button className="gap-2 px-6 shadow-[0_0_20px_rgba(245,143,124,0.35)]">
+                <PlusIcon className="w-5 h-5" />
+                Create New Bot
+              </Button>
+            </Link>
+          )}
+        </div>
       </div>
+
+      {/* Upgrade Banner if at limit */}
+      {isAtLimit && (
+        <Card className="p-5 bg-gradient-to-r from-coral-500/10 via-obsidian-900/60 to-blush-500/10 border-coral-500/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="p-2.5 rounded-xl bg-coral-500/20 text-coral-400">
+              <SparklesIcon className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-white">
+                You've utilized all {maxBots} bot slot{maxBots > 1 ? 's' : ''} on your {billingInfo?.plan || 'Free'} plan
+              </p>
+              <p className="text-xs text-white/50">
+                Ready to deploy more assistants? Upgrade your subscription to Pro for 5 bots, 50k messages, and live chat inbox.
+              </p>
+            </div>
+          </div>
+          <Link href="/dashboard/settings?tab=billing" className="shrink-0">
+            <Button variant="primary" size="sm" className="gap-2">
+              <CreditCardIcon className="w-4 h-4" />
+              Upgrade Subscription
+            </Button>
+          </Link>
+        </Card>
+      )}
 
       {/* Grid */}
       {isLoading ? (
@@ -100,6 +160,14 @@ export default function BotsPage() {
           ))}
         </div>
       )}
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        currentCount={existingBotsCount}
+        maxLimit={maxBots}
+      />
     </div>
   );
 }
