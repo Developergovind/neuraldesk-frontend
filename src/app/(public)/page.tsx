@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { usePublicContent, usePublicPlans } from "@/lib/hooks/usePublic";
 import { MockWebsite } from "@/components/demo/MockWebsite";
-import { Check, ChevronDown, Copy } from "lucide-react";
+import { Check, ChevronDown, Copy, Terminal, Zap, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { WS_BASE } from "@/lib/api";
 
@@ -229,7 +229,7 @@ export default function LandingPage() {
 
       {/* Interactive Embed & Live Demo Section */}
       {showDemo && (
-        <section id="demo-section" ref={demoRef} className="py-20 sm:py-24 px-4 sm:px-6 relative z-10">
+        <section id="demo-section" ref={demoRef} className="py-20 sm:py-28 px-4 sm:px-6 relative z-10 bg-obsidian-950/60">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -237,12 +237,17 @@ export default function LandingPage() {
             className="max-w-7xl mx-auto"
           >
             <div className="text-center mb-12 sm:mb-16">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-coral-500/10 border border-coral-500/20 text-coral-400 text-xs font-semibold mb-4 backdrop-blur-md">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Zero-Friction Integration</span>
+              </div>
               <h2 className="text-3xl sm:text-4xl md:text-6xl font-heading font-bold mb-3 sm:mb-4">{demoHeadline}</h2>
-              <p className="text-white/50 max-w-2xl mx-auto text-base sm:text-lg px-2">{demoSubheadline}</p>
+              <p className="text-white/60 max-w-2xl mx-auto text-base sm:text-lg px-2">{demoSubheadline}</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              <div className="lg:col-span-7">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+              {/* Left Column: Live Mockup SaaS Preview */}
+              <div className="lg:col-span-7 flex flex-col">
                 <MockWebsite
                   botId={effectiveDemoConfig.botId}
                   botName={effectiveDemoConfig.botName}
@@ -254,57 +259,139 @@ export default function LandingPage() {
                 />
               </div>
 
-              <div className="lg:col-span-5 rounded-3xl border border-white/10 bg-white/[0.02] p-5 sm:p-6 backdrop-blur-xl">
-                <h3 className="text-lg sm:text-xl font-heading font-semibold text-white mb-2">Embed in 30 Seconds</h3>
-                <p className="text-white/50 text-xs sm:text-sm mb-5">
-                  Choose your platform and copy one script tag. It will load automatically on your site.
-                </p>
+              {/* Right Column: High-End Developer & Embed Experience */}
+              <div className="lg:col-span-5 rounded-3xl border border-white/10 bg-gradient-to-b from-[#1E1D22]/90 via-[#17161A]/90 to-[#141316]/90 p-6 sm:p-7 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)] flex flex-col justify-between relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-coral-500/10 rounded-full blur-[80px] pointer-events-none" />
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
-                  {(["html", "wordpress", "shopify", "webflow"] as const).map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setInstallTab(tab)}
-                      className={`rounded-xl px-2 py-2 text-xs uppercase font-bold tracking-wider transition-all border ${
-                        installTab === tab
-                          ? "bg-coral-500/20 text-coral-400 border-coral-400/40"
-                          : "bg-white/5 text-white/50 border-white/10 hover:text-white"
-                      }`}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="mt-6 space-y-3 text-xs sm:text-sm">
-                  <p className="text-white/80 flex items-center gap-2"><Check className="w-4 h-4 text-coral-400 shrink-0" /> Step 1: Create your bot</p>
-                  <p className="text-white/80 flex items-center gap-2"><Check className="w-4 h-4 text-coral-400 shrink-0" /> Step 2: Train it with your content</p>
-                  <p className="text-white/80 flex items-center gap-2"><Check className="w-4 h-4 text-coral-400 shrink-0" /> Step 3: Copy this code</p>
-                </div>
-
-                <div className="mt-4 rounded-2xl border border-white/10 bg-[#1b1a1e] overflow-hidden">
-                  <div className="px-4 py-2 border-b border-white/10 flex items-center justify-between">
-                    <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-white/40">Install snippet</span>
-                    <button onClick={copySnippet} className="text-coral-400 text-xs flex items-center gap-1 font-semibold">
-                      {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                      {copied ? "Copied" : "Copy"}
-                    </button>
+                <div>
+                  {/* Panel Header */}
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="px-3 py-1 rounded-full bg-coral-500/15 border border-coral-500/30 text-coral-400 text-[11px] font-bold uppercase tracking-wider">
+                      1-Click Embed
+                    </span>
+                    <span className="text-xs text-white/40 font-mono flex items-center gap-1">
+                      <Zap className="w-3.5 h-3.5 text-coral-400" />
+                      &lt; 30s setup
+                    </span>
                   </div>
-                  <pre className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed max-w-full">
-                    <code>
-                      <span className="text-blush-400">&lt;script</span>{" "}
-                      <span className="text-coral-400">src</span>=<span className="text-emerald-400">"{`${WS_BASE}/widget.js?botId=${effectiveDemoConfig.botId}`}"</span>{" "}
-                      <span className="text-coral-400">defer</span>
-                      <span className="text-blush-400">&gt;&lt;/script&gt;</span>
-                    </code>
-                  </pre>
+
+                  <h3 className="text-xl sm:text-2xl font-heading font-bold text-white mb-2">
+                    Universal Integration
+                  </h3>
+                  <p className="text-white/60 text-xs sm:text-sm leading-relaxed mb-6">
+                    Paste a single asynchronous script tag into any website, CMS, or framework. Instant connection, zero build steps.
+                  </p>
+
+                  {/* Platform Selector Tabs */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
+                    {[
+                      { id: "html", label: "HTML / JS" },
+                      { id: "wordpress", label: "WordPress" },
+                      { id: "shopify", label: "Shopify" },
+                      { id: "webflow", label: "Webflow" },
+                    ].map((tab) => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setInstallTab(tab.id as any)}
+                        className={`rounded-xl px-2.5 py-2 text-xs font-semibold tracking-wide transition-all border ${
+                          installTab === tab.id
+                            ? "bg-coral-500/20 text-coral-300 border-coral-400/50 shadow-sm shadow-coral-500/20"
+                            : "bg-white/[0.04] text-white/50 border-white/10 hover:bg-white/[0.08] hover:text-white"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* 3-Step Setup Stepper */}
+                  <div className="space-y-2.5 mb-5 bg-white/[0.02] border border-white/5 p-3.5 rounded-2xl">
+                    <div className="flex items-start gap-3">
+                      <div className="w-5 h-5 rounded-full bg-coral-500/20 border border-coral-400/40 text-coral-400 font-mono text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                        1
+                      </div>
+                      <div className="text-xs">
+                        <span className="font-semibold text-white">Connect Knowledge:</span>{" "}
+                        <span className="text-white/60">Upload documents, PDFs, or enter website URLs.</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-5 h-5 rounded-full bg-coral-500/20 border border-coral-400/40 text-coral-400 font-mono text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                        2
+                      </div>
+                      <div className="text-xs">
+                        <span className="font-semibold text-white">Customize Persona:</span>{" "}
+                        <span className="text-white/60">Match brand colors, greeting message, and tone.</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-5 h-5 rounded-full bg-coral-500/20 border border-coral-400/40 text-coral-400 font-mono text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                        3
+                      </div>
+                      <div className="text-xs">
+                        <span className="font-semibold text-white">Copy & Deploy:</span>{" "}
+                        <span className="text-white/60">Add the snippet to your page header or footer.</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* High-End Terminal Code Snippet */}
+                  <div className="rounded-2xl border border-white/15 bg-[#121114] overflow-hidden shadow-inner">
+                    <div className="px-4 py-2.5 border-b border-white/10 bg-white/[0.03] flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-coral-400" />
+                        <span className="text-[11px] font-mono uppercase tracking-wider text-white/50">
+                          {installTab === "html"
+                            ? "index.html"
+                            : installTab === "wordpress"
+                            ? "footer.php"
+                            : installTab === "shopify"
+                            ? "theme.liquid"
+                            : "custom_code.html"}
+                        </span>
+                      </div>
+                      <button
+                        onClick={copySnippet}
+                        className="px-2.5 py-1 rounded-lg bg-coral-500/10 hover:bg-coral-500/20 border border-coral-400/30 text-coral-300 text-xs flex items-center gap-1.5 font-medium transition-colors"
+                      >
+                        {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                        <span>{copied ? "Copied" : "Copy"}</span>
+                      </button>
+                    </div>
+                    <pre className="p-4 overflow-x-auto text-xs leading-relaxed max-w-full font-mono">
+                      <code>
+                        <span className="text-blush-400">&lt;script</span>{" "}
+                        <span className="text-coral-400">src</span>=<span className="text-emerald-400">"{`${WS_BASE}/widget.js?botId=${effectiveDemoConfig.botId}`}"</span>{" "}
+                        <span className="text-coral-400">defer</span>
+                        <span className="text-blush-400">&gt;&lt;/script&gt;</span>
+                      </code>
+                    </pre>
+                  </div>
+
+                  {/* Architecture Badges */}
+                  <div className="grid grid-cols-2 gap-2 mt-4 text-[11px] text-white/50 font-mono">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      <span>&lt; 12KB Gzipped</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-coral-400" />
+                      <span>Non-blocking Async</span>
+                    </div>
+                  </div>
                 </div>
 
-                <p className="mt-4 text-coral-300 text-xs sm:text-sm font-medium">That is what you get: a live chatbot on your site.</p>
-                <div className="mt-8">
-                  <p className="text-white font-medium mb-3 text-sm sm:text-base">Ready to build yours?</p>
-                  <Link href="/register">
-                    <Button variant="primary" className="w-full sm:w-auto">Get Started Free</Button>
+                {/* Bottom CTA Block */}
+                <div className="mt-7 pt-5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div>
+                    <p className="text-white font-semibold text-sm">Ready to build yours?</p>
+                    <p className="text-white/40 text-xs">Free forever on Starter plan</p>
+                  </div>
+                  <Link href="/register" className="w-full sm:w-auto">
+                    <Button variant="primary" className="w-full sm:w-auto px-6 shadow-md shadow-coral-500/20">
+                      <span>Get Started Free</span>
+                      <ArrowRight className="w-4 h-4 ml-1.5" />
+                    </Button>
                   </Link>
                 </div>
               </div>
