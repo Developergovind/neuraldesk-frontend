@@ -35,7 +35,7 @@ const AvatarSphere = ({ color }: { color: string }) => {
   );
 };
 
-export const BotAvatarSphere = ({ color = "#00d4ff" }: { color?: string }) => {
+export const BotAvatarSphere = ({ color = "#F58F7C" }: { color?: string }) => {
   return (
     <div className="w-full h-full relative">
       <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>

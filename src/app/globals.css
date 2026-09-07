@@ -4,12 +4,11 @@
 
 @layer base {
   :root {
-    --background: #080810;
-    --foreground: #ffffff;
+    --background: #2C2B30;
+    --foreground: #D6D6D6;
   }
 
-
-  body {
+  html, body {
     background-color: var(--background);
     color: var(--foreground);
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -27,12 +26,12 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(214, 214, 214, 0.15);
     border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(245, 143, 124, 0.4);
   }
 }
 
@@ -46,7 +45,7 @@
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-violet-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-coral-400 via-blush-400 to-silver;
   }
 }
 

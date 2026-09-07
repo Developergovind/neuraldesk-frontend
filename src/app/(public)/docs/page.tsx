@@ -36,7 +36,7 @@ You can customize your bot's persona, greeting, and accent colors to match your 
 NeuralDesk uses RAG (Retrieval-Augmented Generation) to ground AI responses in your data...`;
 
   return (
-    <div className="min-h-screen bg-obsidian-950 text-white">
+    <div className="min-h-screen text-white">
       <Navbar />
       
       <main className="pt-32 pb-20 px-6">
@@ -45,10 +45,10 @@ NeuralDesk uses RAG (Retrieval-Augmented Generation) to ground AI responses in y
           {/* Sidebar */}
           <aside className="w-full md:w-64 space-y-8 shrink-0">
             <div className="relative group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-cyan-400 transition-colors" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-coral-400 transition-colors" />
               <input 
                 placeholder="Search docs..."
-                className="w-full bg-white/5 border border-white/5 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
+                className="w-full bg-white/5 border border-white/5 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-coral-500/50"
               />
             </div>
 
@@ -59,7 +59,7 @@ NeuralDesk uses RAG (Retrieval-Augmented Generation) to ground AI responses in y
                   onClick={() => setActiveTab(item.id)}
                   className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                     activeTab === item.id 
-                      ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-[0_0_15px_rgba(0,212,255,0.1)]" 
+                      ? "bg-coral-500/10 text-coral-400 border border-coral-500/20 shadow-[0_0_15px_rgba(245,143,124,0.15)]" 
                       : "text-white/40 hover:text-white hover:bg-white/5 border border-transparent"
                   }`}
                 >

@@ -30,6 +30,7 @@ import toast from "react-hot-toast";
 import ConversationsTab from '@/components/bots/ConversationsTab';
 import LeadsTab from '@/components/bots/LeadsTab';
 import { UsersIcon } from "@heroicons/react/24/outline";
+import { BotColorPicker } from "@/components/bots/BotColorPicker";
 
 type Tab = "overview" | "conversations" | "leads" | "knowledge" | "embed" | "settings" | "demo";
 
@@ -66,7 +67,7 @@ export default function BotDetailsPage() {
         <div className="flex items-center gap-5">
           <div 
             className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-3xl font-bold shadow-2xl"
-            style={{ backgroundColor: bot.accentColor }}
+            style={{ background: bot.accentColor }}
           >
             {bot.name[0]}
           </div>
@@ -272,7 +273,7 @@ function KnowledgeTab({ botId, sources, isLoading }: { botId: string, sources: a
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <Card className="p-8 bg-cyan-500/5 border-cyan-500/20">
+            <Card className="p-8 bg-coral-500/5 border-coral-500/20">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="font-heading font-bold text-white uppercase tracking-wider text-sm">
                   {ingestMode === "file" && "Upload Knowledge File"}
@@ -438,7 +439,7 @@ function EmbedTab({ bot }: { bot: any }) {
           </button>
         </div>
         <div className="p-6 overflow-x-auto">
-          <pre className="text-sm font-mono text-cyan-400/80 leading-relaxed">
+          <pre className="text-sm font-mono text-coral-400/90 leading-relaxed">
             {scriptTag}
           </pre>
         </div>
@@ -447,14 +448,14 @@ function EmbedTab({ bot }: { bot: any }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="p-6 bg-white/[0.02] border-white/5">
           <h4 className="text-white font-bold mb-3 flex items-center gap-2">
-            <span className="w-5 h-5 rounded bg-cyan-500/20 flex items-center justify-center text-[10px]">1</span>
+            <span className="w-5 h-5 rounded bg-coral-500/20 text-coral-400 flex items-center justify-center text-[10px]">1</span>
             Production Ready
           </h4>
           <p className="text-sm text-white/40">Our widget is lightweight, lazy-loaded, and won't affect your site's SEO or performance.</p>
         </Card>
         <Card className="p-6 bg-white/[0.02] border-white/5">
           <h4 className="text-white font-bold mb-3 flex items-center gap-2">
-            <span className="w-5 h-5 rounded bg-violet-500/20 flex items-center justify-center text-[10px]">2</span>
+            <span className="w-5 h-5 rounded bg-blush-500/20 text-blush-400 flex items-center justify-center text-[10px]">2</span>
             Domain Lockdown
           </h4>
           <p className="text-sm text-white/40">Configure allowed origins in settings to prevent unauthorized usage of your assistant.</p>
@@ -472,8 +473,6 @@ function SettingsTab({ bot }: { bot: any }) {
     persona: bot.persona,
     accentColor: bot.accentColor,
   });
-
-  const COLORS = ["#00d4ff", "#a855f7", "#ec4899", "#f97316", "#10b981", "#facc15"];
 
   return (
     <div className="max-w-3xl space-y-8 pb-20">
@@ -509,18 +508,11 @@ function SettingsTab({ bot }: { bot: any }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-white/70 mb-4">Accent Color</label>
-          <div className="flex flex-wrap gap-4">
-            {COLORS.map((color) => (
-              <button
-                key={color}
-                type="button"
-                onClick={() => setFormData({ ...formData, accentColor: color })}
-                className={`w-10 h-10 rounded-full border-2 transition-all ${formData.accentColor === color ? 'border-white scale-110 shadow-lg' : 'border-transparent opacity-50 hover:opacity-100'}`}
-                style={{ backgroundColor: color }}
-              />
-            ))}
-          </div>
+          <BotColorPicker
+            value={formData.accentColor}
+            onChange={(color) => setFormData({ ...formData, accentColor: color })}
+            label="Accent Color"
+          />
         </div>
 
         <div className="pt-4 border-t border-white/5 flex justify-end">

@@ -24,7 +24,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
         <div className="relative group">
           {icon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-cyan-400 transition-colors">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-coral-400 transition-colors">
               {icon}
             </div>
           )}
@@ -33,7 +33,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             type={inputType}
             className={cn(
               "flex h-12 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white placeholder:text-white/30",
-              "transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-400",
+              "transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-coral-500/50 focus:border-coral-400",
               "hover:border-white/20 hover:bg-white/10",
               icon && "pl-10",
               isPassword && "pr-10",
@@ -58,7 +58,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           )}
 
           {/* Animated glow on focus */}
-          <div className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 opacity-0 blur transition-opacity duration-300 group-focus-within:opacity-20" />
+          <div className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-r from-coral-500 to-blush-500 opacity-0 blur transition-opacity duration-300 group-focus-within:opacity-20" />
         </div>
         {error && (
           <motion.p

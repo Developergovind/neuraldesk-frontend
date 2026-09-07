@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    optimizePackageImports: ['framer-motion', 'recharts'],
+    optimizePackageImports: ['framer-motion', 'recharts', 'lucide-react', '@heroicons/react'],
   },
   images: {
     remotePatterns: [
@@ -19,7 +19,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_API_URL || 'https://neuraldesk-api.duckdns.org/api'}/:path*`,
       },
     ];
   },

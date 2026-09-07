@@ -92,7 +92,7 @@ export function LiveChat({ botId, botName, accentColor, greeting }: { botId: str
     <div className="flex flex-col h-[600px] bg-obsidian-900/50 rounded-3xl border border-white/5 overflow-hidden shadow-2xl backdrop-blur-xl">
       {/* Header */}
       <div className="p-4 border-b border-white/5 flex items-center gap-3 bg-white/[0.02]">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-lg" style={{ backgroundColor: accentColor }}>
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-black/20" style={{ background: accentColor }}>
           {botName[0]}
         </div>
         <div>
@@ -109,10 +109,23 @@ export function LiveChat({ botId, botName, accentColor, greeting }: { botId: str
         {messages.map((m, i) => (
           <div key={i} className={cn("flex items-start gap-3", m.role === "user" ? "flex-row-reverse" : "flex-row")}>
             <div className={cn(
-              "w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-white/10",
+              "w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-white/10 overflow-hidden",
               m.role === "user" ? "bg-white/5" : "bg-white/10"
             )}>
-              {m.role === "user" ? <UserIcon className="w-4 h-4 text-white/40" /> : <span className="text-[10px] font-bold" style={{ color: accentColor }}>{botName[0]}</span>}
+              {m.role === "user" ? (
+                <UserIcon className="w-4 h-4 text-white/40" />
+              ) : (
+                <span
+                  className="text-[10px] font-bold"
+                  style={
+                    accentColor?.includes("gradient")
+                      ? { backgroundImage: accentColor, WebkitBackgroundClip: "text", color: "transparent" }
+                      : { color: accentColor }
+                  }
+                >
+                  {botName[0]}
+                </span>
+              )}
             </div>
             <div className={cn(
               "max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed",
@@ -149,8 +162,8 @@ export function LiveChat({ botId, botName, accentColor, greeting }: { botId: str
           <button
             onClick={handleSend}
             disabled={!input.trim()}
-            className="absolute right-2 w-8 h-8 rounded-lg flex items-center justify-center transition-all disabled:opacity-20 hover:scale-105 active:scale-95"
-            style={{ backgroundColor: accentColor }}
+            className="absolute right-2 w-8 h-8 rounded-lg flex items-center justify-center transition-all disabled:opacity-20 hover:scale-105 active:scale-95 shadow-md"
+            style={{ background: accentColor }}
           >
             <PaperAirplaneIcon className="w-4 h-4 text-white" />
           </button>

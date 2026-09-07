@@ -12,6 +12,8 @@ import {
   ChevronDownIcon 
 } from "@heroicons/react/24/outline";
 
+import { Logo } from "@/components/ui/Logo";
+
 export function Navbar() {
   const { data, isLoading } = useMe();
   const user = data as any;
@@ -30,13 +32,8 @@ export function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 lg:px-12 backdrop-blur-md bg-obsidian-950/50 border-b border-white/5">
       <div className="flex items-center gap-3">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center shadow-[0_0_15px_rgba(0,212,255,0.4)]">
-            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div>
-          <span className="text-xl font-heading font-bold tracking-wide text-white">NeuralDesk</span>
+        <Link href="/">
+          <Logo size="sm" />
         </Link>
       </div>
       
@@ -55,7 +52,7 @@ export function Navbar() {
               onClick={() => setShowDropdown(!showDropdown)}
               className="flex items-center gap-2 p-1 rounded-full hover:bg-white/5 transition-colors border border-white/10 group"
             >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-violet-500 flex items-center justify-center text-xs font-bold text-white shadow-lg shadow-cyan-500/20">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-coral-500 to-blush-500 flex items-center justify-center text-xs font-bold text-white shadow-lg shadow-coral-500/20">
                 {getInitials(user.name)}
               </div>
               <ChevronDownIcon className={`w-4 h-4 text-white/50 group-hover:text-white transition-transform duration-200 ${showDropdown ? 'rotate-180' : ''}`} />
@@ -72,7 +69,7 @@ export function Navbar() {
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 mt-2 w-56 rounded-2xl bg-obsidian-900/90 border border-white/10 backdrop-blur-xl shadow-2xl p-2 z-50"
+                    className="absolute right-0 mt-2 w-56 rounded-2xl bg-obsidian-900/95 border border-white/10 backdrop-blur-xl shadow-2xl p-2 z-50"
                   >
                     <div className="px-3 py-2 mb-2 border-b border-white/5">
                       <p className="text-sm font-semibold text-white truncate">{user.name}</p>

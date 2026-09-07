@@ -310,9 +310,9 @@ export default function LiveInbox() {
               onClick={() => setFilter(item)}
               className="rounded-lg px-3 py-1.5 text-xs font-medium capitalize transition-all"
               style={{
-                background: filter === item ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.04)',
-                border: `1px solid ${filter === item ? 'rgba(0,212,255,0.3)' : 'rgba(255,255,255,0.08)'}`,
-                color: filter === item ? '#00d4ff' : 'rgba(255,255,255,0.5)',
+                background: filter === item ? 'rgba(245,143,124,0.18)' : 'rgba(255,255,255,0.04)',
+                border: `1px solid ${filter === item ? 'rgba(245,143,124,0.35)' : 'rgba(255,255,255,0.08)'}`,
+                color: filter === item ? '#F58F7C' : 'rgba(255,255,255,0.5)',
               }}
             >
               {item === 'all' ? 'All' : item === 'bot' ? 'Bot' : 'Human'}
@@ -339,10 +339,10 @@ export default function LiveInbox() {
                   className="group relative cursor-pointer overflow-hidden rounded-xl border p-4 transition-all hover:scale-[1.01]"
                   style={{
                     background: selectedSession === session.sessionId
-                      ? 'rgba(0,212,255,0.06)'
+                      ? 'rgba(245,143,124,0.08)'
                       : 'rgba(255,255,255,0.03)',
                     borderColor: selectedSession === session.sessionId
-                      ? 'rgba(0,212,255,0.25)'
+                      ? 'rgba(245,143,124,0.35)'
                       : 'rgba(255,255,255,0.07)',
                   }}
                 >
@@ -351,8 +351,8 @@ export default function LiveInbox() {
                       <span
                         className="h-2 w-2 flex-shrink-0 rounded-full"
                         style={{
-                          background: session.mode === 'closed' ? '#f87171' : session.mode === 'human' ? '#22c55e' : '#00d4ff',
-                          boxShadow: `0 0 6px ${session.mode === 'closed' ? '#f87171' : session.mode === 'human' ? '#22c55e' : '#00d4ff'}`,
+                          background: session.mode === 'closed' ? '#f87171' : session.mode === 'human' ? '#22c55e' : '#F58F7C',
+                          boxShadow: `0 0 6px ${session.mode === 'closed' ? '#f87171' : session.mode === 'human' ? '#22c55e' : '#F58F7C'}`,
                         }}
                       />
                       <p className="truncate text-sm font-semibold text-white">
@@ -365,8 +365,8 @@ export default function LiveInbox() {
                     <span
                       className="rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-wider"
                       style={{
-                        background: session.mode === 'closed' ? 'rgba(248,113,113,0.15)' : session.mode === 'human' ? 'rgba(34,197,94,0.15)' : 'rgba(0,212,255,0.1)',
-                        color: session.mode === 'closed' ? '#f87171' : session.mode === 'human' ? '#22c55e' : '#00d4ff',
+                        background: session.mode === 'closed' ? 'rgba(248,113,113,0.15)' : session.mode === 'human' ? 'rgba(34,197,94,0.15)' : 'rgba(245,143,124,0.15)',
+                        color: session.mode === 'closed' ? '#f87171' : session.mode === 'human' ? '#22c55e' : '#F58F7C',
                       }}
                     >
                       {session.mode === 'closed' ? 'Closed' : session.mode === 'human' ? 'Agent' : 'Bot'}
@@ -411,7 +411,7 @@ export default function LiveInbox() {
                   onClick={() => setPage(i + 1)}
                   className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold transition-all ${
                     page === i + 1 
-                      ? 'bg-cyan-500 text-white shadow-[0_0_12px_rgba(6,182,212,0.3)]' 
+                      ? 'bg-coral-500 text-white shadow-[0_0_12px_rgba(245,143,124,0.4)]' 
                       : 'bg-white/5 text-white/40 hover:bg-white/10 hover:text-white'
                   }`}
                 >
@@ -431,12 +431,12 @@ export default function LiveInbox() {
       </div>
 
       <div className="flex min-h-[520px] flex-1 flex-col overflow-hidden rounded-3xl border border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-2xl relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/[0.02] to-purple-500/[0.02] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-coral-500/[0.03] to-blush-500/[0.03] pointer-events-none" />
         
         {!selectedSession ? (
           <div className="flex h-full flex-col items-center justify-center p-12 text-center">
-            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl border border-cyan-500/20 bg-cyan-500/10 shadow-[0_0_30px_rgba(6,182,212,0.1)]">
-              <User size={32} className="text-cyan-400" />
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl border border-coral-500/20 bg-coral-500/10 shadow-[0_0_30px_rgba(245,143,124,0.15)]">
+              <User size={32} className="text-coral-400" />
             </div>
             <h3 className="text-xl font-heading font-bold text-white">Select a Conversation</h3>
             <p className="mt-2 text-sm text-white/40 max-w-xs">Click on a visitor in the sidebar to view history or intervene in real-time.</p>
@@ -446,10 +446,10 @@ export default function LiveInbox() {
             <div className="flex items-center justify-between gap-4 border-b border-white/5 bg-white/[0.02] px-8 py-5 z-10 backdrop-blur-md">
               <div className="flex min-w-0 items-center gap-4">
                 <div className="relative">
-                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-cyan-500/20 bg-cyan-500/10 text-base font-black text-cyan-400 shadow-inner">
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-coral-500/20 bg-coral-500/10 text-base font-black text-coral-400 shadow-inner">
                     {currentSession?.visitorName?.slice(0, 2).toUpperCase() || '??'}
                   </div>
-                  <div className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-obsidian-950 ${currentSession?.mode === 'closed' ? 'bg-red-500' : currentSession?.mode === 'human' ? 'bg-emerald-500' : 'bg-cyan-500'}`} />
+                  <div className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-obsidian-950 ${currentSession?.mode === 'closed' ? 'bg-red-500' : currentSession?.mode === 'human' ? 'bg-emerald-500' : 'bg-coral-500'}`} />
                 </div>
                 <div className="min-w-0">
                   <p className="truncate text-lg font-heading font-bold text-white leading-tight">
@@ -459,8 +459,8 @@ export default function LiveInbox() {
                     <p
                       className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md"
                       style={{ 
-                        background: currentSession?.mode === 'closed' ? 'rgba(248,113,113,0.1)' : currentSession?.mode === 'human' ? 'rgba(34,197,94,0.1)' : 'rgba(0,212,255,0.1)',
-                        color: currentSession?.mode === 'closed' ? '#f87171' : currentSession?.mode === 'human' ? '#22c55e' : '#00d4ff' 
+                        background: currentSession?.mode === 'closed' ? 'rgba(248,113,113,0.1)' : currentSession?.mode === 'human' ? 'rgba(34,197,94,0.1)' : 'rgba(245,143,124,0.12)',
+                        color: currentSession?.mode === 'closed' ? '#f87171' : currentSession?.mode === 'human' ? '#22c55e' : '#F58F7C' 
                       }}
                     >
                       {currentSession?.mode === 'closed' ? 'Chat Session Ended' : currentSession?.mode === 'human' ? 'Human Agent Intervened' : 'AI Assistant Handling'}
@@ -483,7 +483,7 @@ export default function LiveInbox() {
                     ) : (
                       <button
                         onClick={() => handleHandback(selectedSession)}
-                        className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-sky-500/20 transition-all hover:scale-105 hover:shadow-sky-500/40 active:scale-95"
+                        className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-gradient-to-r from-coral-500 to-blush-500 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-coral-500/20 transition-all hover:scale-105 hover:shadow-coral-500/40 active:scale-95"
                       >
                         <Bot size={14} />
                         Hand Back
@@ -511,20 +511,20 @@ export default function LiveInbox() {
                     className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl border text-[10px] font-black shadow-lg"
                     style={{
                       background: msg.role === 'user'
-                        ? 'rgba(124,58,237,0.15)'
+                        ? 'rgba(242,196,206,0.18)'
                         : msg.senderType === 'human_agent'
                           ? 'rgba(34,197,94,0.15)'
-                          : 'rgba(0,212,255,0.15)',
+                          : 'rgba(245,143,124,0.18)',
                       color: msg.role === 'user'
-                        ? '#a78bfa'
+                        ? '#F2C4CE'
                         : msg.senderType === 'human_agent'
                           ? '#22c55e'
-                          : '#00d4ff',
+                          : '#F58F7C',
                       borderColor: msg.role === 'user'
-                        ? 'rgba(124,58,237,0.3)'
+                        ? 'rgba(242,196,206,0.35)'
                         : msg.senderType === 'human_agent'
                           ? 'rgba(34,197,94,0.3)'
-                          : 'rgba(0,212,255,0.3)',
+                          : 'rgba(245,143,124,0.35)',
                     }}
                   >
                     {msg.role === 'user' ? 'USR' : msg.senderType === 'human_agent' ? 'AGT' : 'BOT'}
@@ -598,7 +598,7 @@ export default function LiveInbox() {
               ) : (
                 <div className="py-4 text-center rounded-2xl bg-white/[0.01] border border-white/[0.03]">
                   <p className="flex items-center justify-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-white/20">
-                    <div className="h-1.5 w-1.5 rounded-full bg-cyan-500/50 animate-pulse" />
+                    <div className="h-1.5 w-1.5 rounded-full bg-coral-500/50 animate-pulse" />
                     AI Assistant is managing this chat
                   </p>
                 </div>
@@ -612,7 +612,7 @@ export default function LiveInbox() {
         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0,212,255,0.2); }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(245,143,124,0.3); }
       `}</style>
     </div>
   );

@@ -52,7 +52,7 @@ const Chart = ({ data, color }: { data: DataPoint[], color: string }) => {
   return (
     <group position={[-data.length / 2, -2, 0]}>
       {/* Base grid */}
-      <gridHelper args={[data.length * 2 + 2, data.length * 2 + 2, '#333333', '#111111']} position={[data.length / 2, 0, 0]} />
+      <gridHelper args={[data.length * 2 + 2, data.length * 2 + 2, '#4F4F51', '#2C2B30']} position={[data.length / 2, 0, 0]} />
       
       {data.map((d, i) => (
         <Bar 
@@ -67,7 +67,7 @@ const Chart = ({ data, color }: { data: DataPoint[], color: string }) => {
   );
 };
 
-export const AnalyticsBar3D = ({ data, color = "#00d4ff" }: { data: DataPoint[], color?: string }) => {
+export const AnalyticsBar3D = ({ data, color = "#F58F7C" }: { data: DataPoint[], color?: string }) => {
   if (!data || data.length === 0) {
     return (
       <div className="w-full h-full flex items-center justify-center text-white/40">

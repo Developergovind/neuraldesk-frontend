@@ -18,10 +18,10 @@ function StatsCards({ botId }: { botId: string }) {
   const { data } = useConversationStats(botId)
 
   const stats = [
-    { label: 'Total Sessions', value: data?.totalSessions ?? 0, icon: MessageSquare, color: '#00d4ff' },
-    { label: 'Total Messages', value: data?.totalMessages ?? 0, icon: TrendingUp, color: '#7c3aed' },
-    { label: 'Avg / Session', value: data?.avgMessagesPerSession?.toFixed(1) ?? '0', icon: Zap, color: '#00d4ff' },
-    { label: 'Sessions Today', value: data?.sessionsToday ?? 0, icon: Calendar, color: '#7c3aed' },
+    { label: 'Total Sessions', value: data?.totalSessions ?? 0, icon: MessageSquare, color: '#F58F7C' },
+    { label: 'Total Messages', value: data?.totalMessages ?? 0, icon: TrendingUp, color: '#F2C4CE' },
+    { label: 'Avg / Session', value: data?.avgMessagesPerSession?.toFixed(1) ?? '0', icon: Zap, color: '#F58F7C' },
+    { label: 'Sessions Today', value: data?.sessionsToday ?? 0, icon: Calendar, color: '#F2C4CE' },
   ]
 
   return (
@@ -64,10 +64,10 @@ function SessionCard({
       className="p-4 rounded-xl border cursor-pointer transition-all mb-2"
       style={{
         background: isSelected
-          ? 'rgba(0, 212, 255, 0.08)'
+          ? 'rgba(245, 143, 124, 0.1)'
           : 'rgba(255,255,255,0.03)',
         borderColor: isSelected
-          ? 'rgba(0, 212, 255, 0.3)'
+          ? 'rgba(245, 143, 124, 0.35)'
           : 'rgba(255,255,255,0.06)',
       }}
       whileHover={{ scale: 1.01 }}
@@ -77,9 +77,9 @@ function SessionCard({
         {/* Avatar */}
         <div className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
              style={{ 
-               background: 'rgba(0,212,255,0.15)', 
-               color: '#00d4ff',
-               border: '1px solid rgba(0,212,255,0.25)' 
+               background: 'rgba(245,143,124,0.18)', 
+               color: '#F58F7C',
+               border: '1px solid rgba(245,143,124,0.3)' 
              }}>
           {initials}
         </div>
@@ -95,7 +95,7 @@ function SessionCard({
           </div>
           
           {session.visitorEmail && (
-            <p className="text-[11px] truncate mb-1.5" style={{ color: 'rgba(0,212,255,0.6)' }}>
+            <p className="text-[11px] truncate mb-1.5" style={{ color: 'rgba(245,143,124,0.75)' }}>
               {session.visitorEmail}
             </p>
           )}
@@ -138,14 +138,14 @@ function MessageBubble({ message }: { message: any }) {
         className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
         style={{
           background: isUser
-            ? 'rgba(124, 58, 237, 0.3)'
-            : 'rgba(0, 212, 255, 0.2)',
-          border: `1px solid ${isUser ? 'rgba(124,58,237,0.4)' : 'rgba(0,212,255,0.3)'}`,
+            ? 'rgba(242, 196, 206, 0.25)'
+            : 'rgba(245, 143, 124, 0.2)',
+          border: `1px solid ${isUser ? 'rgba(242,196,206,0.4)' : 'rgba(245,143,124,0.35)'}`,
         }}
       >
         {isUser
-          ? <User size={12} style={{ color: '#7c3aed' }} />
-          : <Bot size={12} style={{ color: '#00d4ff' }} />
+          ? <User size={12} style={{ color: '#F2C4CE' }} />
+          : <Bot size={12} style={{ color: '#F58F7C' }} />
         }
       </div>
 
@@ -155,9 +155,9 @@ function MessageBubble({ message }: { message: any }) {
           className="px-4 py-2.5 rounded-2xl text-sm leading-relaxed"
           style={{
             background: isUser
-              ? 'rgba(124, 58, 237, 0.2)'
+              ? 'rgba(242, 196, 206, 0.15)'
               : 'rgba(255,255,255,0.06)',
-            border: `1px solid ${isUser ? 'rgba(124,58,237,0.25)' : 'rgba(255,255,255,0.08)'}`,
+            border: `1px solid ${isUser ? 'rgba(242,196,206,0.3)' : 'rgba(255,255,255,0.08)'}`,
             color: 'rgba(255,255,255,0.9)',
             borderRadius: isUser ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
           }}
@@ -169,7 +169,7 @@ function MessageBubble({ message }: { message: any }) {
             {format(new Date(message.createdAt), 'h:mm a')}
           </span>
           {message.responseTimeMs && (
-            <span className="text-xs flex items-center gap-1" style={{ color: 'rgba(0,212,255,0.4)' }}>
+            <span className="text-xs flex items-center gap-1" style={{ color: 'rgba(245,143,124,0.6)' }}>
               <Zap size={9} />
               {message.responseTimeMs < 1000
                 ? `${message.responseTimeMs}ms`
@@ -240,7 +240,7 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
             background: 'rgba(255,255,255,0.04)',
             border: '1px solid rgba(255,255,255,0.08)',
           }}
-          onFocus={e => (e.target.style.borderColor = 'rgba(0,212,255,0.4)')}
+          onFocus={e => (e.target.style.borderColor = 'rgba(245,143,124,0.5)')}
           onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.08)')}
         />
       </div>
@@ -286,10 +286,10 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
                       className="w-7 h-7 rounded-lg text-xs font-medium transition-all"
                       style={{
                         background: page === i + 1
-                          ? 'rgba(0,212,255,0.2)'
+                          ? 'rgba(245,143,124,0.25)'
                           : 'rgba(255,255,255,0.05)',
-                        color: page === i + 1 ? '#00d4ff' : 'rgba(255,255,255,0.4)',
-                        border: `1px solid ${page === i + 1 ? 'rgba(0,212,255,0.3)' : 'transparent'}`,
+                        color: page === i + 1 ? '#F58F7C' : 'rgba(255,255,255,0.4)',
+                        border: `1px solid ${page === i + 1 ? 'rgba(245,143,124,0.4)' : 'transparent'}`,
                       }}
                     >
                       {i + 1}
@@ -312,8 +312,8 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
           {!selectedSessionId ? (
             <div className="flex flex-col items-center justify-center h-full text-center p-8">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
-                   style={{ background: 'rgba(0,212,255,0.08)', border: '1px solid rgba(0,212,255,0.15)' }}>
-                <MessageSquare size={24} style={{ color: '#00d4ff' }} />
+                   style={{ background: 'rgba(245,143,124,0.1)', border: '1px solid rgba(245,143,124,0.2)' }}>
+                <MessageSquare size={24} style={{ color: '#F58F7C' }} />
               </div>
               <p className="text-white/50 font-medium">Select a conversation</p>
               <p className="text-white/25 text-sm mt-1">
@@ -327,9 +327,9 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
                    style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
                 <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
                      style={{ 
-                       background: 'rgba(0,212,255,0.15)', 
-                       color: '#00d4ff',
-                       border: '1px solid rgba(0,212,255,0.25)' 
+                       background: 'rgba(245,143,124,0.18)', 
+                       color: '#F58F7C',
+                       border: '1px solid rgba(245,143,124,0.3)' 
                      }}>
                   {threadData?.session?.visitorName?.slice(0, 2).toUpperCase() || '??'}
                 </div>
@@ -339,7 +339,7 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
                   </p>
                   <div className="flex items-center gap-3">
                     {threadData?.session?.visitorEmail && (
-                      <p className="text-[11px]" style={{ color: 'rgba(0,212,255,0.7)' }}>
+                      <p className="text-[11px]" style={{ color: 'rgba(245,143,124,0.8)' }}>
                         ✉ {threadData.session.visitorEmail}
                       </p>
                     )}
@@ -387,7 +387,7 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
 
               <div className="p-4 border-t bg-white/[0.02]" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
                 <p className="text-[11px] text-white/30 text-center italic">
-                  This is a read-only history view. To message the visitor in real-time, please use the <a href="/dashboard/inbox" className="text-[#00d4ff] hover:underline">Live Inbox</a>.
+                  This is a read-only history view. To message the visitor in real-time, please use the <a href="/dashboard/inbox" className="text-coral-400 hover:underline">Live Inbox</a>.
                 </p>
               </div>
             </>

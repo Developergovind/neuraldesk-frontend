@@ -1,0 +1,75 @@
+<svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Coral Glow Filter -->
+    <filter id="neonCoralGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Core Facet Gradients -->
+    <linearGradient id="facetLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F2C4CE" />
+      <stop offset="40%" stop-color="#F58F7C" />
+      <stop offset="100%" stop-color="#E05742" />
+    </linearGradient>
+
+    <linearGradient id="facetRight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="35%" stop-color="#FBD0D9" />
+      <stop offset="100%" stop-color="#F58F7C" />
+    </linearGradient>
+
+    <!-- Glowing Border Gradient -->
+    <linearGradient id="whiteBorderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="70%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F2C4CE" />
+    </linearGradient>
+  </defs>
+
+  <!-- Ambient Glowing Back Aura -->
+  <path
+    d="M 3 3 L 11 39 L 21 27 L 39 21 L 3 3 Z"
+    fill="#F58F7C"
+    opacity="0.6"
+    filter="url(#neonCoralGlow)"
+  />
+
+  <!-- Main Chevron Arrow Body -->
+  <!-- Left Facet (Deep Coral) -->
+  <path
+    d="M 3 3 L 11 39 L 21 27 Z"
+    fill="url(#facetLeft)"
+  />
+
+  <!-- Right Facet (Bright Blush / Highlight) -->
+  <path
+    d="M 3 3 L 21 27 L 39 21 Z"
+    fill="url(#facetRight)"
+  />
+
+  <!-- Center Ridge Line -->
+  <line
+    x1="3" y1="3"
+    x2="21" y2="27"
+    stroke="#FFFFFF"
+    stroke-width="0.75"
+    opacity="0.8"
+  />
+
+  <!-- Crisp White Outer Contour Border -->
+  <path
+    d="M 3 3 L 11 39 L 21 27 L 39 21 L 3 3 Z"
+    fill="none"
+    stroke="url(#whiteBorderGrad)"
+    stroke-width="2.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Apex Sparkle Point -->
+  <circle cx="3" cy="3" r="1.2" fill="#FFFFFF" />
+</svg>

@@ -2,21 +2,12 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const getApiBase = () => {
-  let url = process.env.NEXT_PUBLIC_API_URL;
+  let url = process.env.NEXT_PUBLIC_API_URL || 'https://neuraldesk-api.duckdns.org/api';
   if (url && url.includes('neuraldeskapp.duckdns.org')) {
     url = url.replace('neuraldeskapp.duckdns.org', 'neuraldesk-api.duckdns.org');
   }
-  if (typeof window !== 'undefined') {
-    const isCurrentSiteLocalhost = 
-      window.location.hostname === 'localhost' || 
-      window.location.hostname === '127.0.0.1';
-    if (!isCurrentSiteLocalhost) {
-      if (!url || url.includes('localhost') || url.includes('127.0.0.1')) {
-        url = 'https://neuraldesk-api.duckdns.org/api';
-      }
-    }
-  }
-  return url || 'https://neuraldesk-api.duckdns.org/api';
+  const normalized = url.replace(/\/+$/, "");
+  return normalized.endsWith("/api") ? normalized : `${normalized}/api`;
 };
 
 export const API_BASE = getApiBase();
@@ -72,7 +63,7 @@ const getWsBase = () => {
       return 'https://neuraldesk-api.duckdns.org';
     }
   }
-  return 'http://localhost:5001';
+  return 'https://neuraldesk-api.duckdns.org';
 };
 
 export const WS_BASE = getWsBase();

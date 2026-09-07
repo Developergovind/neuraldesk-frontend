@@ -7,7 +7,7 @@ import { NeuralMesh } from "@/components/3d/NeuralMesh";
 
 export default function NotFound() {
   return (
-    <div className="relative min-h-screen bg-obsidian-950 flex items-center justify-center overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0 opacity-40">
         <NeuralMesh />
       </div>
@@ -18,7 +18,7 @@ export default function NotFound() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-9xl font-heading font-black text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-violet-500 mb-4 tracking-tighter">
+          <h1 className="text-9xl font-heading font-black text-transparent bg-clip-text bg-gradient-to-br from-coral-400 to-blush-400 mb-4 tracking-tighter">
             404
           </h1>
           <h2 className="text-2xl md:text-3xl font-heading font-bold text-white mb-6 uppercase tracking-widest">

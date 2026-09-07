@@ -16,7 +16,7 @@ export default function ChangelogPage() {
   const items = content || defaultChangelog;
 
   return (
-    <div className="min-h-screen bg-obsidian-950 text-white">
+    <div className="min-h-screen text-white">
       <Navbar />
       
       <main className="pt-32 pb-20 px-6">
@@ -49,14 +49,14 @@ export default function ChangelogPage() {
                   className="relative md:pl-20"
                 >
                   {/* Timeline Dot */}
-                  <div className="hidden md:flex absolute left-6 top-2 w-4 h-4 rounded-full bg-[#080810] border-2 border-cyan-500 items-center justify-center z-10">
-                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 shadow-[0_0_8px_#00d4ff]" />
+                  <div className="hidden md:flex absolute left-6 top-2 w-4 h-4 rounded-full bg-obsidian-950 border-2 border-coral-500 items-center justify-center z-10">
+                    <div className="w-1.5 h-1.5 rounded-full bg-coral-500 shadow-[0_0_8px_#F58F7C]" />
                   </div>
 
-                  <div className="p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:border-cyan-500/20 transition-all duration-500">
+                  <div className="p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:border-coral-500/20 transition-all duration-500">
                     <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
                       <div className="flex items-center gap-4">
-                        <span className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-sm font-bold border border-cyan-500/20">
+                        <span className="px-3 py-1 rounded-full bg-coral-500/10 text-coral-400 text-sm font-bold border border-coral-500/20">
                           v{item.version}
                         </span>
                         <span className="text-white/30 text-sm font-medium">{item.date}</span>

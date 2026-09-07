@@ -22,7 +22,7 @@ Leveraging the latest in RAG (Retrieval-Augmented Generation) and glassmorphic U
 Based in the heart of the digital frontier, our team of AI researchers, designers, and engineers work tirelessly to push the boundaries of what's possible in conversational AI.`;
 
   return (
-    <div className="min-h-screen bg-obsidian-950 text-white">
+    <div className="min-h-screen text-white">
       <Navbar />
       
       <main className="pt-32 pb-20 px-6">
@@ -40,7 +40,7 @@ Based in the heart of the digital frontier, our team of AI researchers, designer
                 <div className="h-64 w-full bg-white/5 rounded-2xl" />
               </div>
             ) : (
-              <div className="prose prose-invert prose-cyan max-w-none">
+              <div className="prose prose-invert max-w-none">
                 <ReactMarkdown>
                   {content || defaultContent}
                 </ReactMarkdown>

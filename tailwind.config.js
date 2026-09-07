@@ -9,25 +9,70 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Base dark tones anchored at #2C2B30 (Dark Charcoal)
         obsidian: {
-          950: '#030308',
-          900: '#080810',
-          800: '#0d0d1a',
-          700: '#111125',
-          600: '#16162e',
-          500: '#1e1e3a',
+          950: '#2C2B30', // Base #2C2B30
+          900: '#232227',
+          800: '#2C2B30',
+          700: '#38373d',
+          600: '#434248',
+          500: '#4F4F51', // Palette Muted Slate Gray
+          400: '#6c6b70',
         },
+        charcoal: {
+          950: '#2C2B30',
+          900: '#232227',
+          DEFAULT: '#2C2B30',
+          800: '#2C2B30',
+          700: '#38373d',
+          600: '#434248',
+          500: '#4F4F51',
+          400: '#6c6b70',
+        },
+        // Core Silver tone #D6D6D6
+        silver: {
+          light: '#f5f5f5',
+          DEFAULT: '#D6D6D6',
+          300: '#e5e5e5',
+          400: '#D6D6D6',
+          500: '#bfbfbf',
+          600: '#9e9e9e',
+        },
+        // Primary Radiant Accent #F58F7C (Coral Salmon)
+        coral: {
+          300: '#fca595',
+          400: '#F58F7C', // Palette Coral
+          DEFAULT: '#F58F7C',
+          500: '#e87762',
+          600: '#d45c47',
+          700: '#ba4834',
+        },
+        // Secondary Soft Accent #F2C4CE (Blush Rose)
+        blush: {
+          200: '#fdedf0',
+          300: '#fae0e5',
+          400: '#F2C4CE', // Palette Blush Rose
+          DEFAULT: '#F2C4CE',
+          500: '#e5aab6',
+          600: '#d18f9d',
+          700: '#b87483',
+        },
+        // Remap legacy cyan/violet so existing classes instantly inherit the new palette
         cyan: {
-          400: '#22d3ee',
-          DEFAULT: '#00d4ff',
-          600: '#0891b2',
+          300: '#fca595',
+          400: '#F58F7C', // Mapped to Palette Coral
+          DEFAULT: '#F58F7C',
+          500: '#e87762',
+          600: '#d45c47',
         },
         violet: {
-          DEFAULT: '#7c3aed',
-          400: '#a78bfa',
-          600: '#6d28d9',
+          300: '#fae0e5',
+          400: '#F2C4CE', // Mapped to Palette Blush
+          DEFAULT: '#F2C4CE',
+          500: '#e5aab6',
+          600: '#d18f9d',
         },
-        glass: 'rgba(255,255,255,0.04)',
+        glass: 'rgba(214, 214, 214, 0.03)',
       },
       fontFamily: {
         heading: ['"Plus Jakarta Sans"', 'sans-serif'],
@@ -36,18 +81,22 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'obsidian-gradient': 'linear-gradient(135deg, #080810 0%, #0d0d1a 50%, #111125 100%)',
-        'cyan-glow': 'radial-gradient(circle at 50% 50%, rgba(0,212,255,0.15) 0%, transparent 70%)',
-        'violet-glow': 'radial-gradient(circle at 50% 50%, rgba(124,58,237,0.15) 0%, transparent 70%)',
+        'obsidian-gradient': 'linear-gradient(135deg, #232227 0%, #2C2B30 50%, #38373d 100%)',
+        'coral-glow': 'radial-gradient(circle at 50% 50%, rgba(245,143,124,0.12) 0%, transparent 70%)',
+        'blush-glow': 'radial-gradient(circle at 50% 50%, rgba(242,196,206,0.10) 0%, transparent 70%)',
+        'cyan-glow': 'radial-gradient(circle at 50% 50%, rgba(245,143,124,0.12) 0%, transparent 70%)',
+        'violet-glow': 'radial-gradient(circle at 50% 50%, rgba(242,196,206,0.10) 0%, transparent 70%)',
       },
       backdropBlur: {
         glass: '24px',
       },
       boxShadow: {
-        glass: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
-        'glow-cyan': '0 0 40px rgba(0,212,255,0.3)',
-        'glow-violet': '0 0 40px rgba(124,58,237,0.3)',
-        card: '0 4px 24px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.05)',
+        glass: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(214,214,214,0.08)',
+        'glow-coral': '0 0 40px rgba(245,143,124,0.35)',
+        'glow-blush': '0 0 40px rgba(242,196,206,0.3)',
+        'glow-cyan': '0 0 40px rgba(245,143,124,0.35)',
+        'glow-violet': '0 0 40px rgba(242,196,206,0.3)',
+        card: '0 4px 24px rgba(0,0,0,0.4), 0 1px 0 rgba(214,214,214,0.06)',
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',

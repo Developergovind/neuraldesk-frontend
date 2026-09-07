@@ -11,11 +11,11 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 // Omit framer-motion props to avoid type conflicts if spread directly
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', isLoading, children, disabled, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center rounded-xl font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 disabled:pointer-events-none disabled:opacity-50 relative overflow-hidden';
+    const baseStyles = 'inline-flex items-center justify-center rounded-xl font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-400 disabled:pointer-events-none disabled:opacity-50 relative overflow-hidden';
     
     const variants = {
-      primary: 'bg-gradient-to-r from-cyan-500 to-cyan-600 text-white shadow-[0_0_20px_rgba(0,212,255,0.3)] hover:shadow-[0_0_30px_rgba(0,212,255,0.5)] border border-cyan-400/50',
-      secondary: 'bg-violet-600 text-white hover:bg-violet-700 shadow-[0_0_20px_rgba(124,58,237,0.3)]',
+      primary: 'bg-gradient-to-r from-coral-500 to-coral-600 text-white shadow-[0_0_20px_rgba(245,143,124,0.35)] hover:shadow-[0_0_30px_rgba(245,143,124,0.55)] border border-coral-400/50',
+      secondary: 'bg-obsidian-700 text-white hover:bg-obsidian-600 border border-white/10 shadow-[0_0_20px_rgba(242,196,206,0.2)]',
       outline: 'border border-white/20 bg-transparent hover:bg-white/5 text-white',
       ghost: 'bg-transparent hover:bg-white/10 text-white',
       glass: 'bg-white/5 backdrop-blur-md border border-white/10 text-white hover:bg-white/10 shadow-glass',

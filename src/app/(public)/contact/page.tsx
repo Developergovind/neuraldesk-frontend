@@ -33,7 +33,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-obsidian-950 text-white">
+    <div className="min-h-screen text-white">
       <Navbar />
       
       <main className="pt-32 pb-20 px-6">
@@ -51,7 +51,7 @@ export default function ContactPage() {
 
               <div className="space-y-8">
                 <div className="flex items-center gap-6 group">
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-coral-400 group-hover:scale-110 transition-transform">
                     <Mail className="w-6 h-6" />
                   </div>
                   <div>
@@ -61,7 +61,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="flex items-center gap-6 group">
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-violet-400 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-blush-400 group-hover:scale-110 transition-transform">
                     <Twitter className="w-6 h-6" />
                   </div>
                   <div>
@@ -96,7 +96,7 @@ export default function ContactPage() {
               animate={{ opacity: 1, x: 0 }}
             >
               <div className="p-8 md:p-12 rounded-[3rem] bg-white/[0.02] border border-white/5 backdrop-blur-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 blur-[100px] pointer-events-none" />
+                <div className="absolute top-0 right-0 w-64 h-64 bg-coral-500/10 blur-[100px] pointer-events-none" />
                 
                 {isSuccess ? (
                   <div className="text-center py-20">

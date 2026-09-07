@@ -256,16 +256,16 @@ export default function SettingsPage() {
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xl font-heading font-bold text-white">Subscription & Plan</h3>
-                  <div className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-[10px] font-bold uppercase tracking-widest border border-cyan-500/30">
+                  <div className="px-3 py-1 rounded-full bg-coral-500/20 text-coral-400 text-[10px] font-bold uppercase tracking-widest border border-coral-500/30">
                     {billingInfo?.plan || tenant?.plan || 'Free'}
                   </div>
                 </div>
                 
                 <Card className="p-6 bg-white/[0.03] border-white/10 shadow-2xl relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 blur-3xl -mr-16 -mt-16 rounded-full group-hover:bg-cyan-500/10 transition-all duration-500" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-coral-500/5 blur-3xl -mr-16 -mt-16 rounded-full group-hover:bg-coral-500/10 transition-all duration-500" />
                   
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 border border-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.1)]">
+                    <div className="w-14 h-14 rounded-2xl bg-coral-500/10 flex items-center justify-center text-coral-400 border border-coral-500/20 shadow-[0_0_15px_rgba(245,143,124,0.15)]">
                       <CreditCardIcon className="w-7 h-7" />
                     </div>
                     <div>
@@ -284,7 +284,7 @@ export default function SettingsPage() {
                     {(billingInfo?.plan === 'free' || !billingInfo) && (
                       <Button 
                         variant="primary" 
-                        className="shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+                        className="shadow-[0_0_20px_rgba(245,143,124,0.3)]"
                         onClick={() => handleUpgrade('pro')}
                         isLoading={isLoading}
                       >
@@ -315,12 +315,12 @@ export default function SettingsPage() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs font-bold text-cyan-400">{billingInfo?.usage?.messagesPercent || 0}%</p>
+                        <p className="text-xs font-bold text-coral-400">{billingInfo?.usage?.messagesPercent || 0}%</p>
                       </div>
                     </div>
                     <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
                       <div 
-                        className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 shadow-[0_0_10px_rgba(6,182,212,0.5)] transition-all duration-1000 ease-out" 
+                        className="h-full bg-gradient-to-r from-coral-500 to-coral-600 shadow-[0_0_10px_rgba(245,143,124,0.5)] transition-all duration-1000 ease-out" 
                         style={{ width: `${Math.min(billingInfo?.usage?.messagesPercent || 0, 100)}%` }}
                       />
                     </div>
@@ -340,14 +340,14 @@ export default function SettingsPage() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs font-bold text-purple-400">
+                        <p className="text-xs font-bold text-blush-400">
                           {billingInfo?.limits?.maxBots === -1 ? '0' : Math.round(((billingInfo?.usage?.botsCreated || 0) / (billingInfo?.limits?.maxBots || 1)) * 100)}%
                         </p>
                       </div>
                     </div>
                     <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
                       <div 
-                        className="h-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-[0_0_10px_rgba(168,85,247,0.5)] transition-all duration-1000 ease-out" 
+                        className="h-full bg-gradient-to-r from-blush-400 to-blush-500 shadow-[0_0_10px_rgba(242,196,206,0.4)] transition-all duration-1000 ease-out" 
                         style={{ width: `${billingInfo?.limits?.maxBots === -1 ? 0 : Math.min(((billingInfo?.usage?.botsCreated || 0) / (billingInfo?.limits?.maxBots || 1)) * 100, 100)}%` }}
                       />
                     </div>
@@ -357,7 +357,7 @@ export default function SettingsPage() {
                 
                 {/* Plan Comparison Shortcut */}
                 {billingInfo?.plan === 'free' && (
-                  <div className="p-6 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-cyan-500/20">
+                  <div className="p-6 rounded-2xl bg-gradient-to-br from-coral-500/10 to-blush-500/10 border border-coral-500/20">
                     <h4 className="text-sm font-bold text-white mb-2">Upgrade to Pro for:</h4>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {[
@@ -369,7 +369,7 @@ export default function SettingsPage() {
                         'Priority support'
                       ].map((feature, i) => (
                         <li key={i} className="flex items-center gap-2 text-xs text-white/60">
-                          <ShieldCheckIcon className="w-4 h-4 text-cyan-400" />
+                          <ShieldCheckIcon className="w-4 h-4 text-coral-400" />
                           {feature}
                         </li>
                       ))}

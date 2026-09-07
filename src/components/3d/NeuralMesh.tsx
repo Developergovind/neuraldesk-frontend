@@ -70,34 +70,39 @@ const NeuralNetwork = () => {
       {nodes.map((node) => (
         <mesh key={node.id} position={node.position}>
           <sphereGeometry args={[0.08, 16, 16]} />
-          <meshBasicMaterial color="#00d4ff" />
+          <meshBasicMaterial color="#F58F7C" />
           {/* Subtle glow */}
-          <pointLight distance={3} intensity={0.5} color="#00d4ff" />
+          <pointLight distance={3} intensity={0.6} color="#F58F7C" />
         </mesh>
       ))}
 
       {/* Edges */}
       <lineSegments ref={linesRef} geometry={geometry}>
-        <lineBasicMaterial color="#7c3aed" transparent opacity={0.2} />
+        <lineBasicMaterial color="#F2C4CE" transparent opacity={0.25} />
       </lineSegments>
     </group>
   );
 };
 
-export const NeuralMesh = () => {
+export const NeuralMesh = ({
+  className = "",
+  showGradientFade = true,
+}: {
+  className?: string;
+  showGradientFade?: boolean;
+} = {}) => {
   return (
-    <div className="absolute inset-0 z-0 bg-obsidian-950 overflow-hidden">
-      {/* Fallback gradient behind canvas */}
-      <div className="absolute inset-0 bg-obsidian-gradient opacity-80" />
-      
+    <div className={`absolute inset-0 z-0 overflow-hidden pointer-events-none bg-obsidian-950 ${className}`}>
       <Canvas camera={{ position: [0, 0, 15], fov: 45 }}>
-        <fog attach="fog" args={['#080810', 10, 25]} />
-        <Stars radius={50} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />
+        <fog attach="fog" args={['#2C2B30', 12, 28]} />
+        <Stars radius={50} depth={50} count={1500} factor={3.5} saturation={0} fade speed={1.2} />
         <NeuralNetwork />
       </Canvas>
       
       {/* Foreground gradient fade */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-obsidian-950/50 to-obsidian-950 pointer-events-none" />
+      {showGradientFade && (
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-obsidian-950/40 to-obsidian-950 pointer-events-none" />
+      )}
     </div>
   );
 };

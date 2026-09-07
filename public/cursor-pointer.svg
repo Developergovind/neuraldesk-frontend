@@ -1,0 +1,48 @@
+<svg width="34" height="34" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="neonCoralGlowHover" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3.5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <linearGradient id="facetLeftHover" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="30%" stop-color="#F58F7C" />
+      <stop offset="100%" stop-color="#D94E38" />
+    </linearGradient>
+
+    <linearGradient id="facetRightHover" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="40%" stop-color="#FCE1E7" />
+      <stop offset="100%" stop-color="#F58F7C" />
+    </linearGradient>
+  </defs>
+
+  <!-- Intensified Hover Aura -->
+  <path
+    d="M 3 3 L 11 39 L 21 27 L 39 21 L 3 3 Z"
+    fill="#F58F7C"
+    opacity="0.85"
+    filter="url(#neonCoralGlowHover)"
+  />
+
+  <!-- Main Chevron Arrow Body -->
+  <path d="M 3 3 L 11 39 L 21 27 Z" fill="url(#facetLeftHover)" />
+  <path d="M 3 3 L 21 27 L 39 21 Z" fill="url(#facetRightHover)" />
+
+  <line x1="3" y1="3" x2="21" y2="27" stroke="#FFFFFF" stroke-width="1" opacity="0.9" />
+
+  <!-- Crisp White Outer Contour Border -->
+  <path
+    d="M 3 3 L 11 39 L 21 27 L 39 21 L 3 3 Z"
+    fill="none"
+    stroke="#FFFFFF"
+    stroke-width="2.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <circle cx="3" cy="3" r="1.5" fill="#FFFFFF" />
+</svg>

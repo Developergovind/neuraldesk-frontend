@@ -52,9 +52,9 @@ export default function LeadsTab({ botId }: { botId: string }) {
           onClick={exportCSV}
           className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium
                      transition-all hover:opacity-80"
-          style={{ background: 'rgba(0,212,255,0.1)',
-                   border: '1px solid rgba(0,212,255,0.25)',
-                   color: '#00d4ff' }}
+          style={{ background: 'rgba(245,143,124,0.15)',
+                   border: '1px solid rgba(245,143,124,0.3)',
+                   color: '#F58F7C' }}
         >
           <Download size={12} /> Export CSV
         </button>
@@ -106,9 +106,9 @@ export default function LeadsTab({ botId }: { botId: string }) {
               {/* Avatar */}
               <div className="w-10 h-10 rounded-full flex items-center justify-center
                               text-sm font-bold flex-shrink-0"
-                   style={{ background: 'rgba(0,212,255,0.12)',
-                            border: '1px solid rgba(0,212,255,0.2)',
-                            color: '#00d4ff' }}>
+                   style={{ background: 'rgba(245,143,124,0.18)',
+                            border: '1px solid rgba(245,143,124,0.3)',
+                            color: '#F58F7C' }}>
                 {lead.name?.slice(0,2).toUpperCase()}
               </div>
 
@@ -117,7 +117,7 @@ export default function LeadsTab({ botId }: { botId: string }) {
                 <p className="text-white font-medium text-sm">{lead.name}</p>
                 {lead.email ? (
                   <p className="text-xs flex items-center gap-1 mt-0.5"
-                     style={{ color: 'rgba(0,212,255,0.6)' }}>
+                     style={{ color: 'rgba(245,143,124,0.8)' }}>
                     <Mail size={10} /> {lead.email}
                   </p>
                 ) : (

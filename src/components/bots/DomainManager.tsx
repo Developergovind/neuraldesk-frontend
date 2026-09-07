@@ -76,11 +76,11 @@ export default function DomainManager({ botId }: { botId: string }) {
           <div
             className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
             style={{
-              background: 'rgba(0,212,255,0.1)',
-              border: '1px solid rgba(0,212,255,0.2)',
+              background: 'rgba(245,143,124,0.12)',
+              border: '1px solid rgba(245,143,124,0.25)',
             }}
           >
-            <Shield size={20} className="text-cyan-400" />
+            <Shield size={20} className="text-coral-400" />
           </div>
           <div>
             <h3 className="text-white font-heading font-bold text-lg">Domain Security</h3>
@@ -153,7 +153,7 @@ export default function DomainManager({ botId }: { botId: string }) {
           <div className="flex-1 relative group">
             <Globe
               size={14}
-              className="absolute left-4 top-1/2 -translate-y-1/2 transition-colors group-focus-within:text-cyan-400"
+              className="absolute left-4 top-1/2 -translate-y-1/2 transition-colors group-focus-within:text-coral-400"
               style={{ color: 'rgba(255,255,255,0.2)' }}
             />
             <input
@@ -176,9 +176,9 @@ export default function DomainManager({ botId }: { botId: string }) {
             disabled={!newDomain || isPending}
             className="px-6 py-3.5 rounded-2xl text-sm font-bold flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
             style={{
-              background: newDomain ? 'linear-gradient(135deg, #00d4ff, #7c3aed)' : 'rgba(255,255,255,0.05)',
+              background: newDomain ? 'linear-gradient(135deg, #F58F7C, #F2C4CE)' : 'rgba(255,255,255,0.05)',
               color: newDomain ? '#fff' : 'rgba(255,255,255,0.2)',
-              boxShadow: newDomain ? '0 10px 20px -5px rgba(0,212,255,0.3)' : 'none',
+              boxShadow: newDomain ? '0 10px 20px -5px rgba(245,143,124,0.35)' : 'none',
             }}
           >
             {isPending ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
@@ -239,7 +239,7 @@ export default function DomainManager({ botId }: { botId: string }) {
                   }}
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(0,212,255,0.5)]" />
+                    <div className="w-2 h-2 rounded-full bg-coral-400 shadow-[0_0_8px_rgba(245,143,124,0.6)]" />
                     <span className="text-white/70 text-sm font-mono tracking-tight">{domain}</span>
                   </div>
                   <button
@@ -259,8 +259,8 @@ export default function DomainManager({ botId }: { botId: string }) {
       <div className="mt-8 p-4 rounded-2xl border border-white/5" style={{ background: 'rgba(255,255,255,0.01)' }}>
         <h4 className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">Wildcard Support</h4>
         <p className="text-[11px] text-white/20 leading-relaxed">
-          Add <code className="text-cyan-400/50 bg-white/5 px-1.5 py-0.5 rounded">mysite.com</code> for exact domain
-          matching. Use <code className="text-cyan-400/50 bg-white/5 px-1.5 py-0.5 rounded">*.mysite.com</code> to
+          Add <code className="text-coral-400/70 bg-white/5 px-1.5 py-0.5 rounded">mysite.com</code> for exact domain
+          matching. Use <code className="text-coral-400/70 bg-white/5 px-1.5 py-0.5 rounded">*.mysite.com</code> to
           automatically authorize all subdomains (e.g. app.mysite.com, shop.mysite.com).
         </p>
       </div>

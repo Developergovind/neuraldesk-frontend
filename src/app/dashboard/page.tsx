@@ -69,9 +69,9 @@ function ConversationsTrendChart() {
             <button key={d} onClick={() => setDays(d)}
               className="px-3 py-1 rounded-lg text-xs font-medium transition-all"
               style={{
-                background: days === d ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.05)',
-                color: days === d ? '#00d4ff' : 'rgba(255,255,255,0.4)',
-                border: `1px solid ${days === d ? 'rgba(0,212,255,0.3)' : 'transparent'}`,
+                background: days === d ? 'rgba(245,143,124,0.18)' : 'rgba(255,255,255,0.05)',
+                color: days === d ? '#F58F7C' : 'rgba(255,255,255,0.4)',
+                border: `1px solid ${days === d ? 'rgba(245,143,124,0.35)' : 'transparent'}`,
               }}>
               {d}d
             </button>
@@ -93,12 +93,12 @@ function ConversationsTrendChart() {
             <AreaChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="sessionsGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#00d4ff" stopOpacity={0.25} />
-                  <stop offset="95%" stopColor="#00d4ff" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#F58F7C" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#F58F7C" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="visitorsGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.25} />
-                  <stop offset="95%" stopColor="#7c3aed" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#F2C4CE" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#F2C4CE" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -120,21 +120,21 @@ function ConversationsTrendChart() {
                 type="monotone"
                 dataKey="sessions"
                 name="Sessions"
-                stroke="#00d4ff"
+                stroke="#F58F7C"
                 strokeWidth={2}
                 fill="url(#sessionsGrad)"
-                dot={{ fill: '#00d4ff', r: 3, strokeWidth: 0 }}
-                activeDot={{ r: 5, fill: '#00d4ff' }}
+                dot={{ fill: '#F58F7C', r: 3, strokeWidth: 0 }}
+                activeDot={{ r: 5, fill: '#F58F7C' }}
               />
               <Area
                 type="monotone"
                 dataKey="visitors"
                 name="Unique Visitors"
-                stroke="#7c3aed"
+                stroke="#F2C4CE"
                 strokeWidth={2}
                 fill="url(#visitorsGrad)"
-                dot={{ fill: '#7c3aed', r: 3, strokeWidth: 0 }}
-                activeDot={{ r: 5, fill: '#7c3aed' }}
+                dot={{ fill: '#F2C4CE', r: 3, strokeWidth: 0 }}
+                activeDot={{ r: 5, fill: '#F2C4CE' }}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -159,14 +159,14 @@ export default function DashboardPage() {
       label: "Total Conversations", 
       value: dashboardStats?.totalSessions || 0, 
       icon: ChatBubbleLeftRightIcon, 
-      color: "text-cyan-400",
+      color: "text-coral-400",
       description: "Total sessions across all bots"
     },
     { 
       label: "Total Bots", 
       value: dashboardStats?.totalBots || 0, 
       icon: UsersIcon, 
-      color: "text-violet-400",
+      color: "text-blush-400",
       description: "Created by your account"
     },
     { 
@@ -258,7 +258,7 @@ export default function DashboardPage() {
                     <motion.div 
                       initial={{ width: 0 }}
                       animate={{ width: `${percentage}%` }}
-                      className="h-full bg-cyan-500 shadow-[0_0_8px_#00d4ff]" 
+                      className="h-full bg-coral-500 shadow-[0_0_8px_#F58F7C]" 
                     />
                   </div>
                 </div>
@@ -289,7 +289,7 @@ export default function DashboardPage() {
       <div>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-heading font-bold text-white">Your Bots</h2>
-          <Link href="/dashboard/bots" className="text-sm text-cyan-400 hover:text-cyan-300 font-medium">
+          <Link href="/dashboard/bots" className="text-sm text-coral-400 hover:text-coral-300 font-medium">
             View All Bots
           </Link>
         </div>
@@ -308,7 +308,7 @@ export default function DashboardPage() {
                     <div className="flex items-start justify-between mb-4">
                       <div 
                         className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg"
-                        style={{ backgroundColor: bot.accentColor }}
+                        style={{ background: bot.accentColor }}
                       >
                         {bot.name[0]}
                       </div>
@@ -316,7 +316,7 @@ export default function DashboardPage() {
                         {bot.isActive ? 'Active' : 'Inactive'}
                       </div>
                     </div>
-                    <h3 className="text-lg font-heading font-bold text-white mb-1 group-hover:text-cyan-400 transition-colors">
+                    <h3 className="text-lg font-heading font-bold text-white mb-1 group-hover:text-coral-400 transition-colors">
                       {bot.name}
                     </h3>
                     <p className="text-sm text-white/40 line-clamp-2 mb-6">

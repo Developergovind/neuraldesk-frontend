@@ -39,8 +39,8 @@ export default function ForgotPasswordPage() {
     return (
       <Card className="border-white/10 shadow-2xl bg-white/[0.03] backdrop-blur-xl">
         <CardHeader className="text-center pb-4">
-          <div className="w-16 h-16 rounded-full bg-cyan-500/10 flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="w-16 h-16 rounded-full bg-coral-500/10 flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-coral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
@@ -57,7 +57,7 @@ export default function ForgotPasswordPage() {
           </Link>
           <p className="mt-6 text-sm text-white/40">
             Didn't receive the email? Check your spam folder or{" "}
-            <button onClick={() => setIsSubmitted(false)} className="text-cyan-400 hover:underline">try again</button>
+            <button onClick={() => setIsSubmitted(false)} className="text-coral-400 hover:underline">try again</button>
           </p>
         </CardContent>
       </Card>
@@ -93,7 +93,7 @@ export default function ForgotPasswordPage() {
 
         <div className="mt-6 text-center text-sm text-white/50">
           Remember your password?{" "}
-          <Link href="/auth/login" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+          <Link href="/auth/login" className="text-coral-400 hover:text-coral-300 font-medium transition-colors">
             Sign in
           </Link>
         </div>

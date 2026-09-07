@@ -25,10 +25,10 @@ export default function DashboardLayout({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-obsidian-950">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <div className="relative w-16 h-16">
-          <div className="absolute inset-0 rounded-full border-t-2 border-cyan-400 animate-spin"></div>
-          <div className="absolute inset-2 rounded-full border-r-2 border-violet-500 animate-spin-slow"></div>
+          <div className="absolute inset-0 rounded-full border-t-2 border-coral-400 animate-spin"></div>
+          <div className="absolute inset-2 rounded-full border-r-2 border-blush-400 animate-spin-slow"></div>
         </div>
       </div>
     );
@@ -37,8 +37,8 @@ export default function DashboardLayout({
   if (!authed || error) return null;
 
   return (
-    <div className="flex min-h-screen bg-obsidian-950 relative overflow-hidden">
-      <div className="fixed inset-0 z-0 opacity-40">
+    <div className="flex min-h-screen bg-[#141316]/60 relative overflow-hidden">
+      <div className="fixed inset-0 z-0 opacity-100 pointer-events-none">
         <TorusKnotBackground />
       </div>
       

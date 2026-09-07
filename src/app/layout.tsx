@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { CustomCursor } from "@/components/layout/CustomCursor";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "./providers";
 
@@ -22,23 +21,22 @@ export default function RootLayout({
       <head>
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
       </head>
-      <body className={`${inter.className} font-body bg-obsidian-950 text-white min-h-screen antialiased selection:bg-cyan-500/30`}>
+      <body className={`${inter.className} font-body bg-obsidian-950 text-white min-h-screen antialiased selection:bg-coral-400/30 selection:text-white relative`}>
         <div className="noise-overlay" />
         <Providers>
           {children}
         </Providers>
-        <CustomCursor />
         <Toaster 
           position="bottom-right"
           toastOptions={{
             style: {
-              background: 'rgba(22, 22, 46, 0.9)',
-              color: '#fff',
+              background: 'rgba(44, 43, 48, 0.95)',
+              color: '#D6D6D6',
               backdropFilter: 'blur(12px)',
-              border: '1px solid rgba(255,255,255,0.1)',
+              border: '1px solid rgba(214, 214, 214, 0.15)',
             },
             success: {
-              iconTheme: { primary: '#00d4ff', secondary: '#fff' },
+              iconTheme: { primary: '#F58F7C', secondary: '#2C2B30' },
             },
           }}
         />

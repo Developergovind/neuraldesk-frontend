@@ -22,7 +22,7 @@ export function MockWebsite({
   autoOpen = false,
 }: MockWebsiteProps) {
   return (
-    <div className="rounded-3xl border border-white/10 bg-[#0d0d1a] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:-translate-y-1">
+    <div className="rounded-3xl border border-white/10 bg-[#232226] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:-translate-y-1">
       <div className="h-11 border-b border-white/10 bg-white/5 px-4 flex items-center gap-3">
         <div className="flex items-center gap-1.5">
           <span className="h-3 w-3 rounded-full bg-red-400/90" />
@@ -34,7 +34,7 @@ export function MockWebsite({
         </div>
       </div>
 
-      <div className="relative h-[480px] max-md:h-[350px] bg-[#080810] p-5">
+      <div className="relative h-[480px] max-md:h-[350px] bg-[#1b1a1e] p-5">
         <div className="h-full rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-5">
           <div className="flex items-center justify-between">
             <p className="text-white font-semibold">{companyName}</p>
@@ -75,7 +75,7 @@ export function MockWebsite({
           autoOpen={autoOpen}
         />
       </div>
-      <p className="px-5 py-3 text-xs text-cyan-300/90 border-t border-white/10">
+      <p className="px-5 py-3 text-xs text-coral-400 font-medium border-t border-white/10">
         This is exactly how your customers see the bot.
       </p>
     </div>

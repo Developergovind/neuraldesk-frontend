@@ -67,8 +67,8 @@ function UsageOverTimeChart() {
               <button key={t} onClick={() => setChartType(t)}
                 className="px-4 py-1.5 text-xs font-bold transition-all capitalize"
                 style={{
-                  background: chartType === t ? 'rgba(0,212,255,0.15)' : 'transparent',
-                  color: chartType === t ? '#00d4ff' : 'rgba(255,255,255,0.4)',
+                  background: chartType === t ? 'rgba(245,143,124,0.18)' : 'transparent',
+                  color: chartType === t ? '#F58F7C' : 'rgba(255,255,255,0.4)',
                 }}>
                 {t}
               </button>
@@ -80,9 +80,9 @@ function UsageOverTimeChart() {
               <button key={d} onClick={() => setDays(d)}
                 className="px-3 py-1 rounded-lg text-xs font-medium transition-all"
                 style={{
-                  background: days === d ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.05)',
-                  color: days === d ? '#00d4ff' : 'rgba(255,255,255,0.4)',
-                  border: `1px solid ${days === d ? 'rgba(0,212,255,0.3)' : 'transparent'}`,
+                  background: days === d ? 'rgba(245,143,124,0.18)' : 'rgba(255,255,255,0.05)',
+                  color: days === d ? '#F58F7C' : 'rgba(255,255,255,0.4)',
+                  border: `1px solid ${days === d ? 'rgba(245,143,124,0.35)' : 'transparent'}`,
                 }}>
                 {d}d
               </button>
@@ -108,12 +108,12 @@ function UsageOverTimeChart() {
               <AreaChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="userGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#00d4ff" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#00d4ff" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#F58F7C" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#F58F7C" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="botGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#7c3aed" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#F2C4CE" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#F2C4CE" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -126,12 +126,12 @@ function UsageOverTimeChart() {
                 <Tooltip content={<CustomTooltip />} />
                 <Legend wrapperStyle={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', paddingTop: '20px' }} />
                 <Area type="monotone" dataKey="userMessages" name="User Messages"
-                  stroke="#00d4ff" strokeWidth={2} fill="url(#userGrad)"
-                  dot={{ fill: '#00d4ff', r: 3, strokeWidth: 0 }}
+                  stroke="#F58F7C" strokeWidth={2} fill="url(#userGrad)"
+                  dot={{ fill: '#F58F7C', r: 3, strokeWidth: 0 }}
                   activeDot={{ r: 5 }} />
                 <Area type="monotone" dataKey="botMessages" name="Bot Replies"
-                  stroke="#7c3aed" strokeWidth={2} fill="url(#botGrad)"
-                  dot={{ fill: '#7c3aed', r: 3, strokeWidth: 0 }}
+                  stroke="#F2C4CE" strokeWidth={2} fill="url(#botGrad)"
+                  dot={{ fill: '#F2C4CE', r: 3, strokeWidth: 0 }}
                   activeDot={{ r: 5 }} />
               </AreaChart>
             ) : (
@@ -146,9 +146,9 @@ function UsageOverTimeChart() {
                 <Tooltip content={<CustomTooltip />} />
                 <Legend wrapperStyle={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', paddingTop: '20px' }} />
                 <Bar dataKey="userMessages" name="User Messages"
-                  fill="#00d4ff" fillOpacity={0.8} radius={[4,4,0,0]} />
+                  fill="#F58F7C" fillOpacity={0.85} radius={[4,4,0,0]} />
                 <Bar dataKey="botMessages" name="Bot Replies"
-                  fill="#7c3aed" fillOpacity={0.8} radius={[4,4,0,0]} />
+                  fill="#F2C4CE" fillOpacity={0.85} radius={[4,4,0,0]} />
               </BarChart>
             )}
           </ResponsiveContainer>
@@ -171,14 +171,14 @@ export default function AnalyticsPage() {
       value: dashboardStats?.totalSessions?.toLocaleString() || "0", 
       trend: "+12.5%", 
       icon: ChatBubbleLeftEllipsisIcon, 
-      color: "text-cyan-400" 
+      color: "text-coral-400" 
     },
     { 
       label: "Total Bots", 
       value: dashboardStats?.totalBots?.toLocaleString() || "0", 
       trend: "+5.2%", 
       icon: UserGroupIcon, 
-      color: "text-violet-400" 
+      color: "text-blush-400" 
     },
     { 
       label: "Avg. Response Time", 
@@ -225,7 +225,7 @@ export default function AnalyticsPage() {
               <div className={`p-2 rounded-lg bg-white/5 ${m.color} group-hover:scale-110 transition-transform`}>
                 <m.icon className="w-5 h-5" />
               </div>
-              <span className={`text-xs font-bold ${m.trend.startsWith('+') ? 'text-emerald-400' : 'text-cyan-400'}`}>
+              <span className={`text-xs font-bold ${m.trend.startsWith('+') ? 'text-emerald-400' : 'text-coral-400'}`}>
                 {m.trend}
               </span>
             </div>
@@ -257,7 +257,7 @@ export default function AnalyticsPage() {
                     <motion.div 
                       initial={{ width: 0 }}
                       animate={{ width: `${percentage || 0}%` }}
-                      className="h-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.5)]"
+                      className="h-full bg-coral-500 shadow-[0_0_8px_rgba(245,143,124,0.5)]"
                     />
                   </div>
                 </div>

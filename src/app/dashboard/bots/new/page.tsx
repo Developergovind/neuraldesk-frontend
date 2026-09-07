@@ -5,18 +5,9 @@ import { useRouter } from "next/navigation";
 import { useCreateBot } from "@/lib/hooks/useBots";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { motion } from "framer-motion";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-
-const COLORS = [
-  "#00d4ff", // Cyan
-  "#a855f7", // Violet
-  "#ec4899", // Pink
-  "#f97316", // Orange
-  "#10b981", // Emerald
-  "#facc15", // Yellow
-];
+import { BotColorPicker, SOLID_PALETTE } from "@/components/bots/BotColorPicker";
 
 export default function NewBotPage() {
   const router = useRouter();
@@ -25,7 +16,7 @@ export default function NewBotPage() {
     name: "",
     greeting: "Hello! How can I help you today?",
     persona: "You are a helpful AI assistant. Answer questions based on the provided context.",
-    accentColor: COLORS[0],
+    accentColor: SOLID_PALETTE[0].value,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,21 +88,11 @@ export default function NewBotPage() {
 
           <Card className="p-8 bg-white/[0.02] border-white/5">
             <h3 className="text-lg font-heading font-bold text-white mb-6">Visual Customization</h3>
-            
-            <div>
-              <label className="block text-sm font-medium text-white/70 mb-4">Accent Color</label>
-              <div className="flex flex-wrap gap-4">
-                {COLORS.map((color) => (
-                  <button
-                    key={color}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, accentColor: color })}
-                    className={`w-10 h-10 rounded-full border-2 transition-all ${formData.accentColor === color ? 'border-white scale-110 shadow-lg' : 'border-transparent opacity-50 hover:opacity-100'}`}
-                    style={{ backgroundColor: color }}
-                  />
-                ))}
-              </div>
-            </div>
+            <BotColorPicker
+              value={formData.accentColor}
+              onChange={(color) => setFormData({ ...formData, accentColor: color })}
+              label="Accent Color"
+            />
           </Card>
 
           <div className="flex justify-end gap-4">
@@ -132,18 +113,18 @@ export default function NewBotPage() {
             <div className="rounded-3xl border border-white/10 bg-obsidian-900/50 overflow-hidden shadow-2xl">
               {/* Widget Header Preview */}
               <div 
-                className="p-4 flex items-center justify-between"
-                style={{ backgroundColor: formData.accentColor }}
+                className="p-4 flex items-center justify-between transition-all"
+                style={{ background: formData.accentColor }}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold text-white">
+                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold text-white shadow-inner">
                     {formData.name[0] || "B"}
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-white leading-none mb-1">{formData.name || "Assistant"}</p>
+                    <p className="text-xs font-bold text-white leading-none mb-1 drop-shadow-sm">{formData.name || "Assistant"}</p>
                     <div className="flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                      <span className="text-[10px] text-white/70">Online</span>
+                      <span className="text-[10px] text-white/90 drop-shadow-sm">Online</span>
                     </div>
                   </div>
                 </div>
@@ -160,7 +141,7 @@ export default function NewBotPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-2 flex-row-reverse">
-                  <div className="p-3 rounded-2xl rounded-tr-none text-xs text-white max-w-[80%] shadow-lg" style={{ backgroundColor: formData.accentColor }}>
+                  <div className="p-3 rounded-2xl rounded-tr-none text-xs text-white max-w-[80%] shadow-lg" style={{ background: formData.accentColor }}>
                     How do I set up a new bot?
                   </div>
                 </div>

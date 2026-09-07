@@ -19,6 +19,7 @@ import {
   ArrowLeftOnRectangleIcon,
   InboxIcon
 } from '@heroicons/react/24/outline';
+import { LogoIcon } from "@/components/ui/Logo";
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: Squares2X2Icon },
@@ -45,15 +46,27 @@ export const Sidebar = () => {
     <motion.aside
       initial={false}
       animate={{ width: sidebarOpen ? 280 : 80 }}
-      className="h-screen sticky top-0 flex flex-col border-r border-white/5 bg-obsidian-950/40 backdrop-blur-2xl z-40 overflow-hidden"
+      className="h-screen sticky top-0 flex flex-col border-r border-white/5 bg-obsidian-950/40 backdrop-blur-2xl z-40 relative select-none"
     >
+      {/* Single, Perfectly Positioned Edge Toggle Button */}
+      <button 
+        onClick={toggleSidebar} 
+        title={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+        aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+        className="absolute -right-3.5 top-7 w-7 h-7 rounded-full bg-[#232227] border border-white/20 shadow-[0_2px_12px_rgba(0,0,0,0.7)] flex items-center justify-center text-white/70 hover:text-coral-400 hover:border-coral-400/60 hover:scale-110 active:scale-95 transition-all duration-200 z-50 group cursor-pointer"
+      >
+        {sidebarOpen ? (
+          <ChevronLeftIcon className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" />
+        ) : (
+          <ChevronRightIcon className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+        )}
+      </button>
+
       {/* Logo Area */}
-      <div className="h-20 flex items-center justify-between px-6 border-b border-white/5 shrink-0">
-        <div className={cn("flex items-center gap-3", !sidebarOpen && "justify-center w-full")}>
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(0,212,255,0.4)]">
-            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
+      <div className="h-20 flex items-center px-5 border-b border-white/5 shrink-0">
+        <Link href="/dashboard" className={cn("flex items-center gap-3 min-w-0", !sidebarOpen && "justify-center w-full")}>
+          <div className="relative flex items-center justify-center p-1.5 rounded-xl bg-obsidian-900/80 border border-white/10 shadow-[0_0_15px_rgba(245,143,124,0.25)] shrink-0">
+            <LogoIcon size={24} animated />
           </div>
           <AnimatePresence>
             {sidebarOpen && (
@@ -67,19 +80,11 @@ export const Sidebar = () => {
               </motion.span>
             )}
           </AnimatePresence>
-        </div>
+        </Link>
       </div>
 
-      {/* Collapse Toggle */}
-      <button 
-        onClick={toggleSidebar} 
-        className="absolute -right-3 top-24 w-6 h-6 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-colors z-50 backdrop-blur-md"
-      >
-        {sidebarOpen ? <ChevronLeftIcon className="w-4 h-4" /> : <ChevronRightIcon className="w-4 h-4" />}
-      </button>
-
       {/* Navigation */}
-      <nav className="flex-1 px-4 py-8 space-y-2">
+      <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto overflow-x-hidden custom-scrollbar">
         {navItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
           
@@ -95,7 +100,7 @@ export const Sidebar = () => {
               )}
               <div className={cn(
                 "relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all",
-                isActive ? "text-cyan-400" : "text-white/40 hover:text-white hover:bg-white/5",
+                isActive ? "text-coral-400 font-semibold" : "text-white/40 hover:text-white hover:bg-white/5",
                 !sidebarOpen && "justify-center px-0"
               )}>
                 <item.icon className="w-5 h-5 shrink-0" />
@@ -111,7 +116,7 @@ export const Sidebar = () => {
                   )}
                 </AnimatePresence>
                 {isActive && sidebarOpen && !(item.name === 'Live Inbox' && activeCount > 0) && (
-                  <div className="absolute right-4 w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00d4ff]" />
+                  <div className="absolute right-4 w-1.5 h-1.5 rounded-full bg-coral-400 shadow-[0_0_8px_#F58F7C]" />
                 )}
                 {item.name === 'Live Inbox' && activeCount > 0 && (
                   <span className={cn(
@@ -133,7 +138,7 @@ export const Sidebar = () => {
           "flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5",
           !sidebarOpen && "justify-center p-2"
         )}>
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500/20 to-cyan-500/20 text-white flex items-center justify-center shrink-0 border border-white/10 shadow-inner">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blush-500/20 to-coral-500/20 text-white flex items-center justify-center shrink-0 border border-white/10 shadow-inner">
             <span className="font-bold text-sm uppercase">
               {tenant?.name ? (tenant.name.split(" ").length >= 2 ? tenant.name.split(" ")[0][0] + tenant.name.split(" ")[1][0] : tenant.name.substring(0, 2)) : 'U'}
             </span>
@@ -141,7 +146,7 @@ export const Sidebar = () => {
           {sidebarOpen && (
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-white truncate leading-tight">{tenant?.company || 'Company'}</p>
-              <p className="text-[10px] text-cyan-400/60 truncate uppercase tracking-widest font-bold mt-1">{tenant?.plan || 'Free'} Plan</p>
+              <p className="text-[10px] text-coral-400/80 truncate uppercase tracking-widest font-bold mt-1">{tenant?.plan || 'Free'} Plan</p>
             </div>
           )}
           {sidebarOpen && (

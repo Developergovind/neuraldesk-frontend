@@ -20,7 +20,7 @@ export default function BotsPage() {
           <p className="text-white/40 mt-2">Manage and deploy your custom-trained neural models.</p>
         </div>
         <Link href="/dashboard/bots/new">
-          <Button className="gap-2 px-6 shadow-[0_0_20px_rgba(0,212,255,0.3)]">
+          <Button className="gap-2 px-6 shadow-[0_0_20px_rgba(245,143,124,0.35)]">
             <PlusIcon className="w-5 h-5" />
             Create New Bot
           </Button>
@@ -55,15 +55,15 @@ export default function BotsPage() {
               transition={{ delay: index * 0.1 }}
             >
               <Link href={`/dashboard/bots/${bot.id}`}>
-                <Card hoverEffect className="group relative p-8 hover:border-cyan-500/50 transition-all duration-500 hover:shadow-[0_0_30px_rgba(0,212,255,0.1)] overflow-hidden h-full">
+                <Card hoverEffect className="group relative p-8 hover:border-coral-500/50 transition-all duration-500 hover:shadow-[0_0_30px_rgba(245,143,124,0.15)] overflow-hidden h-full">
                   {/* Background Glow */}
-                  <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-cyan-500/10 blur-[60px] group-hover:bg-cyan-500/20 transition-colors duration-500" />
+                  <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-coral-500/10 blur-[60px] group-hover:bg-coral-500/20 transition-colors duration-500" />
                   
                   <div className="relative flex flex-col h-full">
                     <div className="flex items-center justify-between mb-6">
                       <div 
                         className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg transition-transform group-hover:scale-110"
-                        style={{ backgroundColor: bot.accentColor }}
+                        style={{ background: bot.accentColor }}
                       >
                         {bot.name[0]}
                       </div>
@@ -76,7 +76,7 @@ export default function BotsPage() {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-heading font-bold text-xl text-white truncate mb-2 group-hover:text-cyan-400 transition-colors">
+                      <h3 className="font-heading font-bold text-xl text-white truncate mb-2 group-hover:text-coral-400 transition-colors">
                         {bot.name}
                       </h3>
                       <p className="text-sm text-white/40 line-clamp-2 leading-relaxed">
@@ -89,7 +89,7 @@ export default function BotsPage() {
                         <span className="text-[10px] text-white/20 uppercase tracking-widest font-bold">Created</span>
                         <span className="text-xs text-white/60 font-medium">{formatDate(bot.createdAt)}</span>
                       </div>
-                      <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/20 group-hover:text-white group-hover:bg-cyan-500/20 transition-all">
+                      <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/20 group-hover:text-white group-hover:bg-coral-500/20 transition-all">
                         <ArrowRightIcon className="w-5 h-5 transition-transform group-hover:translate-x-0.5" />
                       </div>
                     </div>

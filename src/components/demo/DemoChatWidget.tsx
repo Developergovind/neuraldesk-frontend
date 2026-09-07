@@ -148,10 +148,10 @@ export function DemoChatWidget({
             initial={{ opacity: 0, y: 16, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.96 }}
-            className="absolute bottom-16 right-0 w-[320px] md:w-[400px] h-[500px] max-w-[calc(100vw-2rem)] rounded-2xl bg-[#080810]/95 border border-white/10 shadow-2xl backdrop-blur-xl overflow-hidden flex flex-col max-md:fixed max-md:inset-3 max-md:w-auto max-md:h-auto"
+            className="absolute bottom-16 right-0 w-[320px] md:w-[400px] h-[500px] max-w-[calc(100vw-2rem)] rounded-2xl bg-[#1b1a1e]/95 border border-white/10 shadow-2xl backdrop-blur-xl overflow-hidden flex flex-col max-md:fixed max-md:inset-3 max-md:w-auto max-md:h-auto"
           >
             <div className="px-4 py-3 border-b border-white/10 bg-white/5 flex items-center gap-3">
-              <div className="h-9 w-9 rounded-full text-white font-bold flex items-center justify-center" style={{ backgroundColor: accentColor }}>
+              <div className="h-9 w-9 rounded-full text-white font-bold flex items-center justify-center shadow-md" style={{ background: accentColor }}>
                 {initials}
               </div>
               <div>
@@ -169,7 +169,7 @@ export function DemoChatWidget({
                   <div
                     className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
                       msg.role === "user"
-                        ? "bg-cyan-500/30 text-white border border-cyan-400/40"
+                        ? "bg-coral-500/30 text-white border border-coral-400/40"
                         : "bg-white/6 text-white/90 border border-white/10"
                     }`}
                   >
@@ -185,7 +185,7 @@ export function DemoChatWidget({
                     <button
                       key={question}
                       onClick={() => sendMessage(question)}
-                      className="text-left text-xs text-white/80 bg-white/5 border border-white/10 rounded-xl px-3 py-2 hover:border-cyan-400/50 transition-colors"
+                      className="text-left text-xs text-white/80 bg-white/5 border border-white/10 rounded-xl px-3 py-2 hover:border-coral-400/50 transition-colors"
                     >
                       {question}
                     </button>
@@ -199,7 +199,7 @@ export function DemoChatWidget({
                     {[0, 1, 2].map((dot) => (
                       <span
                         key={dot}
-                        className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-bounce"
+                        className="h-1.5 w-1.5 rounded-full bg-coral-400 animate-bounce"
                         style={{ animationDelay: `${dot * 0.15}s` }}
                       />
                     ))}
@@ -214,12 +214,12 @@ export function DemoChatWidget({
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 placeholder="Type a message..."
-                className="flex-1 bg-white/10 text-white text-sm rounded-xl px-3 py-2 outline-none border border-white/10 focus:border-cyan-400/50 placeholder-white/30"
+                className="flex-1 bg-white/10 text-white text-sm rounded-xl px-3 py-2 outline-none border border-white/10 focus:border-coral-400/50 placeholder-white/30"
               />
               <button
                 onClick={() => sendMessage()}
-                className="h-9 w-9 rounded-lg flex items-center justify-center text-white disabled:opacity-40"
-                style={{ backgroundColor: accentColor }}
+                className="h-9 w-9 rounded-lg flex items-center justify-center text-white disabled:opacity-40 shadow-md"
+                style={{ background: accentColor }}
                 disabled={!inputText.trim()}
               >
                 <Send className="w-4 h-4" />

@@ -2,22 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 function resolvePublicApiBase() {
-  let rawBase = process.env.NEXT_PUBLIC_API_URL;
+  let rawBase = process.env.NEXT_PUBLIC_API_URL || "https://neuraldesk-api.duckdns.org/api";
   if (rawBase && rawBase.includes('neuraldeskapp.duckdns.org')) {
     rawBase = rawBase.replace('neuraldeskapp.duckdns.org', 'neuraldesk-api.duckdns.org');
   }
-  if (typeof window !== 'undefined') {
-    const isCurrentSiteLocalhost = 
-      window.location.hostname === 'localhost' || 
-      window.location.hostname === '127.0.0.1';
-    if (!isCurrentSiteLocalhost) {
-      if (!rawBase || rawBase.includes('localhost') || rawBase.includes('127.0.0.1')) {
-        rawBase = "https://neuraldesk-api.duckdns.org/api";
-      }
-    }
-  }
-  const base = rawBase || "https://neuraldesk-api.duckdns.org/api";
-  const normalized = base.replace(/\/+$/, "");
+  const normalized = rawBase.replace(/\/+$/, "");
   return normalized.endsWith("/api") ? normalized : `${normalized}/api`;
 }
 
