@@ -13,6 +13,13 @@ export const clearTokens = () => {
   Cookies.remove("refreshToken");
   Cookies.remove("tenant");
   localStorage.removeItem("tenant");
+  if (typeof window !== "undefined") {
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith("neuraldesk_bot_chats_") || key.startsWith("neuraldesk_active_chat_")) {
+        localStorage.removeItem(key);
+      }
+    });
+  }
 };
 
 export const isAuthenticated = () => !!getAccessToken();

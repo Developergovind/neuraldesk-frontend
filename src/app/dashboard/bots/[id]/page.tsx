@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { useParams } from "next/navigation";
-import { useBot, useUpdateBot } from "@/lib/hooks/useBots";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { useBot, useUpdateBot, useDeleteBot } from "@/lib/hooks/useBots";
 import { useKnowledge, useUploadFile, useIngestUrl, useIngestText, useDeleteSource } from "@/lib/hooks/useKnowledge";
 import { WS_BASE } from "@/lib/api";
 import { Card } from "@/components/ui/Card";
@@ -23,12 +24,15 @@ import {
   ChartPieIcon,
   DocumentDuplicateIcon,
   CheckIcon,
-  ChatBubbleLeftRightIcon
+  ChatBubbleLeftRightIcon,
+  ArrowLeftIcon,
+  ExclamationTriangleIcon
 } from "@heroicons/react/24/outline";
 import { LiveChat } from "@/components/chat/LiveChat";
 import toast from "react-hot-toast";
 import ConversationsTab from '@/components/bots/ConversationsTab';
 import LeadsTab from '@/components/bots/LeadsTab';
+import DomainManager from '@/components/bots/DomainManager';
 import { UsersIcon } from "@heroicons/react/24/outline";
 import { BotColorPicker } from "@/components/bots/BotColorPicker";
 
@@ -62,6 +66,17 @@ export default function BotDetailsPage() {
 
   return (
     <div className="space-y-6 sm:space-y-8">
+      {/* Back Navigation Bar */}
+      <div className="flex items-center justify-between">
+        <Link 
+          href="/dashboard/bots"
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/60 hover:text-white text-xs sm:text-sm font-medium transition-all group active:scale-95 shadow-sm"
+        >
+          <ArrowLeftIcon className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+          <span>Back to My Assistants</span>
+        </Link>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
         <div className="flex items-center gap-4 sm:gap-5">
@@ -131,7 +146,7 @@ export default function BotDetailsPage() {
           {activeTab === "leads" && <LeadsTab botId={id} />}
           {activeTab === "knowledge" && <KnowledgeTab botId={id} sources={sources || []} isLoading={sourcesLoading} />}
           {activeTab === "demo" && (
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-4xl mx-auto">
               <LiveChat 
                 botId={id} 
                 botName={bot.name} 
@@ -467,13 +482,25 @@ function EmbedTab({ bot }: { bot: any }) {
 }
 
 function SettingsTab({ bot }: { bot: any }) {
+  const router = useRouter();
   const updateBot = useUpdateBot(bot.id);
+  const deleteBot = useDeleteBot();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [formData, setFormData] = useState({
     name: bot.name,
     greeting: bot.greeting,
     persona: bot.persona,
     accentColor: bot.accentColor,
   });
+
+  const handleDeleteBot = () => {
+    deleteBot.mutate(bot.id, {
+      onSuccess: () => {
+        setShowDeleteModal(false);
+        router.push("/dashboard/bots");
+      },
+    });
+  };
 
   return (
     <div className="max-w-3xl space-y-8 pb-20">
@@ -526,6 +553,78 @@ function SettingsTab({ bot }: { bot: any }) {
           </Button>
         </div>
       </Card>
+
+      {/* Domain Security */}
+      <DomainManager botId={bot.id} />
+
+      {/* Danger Zone */}
+      <Card className="p-6 sm:p-8 bg-red-500/[0.03] border-red-500/20">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center shrink-0">
+              <ExclamationTriangleIcon className="w-5 sm:w-6 h-5 sm:h-6" />
+            </div>
+            <div>
+              <h4 className="text-white font-heading font-bold text-base">Delete Assistant</h4>
+              <p className="text-white/40 text-xs mt-1 leading-relaxed">
+                Permanently delete <span className="text-white/70 font-semibold">{bot.name}</span> and all of its training data, leads, and conversation history. This action cannot be undone.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="px-4 py-2.5 rounded-xl text-xs font-bold text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 transition-all shrink-0 active:scale-95 text-center"
+          >
+            Delete Bot
+          </button>
+        </div>
+      </Card>
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {showDeleteModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowDeleteModal(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="relative w-full max-w-md p-6 rounded-3xl bg-[#0f0e13] border border-white/10 shadow-2xl z-10 space-y-5"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center mx-auto">
+                <TrashIcon className="w-6 h-6" />
+              </div>
+              <div className="text-center">
+                <h3 className="text-lg font-heading font-bold text-white">Delete Assistant?</h3>
+                <p className="text-sm text-white/50 mt-1">
+                  Are you sure you want to delete <span className="text-white font-medium">"{bot.name}"</span>? All associated messages and knowledge will be lost.
+                </p>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-xs font-bold transition-all border border-white/10"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteBot}
+                  disabled={deleteBot.isPending}
+                  className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition-all shadow-lg shadow-red-500/20 disabled:opacity-50"
+                >
+                  {deleteBot.isPending ? "Deleting..." : "Yes, Delete Bot"}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

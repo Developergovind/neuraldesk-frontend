@@ -2,10 +2,10 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, MessageSquare, Clock, User, Bot, Search, 
-         ChevronRight, Zap, TrendingUp, Calendar, Send, Loader2 } from 'lucide-react'
+         ChevronRight, Zap, TrendingUp, Calendar, Send, Loader2, Trash2, AlertTriangle, X } from 'lucide-react'
 import { formatDistanceToNow, format } from 'date-fns'
 import { api } from '@/lib/api'
-import { useConversations, useConversationThread, useConversationStats } from '@/lib/hooks/useConversations'
+import { useConversations, useConversationThread, useConversationStats, useDeleteConversation, useClearAllConversations } from '@/lib/hooks/useConversations'
 import { useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 
@@ -51,9 +51,9 @@ function StatsCards({ botId }: { botId: string }) {
 
 // ─── Session Card ────────────────────────────────────────────
 function SessionCard({
-  session, isSelected, onClick
+  session, isSelected, onClick, onDelete
 }: {
-  session: any, isSelected: boolean, onClick: () => void
+  session: any, isSelected: boolean, onClick: () => void, onDelete: (e: React.MouseEvent) => void
 }) {
   const initials = session.visitorName ? session.visitorName.slice(0, 2).toUpperCase() : '??'
   
@@ -61,7 +61,7 @@ function SessionCard({
     <motion.div
       layout
       onClick={onClick}
-      className="p-4 rounded-xl border cursor-pointer transition-all mb-2"
+      className="group relative p-4 rounded-xl border cursor-pointer transition-all mb-2"
       style={{
         background: isSelected
           ? 'rgba(245, 143, 124, 0.1)'
@@ -89,9 +89,22 @@ function SessionCard({
             <p className="text-sm font-semibold text-white truncate">
               {session.visitorName || 'Anonymous Visitor'}
             </p>
-            <span className="text-[10px] text-white/30 whitespace-nowrap">
-              {formatDistanceToNow(new Date(session.startedAt), { addSuffix: false })}
-            </span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-[10px] text-white/30 whitespace-nowrap">
+                {formatDistanceToNow(new Date(session.startedAt), { addSuffix: false })}
+              </span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onDelete(e)
+                }}
+                className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-white/20 hover:text-red-400 hover:bg-red-500/10 transition-all ml-0.5"
+                title="Delete this conversation"
+                aria-label="Delete conversation"
+              >
+                <Trash2 size={12} />
+              </button>
+            </div>
           </div>
           
           {session.visitorEmail && (
@@ -184,12 +197,18 @@ function MessageBubble({ message }: { message: any }) {
 
 // ─── Main Component ──────────────────────────────────────────
 export default function ConversationsTab({ botId }: ConversationsTabProps) {
-  const queryClient = useQueryClient()
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [page, setPage] = useState(1)
   const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'closed'>('all')
+
+  // Deletion modals state
+  const [sessionToDelete, setSessionToDelete] = useState<{ id: string; name: string } | null>(null)
+  const [showClearAllModal, setShowClearAllModal] = useState(false)
+
+  const deleteConversation = useDeleteConversation(botId)
+  const clearAllConversations = useClearAllConversations(botId)
 
   // Debounce search
   useEffect(() => {
@@ -206,26 +225,66 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
   // Selected session messages
   const { data: threadData } = useConversationThread(botId, selectedSessionId)
 
+  const handleDeleteConfirmed = () => {
+    if (!sessionToDelete) return
+    const id = sessionToDelete.id
+    deleteConversation.mutate(id, {
+      onSuccess: () => {
+        if (selectedSessionId === id) {
+          setSelectedSessionId(null)
+        }
+        setSessionToDelete(null)
+      },
+    })
+  }
+
+  const handleClearAllConfirmed = () => {
+    clearAllConversations.mutate(undefined, {
+      onSuccess: () => {
+        setSelectedSessionId(null)
+        setShowClearAllModal(false)
+      },
+    })
+  }
+
+  const filteredList = sessionsData?.data?.filter((s: any) => 
+    activeFilter === 'all' ? true : s.status === activeFilter
+  ) || []
+
   return (
     <div>
       {/* Stats */}
       <StatsCards botId={botId} />
 
-      <div className="flex items-center gap-2 mb-4">
-        {['all', 'active', 'closed'].map((f) => (
+      {/* Filter and Clear All Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <div className="flex items-center gap-2">
+          {['all', 'active', 'closed'].map((f) => (
+            <button
+              key={f}
+              onClick={() => setActiveFilter(f as any)}
+              className="px-4 py-1.5 rounded-lg text-xs font-medium transition-all capitalize"
+              style={{
+                background: activeFilter === f ? 'rgba(255,255,255,0.1)' : 'transparent',
+                color: activeFilter === f ? '#fff' : 'rgba(255,255,255,0.4)',
+                border: activeFilter === f ? '1px solid rgba(255,255,255,0.2)' : '1px solid transparent',
+              }}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+
+        {sessionsData?.data && sessionsData.data.length > 0 && (
           <button
-            key={f}
-            onClick={() => setActiveFilter(f as any)}
-            className="px-4 py-1.5 rounded-lg text-xs font-medium transition-all capitalize"
-            style={{
-              background: activeFilter === f ? 'rgba(255,255,255,0.1)' : 'transparent',
-              color: activeFilter === f ? '#fff' : 'rgba(255,255,255,0.4)',
-              border: activeFilter === f ? '1px solid rgba(255,255,255,0.2)' : '1px solid transparent',
-            }}
+            onClick={() => setShowClearAllModal(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white/40 hover:text-red-400 hover:bg-red-500/10 border border-white/5 hover:border-red-500/20 transition-all self-start sm:self-auto"
+            title="Clear all conversations for this bot"
           >
-            {f}
+            <Trash2 size={12} />
+            <span>Clear History</span>
           </button>
-        ))}
+        )}
       </div>
 
       {/* Search */}
@@ -256,26 +315,31 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
               <div key={i} className="h-16 rounded-xl mb-2 animate-pulse"
                    style={{ background: 'rgba(255,255,255,0.04)' }} />
             ))
-          ) : sessionsData?.data?.length === 0 ? (
+          ) : filteredList.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 text-center">
               <MessageSquare size={32} className="text-white/20 mb-3" />
               <p className="text-white/40 text-sm">No conversations yet</p>
               <p className="text-white/25 text-xs mt-1">
-                Conversations will appear here once users start chatting
+                Conversations will appear here once visitors start chatting
               </p>
             </div>
           ) : (
             <>
-              {sessionsData?.data
-                ?.filter((s: any) => activeFilter === 'all' ? true : s.status === activeFilter)
-                ?.map((session: any) => (
-                  <SessionCard
-                    key={session.sessionId}
-                    session={session}
-                    isSelected={selectedSessionId === session.sessionId}
-                    onClick={() => setSelectedSessionId(session.sessionId)}
-                  />
-                ))}
+              {filteredList.map((session: any) => (
+                <SessionCard
+                  key={session.sessionId}
+                  session={session}
+                  isSelected={selectedSessionId === session.sessionId}
+                  onClick={() => setSelectedSessionId(session.sessionId)}
+                  onDelete={(e) => {
+                    setSessionToDelete({
+                      id: session.sessionId,
+                      name: session.visitorName || 'Anonymous Visitor',
+                    })
+                  }}
+                />
+              ))}
+
               {/* Pagination */}
               {sessionsData?.totalPages > 1 && (
                 <div className="flex gap-2 mt-3 justify-center">
@@ -323,42 +387,61 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
           ) : (
             <>
               {/* Thread Header */}
-              <div className="px-4 py-3 border-b flex items-center gap-3"
+              <div className="px-4 py-3 border-b flex items-center justify-between gap-3"
                    style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-                {/* Mobile Back Button */}
-                <button
-                  onClick={() => setSelectedSessionId(null)}
-                  className="lg:hidden p-1.5 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-white shrink-0"
-                  aria-label="Back to conversations"
-                >
-                  <ArrowLeft size={16} />
-                </button>
+                <div className="flex items-center gap-3 min-w-0">
+                  {/* Mobile Back Button */}
+                  <button
+                    onClick={() => setSelectedSessionId(null)}
+                    className="lg:hidden p-1.5 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-white shrink-0"
+                    aria-label="Back to conversations"
+                  >
+                    <ArrowLeft size={16} />
+                  </button>
 
-                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-                     style={{ 
-                       background: 'rgba(245,143,124,0.18)', 
-                       color: '#F58F7C',
-                       border: '1px solid rgba(245,143,124,0.3)' 
-                     }}>
-                  {threadData?.session?.visitorName?.slice(0, 2).toUpperCase() || '??'}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-white truncate">
-                    {threadData?.session?.visitorName || 'Anonymous Visitor'}
-                  </p>
-                  <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                    {threadData?.session?.visitorEmail && (
-                      <p className="text-[11px] truncate" style={{ color: 'rgba(245,143,124,0.8)' }}>
-                        ✉ {threadData.session.visitorEmail}
-                      </p>
-                    )}
-                    <p className="text-[11px] text-white/30">
-                      {threadData?.session?.startedAt
-                        ? format(new Date(threadData.session.startedAt), 'MMM d, h:mm a')
-                        : ''}
-                      · {threadData?.messages?.length ?? 0} msgs
-                    </p>
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
+                       style={{ 
+                         background: 'rgba(245,143,124,0.18)', 
+                         color: '#F58F7C',
+                         border: '1px solid rgba(245,143,124,0.3)' 
+                       }}>
+                    {threadData?.session?.visitorName?.slice(0, 2).toUpperCase() || '??'}
                   </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-white truncate">
+                      {threadData?.session?.visitorName || 'Anonymous Visitor'}
+                    </p>
+                    <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                      {threadData?.session?.visitorEmail && (
+                        <p className="text-[11px] truncate" style={{ color: 'rgba(245,143,124,0.8)' }}>
+                          ✉ {threadData.session.visitorEmail}
+                        </p>
+                      )}
+                      <p className="text-[11px] text-white/30">
+                        {threadData?.session?.startedAt
+                          ? format(new Date(threadData.session.startedAt), 'MMM d, h:mm a')
+                          : ''}
+                        · {threadData?.messages?.length ?? 0} msgs
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Delete Thread Action */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => {
+                      setSessionToDelete({
+                        id: selectedSessionId,
+                        name: threadData?.session?.visitorName || 'Anonymous Visitor',
+                      })
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/20 text-white/50 hover:text-red-400 text-xs font-medium transition-all active:scale-95"
+                    title="Delete this conversation"
+                  >
+                    <Trash2 size={13} />
+                    <span className="hidden sm:inline">Delete</span>
+                  </button>
                 </div>
               </div>
 
@@ -404,7 +487,100 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
         </div>
 
       </div>
+
+      {/* Delete Single Conversation Modal */}
+      <AnimatePresence>
+        {sessionToDelete && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSessionToDelete(null)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="relative w-full max-w-sm p-6 rounded-3xl bg-[#0f0e13] border border-white/10 shadow-2xl z-10 space-y-5"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center mx-auto">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <div className="text-center">
+                <h3 className="text-base font-heading font-bold text-white">Delete Conversation?</h3>
+                <p className="text-xs text-white/50 mt-1 leading-relaxed">
+                  Are you sure you want to delete the conversation with <span className="text-white font-medium">"{sessionToDelete.name}"</span>? All messages in this session will be permanently removed.
+                </p>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => setSessionToDelete(null)}
+                  className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-xs font-bold transition-all border border-white/10"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteConfirmed}
+                  disabled={deleteConversation.isPending}
+                  className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition-all shadow-lg shadow-red-500/20 disabled:opacity-50"
+                >
+                  {deleteConversation.isPending ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Clear All History Modal */}
+      <AnimatePresence>
+        {showClearAllModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowClearAllModal(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="relative w-full max-w-sm p-6 rounded-3xl bg-[#0f0e13] border border-red-500/20 shadow-2xl z-10 space-y-5"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center mx-auto">
+                <AlertTriangle className="w-6 h-6" />
+              </div>
+              <div className="text-center">
+                <h3 className="text-base font-heading font-bold text-white">Clear All Conversations?</h3>
+                <p className="text-xs text-white/50 mt-1 leading-relaxed">
+                  This will permanently delete <span className="text-white font-medium">all past conversation sessions</span> for this assistant. This action cannot be reversed.
+                </p>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => setShowClearAllModal(false)}
+                  className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-xs font-bold transition-all border border-white/10"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleClearAllConfirmed}
+                  disabled={clearAllConversations.isPending}
+                  className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition-all shadow-lg shadow-red-500/20 disabled:opacity-50"
+                >
+                  {clearAllConversations.isPending ? "Clearing..." : "Clear All"}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
+
 

@@ -36,6 +36,14 @@ export const useAuthStore = create<AuthState>((set) => ({
     Cookies.remove('accessToken');
     Cookies.remove('refreshToken');
     Cookies.remove('tenant');
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("tenant");
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith("neuraldesk_bot_chats_") || key.startsWith("neuraldesk_active_chat_")) {
+          localStorage.removeItem(key);
+        }
+      });
+    }
     set({ tenant: null, isAuthenticated: false, isLoading: false });
   },
 

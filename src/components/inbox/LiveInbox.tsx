@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, Bot, Circle, Send, User, Zap } from 'lucide-react';
+import { ArrowLeft, Bot, Circle, Send, User, Zap, Trash2 } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 import { api, WS_BASE } from '@/lib/api';
 import { getAccessToken } from '@/lib/auth';
@@ -282,6 +282,25 @@ export default function LiveInbox() {
     }
   };
 
+  const handleDeleteSession = async (sessionId: string) => {
+    if (!window.confirm('Are you sure you want to permanently delete this chat history?')) return;
+    try {
+      try {
+        if (currentSession?.botId) {
+          await api.delete(`/bots/${currentSession.botId}/conversations/${sessionId}`);
+        } else {
+          await api.delete(`/chat/session/${sessionId}`);
+        }
+      } catch {
+        await api.delete(`/chat/session/${sessionId}`);
+      }
+      setSessions(prev => prev.filter(s => s.sessionId !== sessionId));
+      setSelectedSession(null);
+    } catch (err) {
+      console.error('Failed to delete session:', err);
+    }
+  };
+
   const sendAgentMessage = () => {
     const text = replyText.trim();
     if (!text || !selectedSession) return;
@@ -482,7 +501,16 @@ export default function LiveInbox() {
               </div>
 
               <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
-                {currentSession?.mode !== 'closed' && (
+                {currentSession?.mode === 'closed' ? (
+                  <button
+                    onClick={() => handleDeleteSession(selectedSession)}
+                    className="flex flex-1 sm:flex-initial items-center justify-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 px-3.5 sm:px-5 py-2 sm:py-2.5 text-xs font-black uppercase tracking-wider sm:tracking-widest text-red-400 transition-all active:scale-95"
+                    title="Permanently delete this closed chat history"
+                  >
+                    <Trash2 size={14} />
+                    Delete Chat
+                  </button>
+                ) : (
                   <>
                     {currentSession?.mode === 'bot' ? (
                       <button
