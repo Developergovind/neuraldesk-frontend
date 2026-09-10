@@ -12,18 +12,42 @@ import { api } from "@/lib/api";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
+import { isDisposableEmail, getDisposableEmailError } from "@/lib/disposableEmail";
+
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     rememberMe: false,
   });
 
+  const handleEmailChange = (val: string) => {
+    setFormData((prev) => ({ ...prev, email: val }));
+    if (isDisposableEmail(val)) {
+      setEmailError("Temporary/disposable emails (e.g. Yopmail) are blocked & suspended.");
+    } else {
+      setEmailError(null);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if email is from a disposable/temporary provider
+    const disposableErr = getDisposableEmailError(formData.email);
+    if (disposableErr) {
+      setEmailError(disposableErr);
+      toast.error("Access Denied: Temporary & disposable email addresses (like Yopmail) are blocked.", {
+        duration: 5000,
+        icon: "🚫",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -127,10 +151,21 @@ export default function LoginPage() {
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full h-11 px-3.5 rounded-xl bg-[#2C2B30]/90 border border-white/10 text-white placeholder-white/25 focus:outline-none focus:border-[#F58F7C] focus:ring-1 focus:ring-[#F58F7C]/50 transition-all text-sm"
+                  onChange={(e) => handleEmailChange(e.target.value)}
+                  className={`w-full h-11 px-3.5 rounded-xl bg-[#2C2B30]/90 border ${
+                    emailError ? "border-red-500/80 focus:border-red-500 focus:ring-red-500/50" : "border-white/10 focus:border-[#F58F7C] focus:ring-[#F58F7C]/50"
+                  } text-white placeholder-white/25 focus:outline-none focus:ring-1 transition-all text-sm`}
                   placeholder="name@company.com"
                 />
+                {emailError && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-[11px] text-red-400 mt-1.5 flex items-center gap-1 leading-tight font-medium"
+                  >
+                    <span className="text-sm">⚠️</span> {emailError}
+                  </motion.p>
+                )}
               </div>
 
               <div>

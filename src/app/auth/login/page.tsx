@@ -9,18 +9,40 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/useAuthStore";
 import toast from "react-hot-toast";
+import { isDisposableEmail, getDisposableEmailError } from "@/lib/disposableEmail";
 
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
+  const handleEmailChange = (val: string) => {
+    setFormData((prev) => ({ ...prev, email: val }));
+    if (isDisposableEmail(val)) {
+      setEmailError("Temporary/disposable emails (e.g. Yopmail) are blocked & suspended.");
+    } else {
+      setEmailError(null);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const disposableErr = getDisposableEmailError(formData.email);
+    if (disposableErr) {
+      setEmailError(disposableErr);
+      toast.error("Access Denied: Temporary and disposable emails are blocked.", {
+        duration: 5000,
+        icon: "🚫",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -49,7 +71,8 @@ export default function LoginPage() {
             label="Email Address"
             required
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            onChange={(e) => handleEmailChange(e.target.value)}
+            error={emailError || undefined}
             icon={
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

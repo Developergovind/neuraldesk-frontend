@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { isDisposableEmail } from "./disposableEmail";
 
 export const saveTokens = (accessToken: string, refreshToken: string) => {
   Cookies.set("accessToken", accessToken, { secure: true, sameSite: "strict" });
@@ -22,10 +23,23 @@ export const clearTokens = () => {
   }
 };
 
-export const isAuthenticated = () => !!getAccessToken();
+export const isAuthenticated = () => {
+  const tenant = getTenant();
+  return !!getAccessToken() && !!tenant && !isDisposableEmail(tenant.email);
+};
 
 export const getTenant = () => {
   if (typeof window === "undefined") return null;
-  const tenant = localStorage.getItem("tenant");
-  return tenant ? JSON.parse(tenant) : null;
+  const tenantStr = localStorage.getItem("tenant");
+  if (!tenantStr) return null;
+  try {
+    const tenant = JSON.parse(tenantStr);
+    if (tenant?.email && isDisposableEmail(tenant.email)) {
+      clearTokens();
+      return null;
+    }
+    return tenant;
+  } catch {
+    return null;
+  }
 };

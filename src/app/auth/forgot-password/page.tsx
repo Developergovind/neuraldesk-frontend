@@ -7,14 +7,35 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
 import { api } from "@/lib/api";
 import toast from "react-hot-toast";
+import { isDisposableEmail, getDisposableEmailError } from "@/lib/disposableEmail";
 
 export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleEmailChange = (val: string) => {
+    setEmail(val);
+    if (isDisposableEmail(val)) {
+      setEmailError("Temporary/disposable emails (e.g. Yopmail) are blocked.");
+    } else {
+      setEmailError(null);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const disposableErr = getDisposableEmailError(email);
+    if (disposableErr) {
+      setEmailError(disposableErr);
+      return toast.error("Access Denied: Temporary and disposable emails are blocked.", {
+        duration: 5000,
+        icon: "🚫",
+      });
+    }
+
     setIsLoading(true);
 
     try {
@@ -78,7 +99,8 @@ export default function ForgotPasswordPage() {
             label="Email Address"
             required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => handleEmailChange(e.target.value)}
+            error={emailError || undefined}
             icon={
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

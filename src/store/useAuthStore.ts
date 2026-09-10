@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import Cookies from 'js-cookie';
+import { isDisposableEmail } from '@/lib/disposableEmail';
 
 interface Tenant {
   id: string;
@@ -19,12 +20,24 @@ interface AuthState {
   checkAuth: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   tenant: null,
   isAuthenticated: false,
   isLoading: true,
 
   login: (tenant, accessToken, refreshToken) => {
+    if (!tenant || !tenant.email || isDisposableEmail(tenant.email)) {
+      // Disposable emails are blocked and suspended
+      Cookies.remove('accessToken');
+      Cookies.remove('refreshToken');
+      Cookies.remove('tenant');
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("tenant");
+      }
+      set({ tenant: null, isAuthenticated: false, isLoading: false });
+      return;
+    }
+
     Cookies.set('accessToken', accessToken, { secure: true, sameSite: 'strict' });
     Cookies.set('refreshToken', refreshToken, { secure: true, sameSite: 'strict', expires: 7 });
     Cookies.set('tenant', JSON.stringify(tenant), { secure: true, sameSite: 'strict' });
@@ -56,6 +69,11 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (token && tenantStr) {
       try {
         const tenant = JSON.parse(tenantStr);
+        if (tenant?.email && isDisposableEmail(tenant.email)) {
+          // Blocked disposable email session, purge immediately
+          get().logout();
+          return;
+        }
         set({ tenant, isAuthenticated: true, isLoading: false });
       } catch (e) {
         set({ tenant: null, isAuthenticated: false, isLoading: false });
@@ -65,3 +83,4 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 }));
+

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { isDisposableEmail, BLOCKED_EMAIL_MESSAGE } from './disposableEmail';
 
 const getApiBase = () => {
   let url = process.env.NEXT_PUBLIC_API_URL || 'https://neuraldesk-api.duckdns.org/api';
@@ -76,9 +77,39 @@ export const api = axios.create({
   withCredentials: true,
 });
 
-// Request interceptor to add auth token
+// Request interceptor to add auth token and validate emails
 api.interceptors.request.use(
   (config) => {
+    // Intercept and block any auth attempts using disposable emails
+    if (
+      (config.url?.includes('/auth/login') || 
+       config.url?.includes('/auth/register') || 
+       config.url?.includes('/auth/forgot-password')) &&
+      config.data
+    ) {
+      let email = "";
+      if (typeof config.data === "string") {
+        try {
+          const parsed = JSON.parse(config.data);
+          email = parsed.email || "";
+        } catch {}
+      } else if (typeof config.data === "object") {
+        email = config.data.email || "";
+      }
+
+      if (email && isDisposableEmail(email)) {
+        return Promise.reject({
+          response: {
+            data: {
+              message: BLOCKED_EMAIL_MESSAGE,
+            },
+            status: 400,
+          },
+          message: BLOCKED_EMAIL_MESSAGE,
+        });
+      }
+    }
+
     const token = Cookies.get('accessToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
