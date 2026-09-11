@@ -46,6 +46,17 @@ export default function LandingPage() {
     accentColor: string;
   } | null>(null);
 
+  const [headlineIndex, setHeadlineIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const primaryHeadline = "Next-Gen AI Support Without The Complexity";
+  const cmsHeadline = cms?.["hero.headline"];
+  const secondaryHeadline = cmsHeadline && cmsHeadline.trim() !== primaryHeadline.trim()
+    ? cmsHeadline
+    : "Build the Future of Customer Support with AI";
+
+  const headlines = [primaryHeadline, secondaryHeadline];
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -70,9 +81,21 @@ export default function LandingPage() {
     return () => window.clearTimeout(timer);
   }, [isDemoVisible, cms]);
 
+  useEffect(() => {
+    // Give the first title 4.2s to fully animate in and be read, then transition every 5s
+    const timer = setTimeout(() => {
+      if (!isHovered) {
+        setHeadlineIndex((prev) => (prev + 1) % headlines.length);
+      }
+    }, headlineIndex === 0 ? 4200 : 5000);
+
+    return () => clearTimeout(timer);
+  }, [headlineIndex, headlines.length, isHovered]);
+
   if (!mounted) return null;
 
-  const headline = cms?.["hero.headline"] || "Next-Gen AI Support Without The Complexity";
+  const currentHeadline = headlines[headlineIndex] || primaryHeadline;
+  const currentWords = currentHeadline.split(" ");
   const subheadline = cms?.["hero.subheadline"] || "Automate customer engagement with AI assistants trained on your unique business knowledge. Deploy a premium, glassmorphic chat experience in seconds.";
   const demoHeadline = cms?.["demo.section.headline"] || "See NeuralDesk in Action";
   const demoSubheadline = cms?.["demo.section.subheadline"] || "Chat with our demo bot right now.";
@@ -89,7 +112,6 @@ export default function LandingPage() {
       "Hi! I'm NeuralDesk's demo assistant. Ask me anything about NeuralDesk - how it works, pricing, features, or embedding.",
     accentColor: demoColor,
   };
-  const words = headline.split(" ");
   const htmlSnippet = `<script src="${WS_BASE}/widget.js?botId=${effectiveDemoConfig.botId}" defer></script>`;
   const installSnippets: Record<"html" | "wordpress" | "shopify" | "webflow", string> = {
     html: htmlSnippet,
@@ -125,29 +147,91 @@ export default function LandingPage() {
               <span className="text-[11px] sm:text-xs font-medium text-white/80 uppercase tracking-wider truncate">Enterprise-Grade RAG is Here</span>
             </div>
             
-            <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-bold leading-[1.15] mb-6 sm:mb-8 tracking-tight break-words">
-              {words.map((word: string, i: number) => (
-                <motion.span
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className="inline-block mr-[0.2em] last:mr-0"
+            <div 
+              className="min-h-[110px] sm:min-h-[140px] md:min-h-[170px] lg:min-h-[200px] flex items-center justify-center mb-6 sm:mb-8"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              <AnimatePresence mode="wait">
+                <motion.h1
+                  key={`headline-${headlineIndex}`}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  variants={{
+                    initial: {},
+                    animate: {
+                      transition: {
+                        staggerChildren: 0.08,
+                        delayChildren: 0.05,
+                      },
+                    },
+                    exit: {
+                      transition: {
+                        staggerChildren: 0.03,
+                        staggerDirection: -1,
+                      },
+                    },
+                  }}
+                  className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-bold leading-[1.15] tracking-tight break-words"
                 >
-                  {i > words.length - 3 ? (
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-coral-400 via-blush-400 to-coral-400 animate-shimmer bg-[length:200%_auto]">
-                      {word}
-                    </span>
-                  ) : (
-                    word
-                  )}
-                </motion.span>
-              ))}
-            </h1>
+                  {currentWords.map((word: string, i: number) => {
+                    // Highlight the last 3 words or last 2 words with glowing shimmer gradient
+                    const highlightCount = currentWords.length > 5 ? 3 : 2;
+                    const isHighlighted = i >= currentWords.length - highlightCount;
+                    return (
+                      <motion.span
+                        key={`word-${headlineIndex}-${i}-${word}`}
+                        variants={{
+                          initial: {
+                            opacity: 0,
+                            y: 22,
+                            filter: "blur(8px)",
+                          },
+                          animate: {
+                            opacity: 1,
+                            y: 0,
+                            filter: "blur(0px)",
+                            transition: {
+                              duration: 0.55,
+                              ease: [0.16, 1, 0.3, 1],
+                            },
+                          },
+                          exit: {
+                            opacity: 0,
+                            y: -18,
+                            filter: "blur(6px)",
+                            transition: {
+                              duration: 0.35,
+                              ease: [0.4, 0, 0.2, 1],
+                            },
+                          },
+                        }}
+                        className="inline-block mr-[0.2em] last:mr-0"
+                      >
+                        {isHighlighted ? (
+                          <span className="text-transparent bg-clip-text bg-gradient-to-r from-coral-400 via-blush-400 to-coral-400 animate-shimmer bg-[length:200%_auto]">
+                            {word}
+                          </span>
+                        ) : (
+                          word
+                        )}
+                      </motion.span>
+                    );
+                  })}
+                </motion.h1>
+              </AnimatePresence>
+            </div>
             
-            <p className="text-base sm:text-lg md:text-xl text-white/60 mb-8 sm:mb-10 max-w-2xl mx-auto font-light leading-relaxed px-2">
+            <motion.p 
+              key={subheadline}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6 }}
+              className="text-base sm:text-lg md:text-xl text-white/60 mb-8 sm:mb-10 max-w-2xl mx-auto font-light leading-relaxed px-2"
+            >
               {subheadline}
-            </p>
+            </motion.p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full max-w-md mx-auto sm:max-w-none">
               <Link href="/register" className="w-full sm:w-auto">
