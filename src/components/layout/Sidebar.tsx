@@ -17,7 +17,8 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ArrowLeftOnRectangleIcon,
-  InboxIcon
+  InboxIcon,
+  CreditCardIcon
 } from '@heroicons/react/24/outline';
 import { LogoIcon } from "@/components/ui/Logo";
 
@@ -26,6 +27,7 @@ const navItems = [
   { name: 'My Bots', href: '/dashboard/bots', icon: ChatBubbleLeftRightIcon },
   { name: 'Live Inbox', href: '/dashboard/inbox', icon: InboxIcon },
   { name: 'Analytics', href: '/dashboard/analytics', icon: ChartBarIcon },
+  { name: 'Subscription', href: '/dashboard/subscription', icon: CreditCardIcon },
   { name: 'Settings', href: '/dashboard/settings', icon: Cog6ToothIcon },
 ];
 
@@ -144,10 +146,13 @@ export const Sidebar = () => {
             </span>
           </div>
           {sidebarOpen && (
-            <div className="flex-1 min-w-0">
+            <Link href="/dashboard/subscription" className="flex-1 min-w-0 group/plan hover:opacity-90 transition-opacity">
               <p className="text-sm font-bold text-white truncate leading-tight">{tenant?.company || 'Company'}</p>
-              <p className="text-[10px] text-coral-400/80 truncate uppercase tracking-widest font-bold mt-1">{tenant?.plan || 'Free'} Plan</p>
-            </div>
+              <p className="text-[10px] text-coral-400/90 truncate uppercase tracking-widest font-bold mt-1 group-hover/plan:text-coral-300 flex items-center gap-1">
+                <span>{tenant?.plan || 'Free'} Plan</span>
+                <span className="text-[9px] opacity-60">↗</span>
+              </p>
+            </Link>
           )}
           {sidebarOpen && (
             <button 
@@ -298,7 +303,11 @@ export const MobileSidebarDrawer = () => {
 
             {/* Tenant Info & Logout */}
             <div className="p-4 border-t border-white/5 bg-white/[0.02]">
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 mb-3">
+              <Link 
+                href="/dashboard/subscription" 
+                onClick={() => setMobileDrawerOpen(false)}
+                className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 mb-3 hover:bg-white/10 transition-colors group/mob"
+              >
                 <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blush-500/20 to-coral-500/20 text-white flex items-center justify-center shrink-0 border border-white/10">
                   <span className="font-bold text-xs uppercase">
                     {tenant?.name ? (tenant.name.split(" ").length >= 2 ? tenant.name.split(" ")[0][0] + tenant.name.split(" ")[1][0] : tenant.name.substring(0, 2)) : 'U'}
@@ -306,9 +315,12 @@ export const MobileSidebarDrawer = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-white truncate">{tenant?.company || tenant?.name || 'Company'}</p>
-                  <p className="text-[10px] text-coral-400 font-bold uppercase tracking-wider">{tenant?.plan || 'Free'} Plan</p>
+                  <p className="text-[10px] text-coral-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                    <span>{tenant?.plan || 'Free'} Plan</span>
+                    <span className="text-[9px] opacity-70">↗</span>
+                  </p>
                 </div>
-              </div>
+              </Link>
 
               <button
                 onClick={() => {

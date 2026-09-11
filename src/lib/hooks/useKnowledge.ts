@@ -39,10 +39,22 @@ export function useUploadFile(botId: string) {
   });
 }
 
+export interface IngestUrlPayload {
+  url: string;
+  crawlSubpages?: boolean;
+  maxPages?: number;
+  crawlDepth?: number;
+}
+
 export function useIngestUrl(botId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (url: string) => post(`/knowledge/${botId}/url`, { url }),
+    mutationFn: (data: string | IngestUrlPayload) => {
+      const payload = typeof data === "string" 
+        ? { url: data, crawlSubpages: true, maxPages: 20, crawlDepth: 2 } 
+        : data;
+      return post(`/knowledge/${botId}/url`, payload);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["knowledge", botId] });
       toast.success("URL ingestion started");

@@ -4,6 +4,9 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "./providers";
 
+import { Suspense } from "react";
+import { RouteProgressBar } from "@/components/ui/RouteProgressBar";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -23,6 +26,9 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} font-body bg-obsidian-950 text-white min-h-screen antialiased selection:bg-coral-400/30 selection:text-white relative`}>
         <div className="noise-overlay" />
+        <Suspense fallback={null}>
+          <RouteProgressBar />
+        </Suspense>
         <Providers>
           {children}
         </Providers>

@@ -6,6 +6,7 @@ import { useBillingPlan } from "@/lib/hooks/useBilling";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { UpgradeModal } from "@/components/ui/UpgradeModal";
+import { PageLoader } from "@/components/ui/Loader";
 import { 
   PlusIcon, 
   ChatBubbleLeftRightIcon, 
@@ -78,7 +79,7 @@ export default function BotsPage() {
               </p>
             </div>
           </div>
-          <Link href="/dashboard/settings?tab=billing" className="shrink-0 w-full sm:w-auto">
+          <Link href="/dashboard/subscription" className="shrink-0 w-full sm:w-auto">
             <Button variant="primary" size="sm" className="gap-2 w-full sm:w-auto justify-center">
               <CreditCardIcon className="w-4 h-4" />
               Upgrade Subscription
@@ -89,11 +90,11 @@ export default function BotsPage() {
 
       {/* Grid */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-64 rounded-3xl bg-white/5 animate-pulse border border-white/5" />
-          ))}
-        </div>
+        <PageLoader
+          text="Loading AI Assistants..."
+          subtext="Retrieving your custom bots, active models, and knowledge bases"
+          minHeight="min-h-[400px]"
+        />
       ) : bots?.length === 0 ? (
         <Card className="flex flex-col items-center justify-center p-10 sm:p-20 text-center border-dashed border-white/10 bg-transparent">
           <div className="w-16 sm:w-20 h-16 sm:h-20 rounded-3xl bg-white/5 flex items-center justify-center mb-6">

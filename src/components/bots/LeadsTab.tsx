@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { Mail, MessageSquare, Clock, Download, Search, User } from 'lucide-react'
-import { format, formatDistanceToNow } from 'date-fns'
+import { safeFormat, safeFormatDistanceToNow } from '@/lib/utils'
 import { api } from '@/lib/api'
+import { PageLoader } from '@/components/ui/Loader'
 
 export default function LeadsTab({ botId }: { botId: string }) {
   const [search, setSearch] = useState('')
@@ -25,8 +26,8 @@ export default function LeadsTab({ botId }: { botId: string }) {
                      'Total Messages', 'First Seen', 'Last Seen', 'Last Question']
     const rows = filtered.map((l: any) => [
       l.name, l.email || '', l.totalSessions, l.totalMessages,
-      format(new Date(l.firstSeen), 'yyyy-MM-dd'),
-      format(new Date(l.lastSeen), 'yyyy-MM-dd'),
+      safeFormat(l.firstSeen, 'yyyy-MM-dd'),
+      safeFormat(l.lastSeen, 'yyyy-MM-dd'),
       `"${(l.lastQuestion || '').replace(/"/g, '""')}"`,
     ])
     const csv = [headers, ...rows].map(r => r.join(',')).join('\n')
@@ -77,12 +78,11 @@ export default function LeadsTab({ botId }: { botId: string }) {
 
       {/* Leads Table */}
       {isLoading ? (
-        <div className="space-y-2">
-          {Array.from({length: 5}).map((_, i) => (
-            <div key={i} className="h-16 rounded-xl animate-pulse"
-                 style={{ background: 'rgba(255,255,255,0.04)' }} />
-          ))}
-        </div>
+        <PageLoader
+          text="Loading Captured Leads..."
+          subtext="Retrieving visitor emails, message counts, and timestamps"
+          minHeight="min-h-[260px]"
+        />
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <User size={36} style={{ color: 'rgba(255,255,255,0.15)' }} className="mb-3" />
@@ -142,7 +142,7 @@ export default function LeadsTab({ botId }: { botId: string }) {
                 <div className="text-center">
                   <p className="text-white/50 text-xs">Last seen</p>
                   <p className="text-white text-xs font-medium">
-                    {formatDistanceToNow(new Date(lead.lastSeen), { addSuffix: true })}
+                    {safeFormatDistanceToNow(lead.lastSeen, { addSuffix: true })}
                   </p>
                 </div>
               </div>

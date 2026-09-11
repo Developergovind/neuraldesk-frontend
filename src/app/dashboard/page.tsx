@@ -12,6 +12,7 @@ import { useBillingPlan } from "@/lib/hooks/useBilling";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { UpgradeModal } from "@/components/ui/UpgradeModal";
+import { PageLoader } from "@/components/ui/Loader";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { 
@@ -197,13 +198,11 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 sm:space-y-8 animate-pulse">
-        <div className="h-12 w-48 bg-white/5 rounded-lg" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-          {[1, 2, 3, 4].map(i => <div key={i} className="h-28 sm:h-32 bg-white/5 rounded-2xl" />)}
-        </div>
-        <div className="h-64 bg-white/5 rounded-2xl" />
-      </div>
+      <PageLoader
+        text="Loading Dashboard Overview..."
+        subtext="Aggregating conversations, active bots, and neural analytics"
+        minHeight="min-h-[60vh]"
+      />
     );
   }
 

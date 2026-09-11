@@ -9,6 +9,7 @@ import {
 } from 'recharts';
 import { api } from "@/lib/api";
 import { Card } from "@/components/ui/Card";
+import { PageLoader } from "@/components/ui/Loader";
 import { motion } from "framer-motion";
 import { 
   UserGroupIcon, 
@@ -196,16 +197,11 @@ export default function AnalyticsPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 sm:space-y-8 animate-pulse">
-        <div className="h-10 w-48 bg-white/5 rounded-lg" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-          {[1, 2, 3, 4].map(i => <div key={i} className="h-28 sm:h-32 bg-white/5 rounded-2xl" />)}
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-          <div className="lg:col-span-2 h-80 sm:h-96 bg-white/5 rounded-2xl" />
-          <div className="h-80 sm:h-96 bg-white/5 rounded-2xl" />
-        </div>
-      </div>
+      <PageLoader
+        text="Calculating Analytics..."
+        subtext="Computing message metrics, response times, and resolution rates"
+        minHeight="min-h-[60vh]"
+      />
     );
   }
 

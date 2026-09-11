@@ -9,13 +9,14 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { LogoIcon } from "@/components/ui/Logo";
 import { api } from "@/lib/api";
-import Cookies from "js-cookie";
+import { useAuthStore } from "@/store/useAuthStore";
 import toast from "react-hot-toast";
 
 import { isDisposableEmail, getDisposableEmailError } from "@/lib/disposableEmail";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -53,12 +54,8 @@ export default function LoginPage() {
     try {
       const { data } = await api.post("/auth/login", formData);
       
-      // Store tokens
-      Cookies.set("accessToken", data.accessToken, { secure: true, sameSite: 'strict' });
-      Cookies.set("refreshToken", data.refreshToken, { secure: true, sameSite: 'strict', expires: 7 });
-      
-      // Store tenant info
-      localStorage.setItem("tenant", JSON.stringify(data.tenant));
+      // Store in auth store & set cookies
+      login(data.tenant, data.accessToken, data.refreshToken);
       
       toast.success("Welcome back!");
       router.push("/dashboard");

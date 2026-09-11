@@ -5,6 +5,7 @@ import { io, Socket } from "socket.io-client";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, Send, Sparkles, X, Bot } from "lucide-react";
 import { api, WS_BASE } from "@/lib/api";
+import { generateUUID } from "@/lib/utils";
 
 interface DemoMessage {
   role: "user" | "bot";
@@ -19,6 +20,25 @@ interface DemoChatWidgetProps {
   accentColor: string;
   suggestedQuestions?: string[];
   autoOpen?: boolean;
+}
+
+function extractText(data: any): string {
+  if (data === null || data === undefined) return "";
+  if (typeof data === "string") return data;
+  if (typeof data === "number") return String(data);
+  if (typeof data === "object") {
+    return (
+      data.text ??
+      data.chunk ??
+      data.content ??
+      data.delta ??
+      data.message ??
+      data.response ??
+      data.reply ??
+      ""
+    );
+  }
+  return "";
 }
 
 export function DemoChatWidget({
@@ -38,6 +58,11 @@ export function DemoChatWidget({
   const [showQuestions, setShowQuestions] = useState(true);
   const [showPromptBubble, setShowPromptBubble] = useState(true);
   const messagesRef = useRef<HTMLDivElement>(null);
+  const sessionIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    sessionIdRef.current = sessionId;
+  }, [sessionId]);
 
   useEffect(() => {
     if (autoOpen) {
@@ -53,38 +78,46 @@ export function DemoChatWidget({
     api
       .post(`/chat/${botId}/session`)
       .then(({ data }) => {
-        if (mounted) {
+        if (mounted && data?.sessionId) {
           setSessionId(data.sessionId);
         }
       })
       .catch(() => {
+        // Fallback local sessionId
         if (mounted) {
-          setMessages((prev) => [
-            ...prev,
-            { role: "bot", text: "Unable to create demo chat session right now." },
-          ]);
+          setSessionId(generateUUID());
         }
       });
 
-    const client = io(WS_BASE, { transports: ["websocket", "polling"] });
+    const client = io(WS_BASE, { 
+      transports: ["websocket", "polling"],
+      reconnection: true,
+      reconnectionAttempts: 5,
+    });
+
     client.on("typing", () => setIsTyping(true));
-    client.on("chunk", (data: { text: string }) => {
+    
+    client.on("chunk", (data: any) => {
       setIsTyping(false);
+      const text = extractText(data);
+      if (!text) return;
+
       setMessages((prev) => {
         const copy = [...prev];
         const lastIndex = copy.length - 1;
         if (lastIndex >= 0 && copy[lastIndex].role === "bot" && copy[lastIndex].streaming) {
           copy[lastIndex] = {
             role: "bot",
-            text: copy[lastIndex].text + data.text,
+            text: copy[lastIndex].text + text,
             streaming: true,
           };
           return copy;
         }
-        return [...copy, { role: "bot", text: data.text, streaming: true }];
+        return [...copy, { role: "bot", text, streaming: true }];
       });
     });
-    client.on("done", () => {
+
+    const handleDone = () => {
       setIsTyping(false);
       setMessages((prev) => {
         if (prev.length === 0) return prev;
@@ -95,14 +128,28 @@ export function DemoChatWidget({
         }
         return copy;
       });
-    });
-    client.on("error", (data: { message?: string }) => {
+    };
+
+    client.on("done", handleDone);
+    client.on("stream_end", handleDone);
+    
+    client.on("response", (data: any) => {
       setIsTyping(false);
+      const text = extractText(data);
+      if (text) {
+        setMessages((prev) => [...prev, { role: "bot", text, streaming: false }]);
+      }
+    });
+
+    client.on("error", (data: any) => {
+      setIsTyping(false);
+      const msg = typeof data === "string" ? data : data?.message || "Something went wrong. Please try again.";
       setMessages((prev) => [
         ...prev,
-        { role: "bot", text: data.message || "Something went wrong. Please try again." },
+        { role: "bot", text: `⚠️ ${msg}` },
       ]);
     });
+
     setSocket(client);
 
     return () => {
@@ -119,15 +166,67 @@ export function DemoChatWidget({
 
   const initials = useMemo(() => botName?.[0] || "N", [botName]);
 
-  const sendMessage = (presetText?: string) => {
+  const sendMessage = async (presetText?: string) => {
     const text = (presetText ?? inputText).trim();
-    if (!text || !sessionId || !socket) return;
+    if (!text) return;
+
+    let currentSessionId = sessionIdRef.current;
+    if (!currentSessionId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(currentSessionId)) {
+      try {
+        const { data } = await api.post(`/chat/${botId}/session`);
+        currentSessionId = data.sessionId;
+        setSessionId(data.sessionId);
+      } catch {
+        currentSessionId = generateUUID();
+        setSessionId(currentSessionId);
+      }
+    }
 
     setInputText("");
     setShowQuestions(false);
     setIsTyping(true);
-    setMessages((prev) => [...prev, { role: "user", text }, { role: "bot", text: "", streaming: true }]);
-    socket.emit("message", { botId, sessionId, text });
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", text },
+      { role: "bot", text: "", streaming: true },
+    ]);
+
+    if (socket && socket.connected) {
+      socket.emit("message", { botId, sessionId: currentSessionId, text });
+    } else {
+      // Fallback via HTTP
+      try {
+        const { data } = await api.post(`/chat/${botId}/message`, {
+          sessionId: currentSessionId,
+          text,
+        });
+        setIsTyping(false);
+        const replyText = extractText(data);
+        if (replyText) {
+          setMessages((prev) => {
+            const copy = [...prev];
+            const lastIndex = copy.length - 1;
+            if (lastIndex >= 0 && copy[lastIndex].role === "bot") {
+              copy[lastIndex] = { role: "bot", text: replyText, streaming: false };
+              return copy;
+            }
+            return [...copy, { role: "bot", text: replyText, streaming: false }];
+          });
+        }
+      } catch (err: any) {
+        setIsTyping(false);
+        const errMsg = err.response?.data?.message || "Could not connect to chatbot service.";
+        setMessages((prev) => {
+          const copy = [...prev];
+          const lastIndex = copy.length - 1;
+          if (lastIndex >= 0 && copy[lastIndex].role === "bot") {
+            copy[lastIndex] = { role: "bot", text: `⚠️ ${errMsg}`, streaming: false };
+            return copy;
+          }
+          return [...copy, { role: "bot", text: `⚠️ ${errMsg}` }];
+        });
+      }
+    }
   };
 
   return (

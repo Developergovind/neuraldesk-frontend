@@ -4,10 +4,11 @@ import { useState, useMemo, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useBot, useUpdateBot, useDeleteBot } from "@/lib/hooks/useBots";
-import { useKnowledge, useUploadFile, useIngestUrl, useIngestText, useDeleteSource } from "@/lib/hooks/useKnowledge";
+import { useKnowledge } from "@/lib/hooks/useKnowledge";
 import { WS_BASE } from "@/lib/api";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { PageLoader } from "@/components/ui/Loader";
 import { motion, AnimatePresence } from "framer-motion";
 import { io } from "socket.io-client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -33,6 +34,7 @@ import toast from "react-hot-toast";
 import ConversationsTab from '@/components/bots/ConversationsTab';
 import LeadsTab from '@/components/bots/LeadsTab';
 import DomainManager from '@/components/bots/DomainManager';
+import KnowledgeTab from '@/components/bots/KnowledgeTab';
 import { UsersIcon } from "@heroicons/react/24/outline";
 import { BotColorPicker } from "@/components/bots/BotColorPicker";
 
@@ -48,17 +50,11 @@ export default function BotDetailsPage() {
 
   if (botLoading) {
     return (
-      <div className="space-y-8 animate-pulse">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-white/5 rounded-2xl" />
-          <div className="space-y-2">
-            <div className="h-8 w-48 bg-white/5 rounded" />
-            <div className="h-4 w-32 bg-white/5 rounded" />
-          </div>
-        </div>
-        <div className="h-10 w-full bg-white/5 rounded-lg" />
-        <div className="h-96 w-full bg-white/5 rounded-3xl" />
-      </div>
+      <PageLoader
+        text="Loading Bot Workspace..."
+        subtext="Syncing bot configuration, neural personality, and knowledge base"
+        minHeight="min-h-[60vh]"
+      />
     );
   }
 
@@ -209,217 +205,7 @@ function OverviewTab({ bot, sources }: any) {
   );
 }
 
-function KnowledgeTab({ botId, sources, isLoading }: { botId: string, sources: any[], isLoading: boolean }) {
-  const [ingestMode, setIngestMode] = useState<"file" | "url" | "text" | null>(null);
-  const [url, setUrl] = useState("");
-  const [textData, setTextData] = useState({ name: "", text: "" });
-  const queryClient = useQueryClient();
 
-  const uploadFile = useUploadFile(botId);
-  const ingestUrl = useIngestUrl(botId);
-  const ingestText = useIngestText(botId);
-  const deleteSource = useDeleteSource(botId);
-
-  useEffect(() => {
-    const token = getAccessToken();
-    if (!token) return;
-
-    const socket = io(WS_BASE, {
-      transports: ["polling", "websocket"],
-    });
-
-    socket.on("connect", () => {
-      socket.emit("dashboard:join", { agentToken: token });
-    });
-
-    socket.on("connect_error", (err) => {
-      console.error("Dashboard page socket connection error:", err);
-    });
-
-    socket.on("error", (err) => {
-      console.error("Dashboard page socket error:", err);
-    });
-
-    socket.on("knowledge:status", (data: { sourceId: string; botId: string; status: string; chunkCount: number }) => {
-      if (data.botId === botId) {
-        queryClient.setQueryData(["knowledge", botId], (old: any[] | undefined) => {
-          if (!old) return old;
-          return old.map(s => s.id === data.sourceId ? { ...s, status: data.status, chunkCount: data.chunkCount } : s);
-        });
-        
-        if (data.status === 'ready') {
-          toast.success("Knowledge source processed successfully!");
-        } else if (data.status === 'failed') {
-          toast.error("Knowledge source processing failed.");
-        }
-      }
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [botId, queryClient]);
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-
-    const file = e.target.files?.[0];
-    if (file) {
-      uploadFile.mutate(file, { onSuccess: () => setIngestMode(null) });
-    }
-  };
-
-  return (
-    <div className="space-y-6 sm:space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h2 className="text-xl font-heading font-bold text-white">Knowledge Sources</h2>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="glass" size="sm" onClick={() => setIngestMode("file")}>Upload File</Button>
-          <Button variant="glass" size="sm" onClick={() => setIngestMode("url")}>Add URL</Button>
-          <Button variant="glass" size="sm" onClick={() => setIngestMode("text")}>Paste Text</Button>
-        </div>
-      </div>
-
-      {/* Ingestion Modals/Overlays */}
-      <AnimatePresence>
-        {ingestMode && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden"
-          >
-            <Card className="p-5 sm:p-8 bg-coral-500/5 border-coral-500/20">
-              <div className="flex items-center justify-between mb-5 sm:mb-6">
-                <h3 className="font-heading font-bold text-white uppercase tracking-wider text-xs sm:text-sm">
-                  {ingestMode === "file" && "Upload Knowledge File"}
-                  {ingestMode === "url" && "Crawl Website"}
-                  {ingestMode === "text" && "Manual Text Entry"}
-                </h3>
-                <button onClick={() => setIngestMode(null)} className="text-white/40 hover:text-white p-1">✕</button>
-              </div>
-
-              {ingestMode === "file" && (
-                <div className="border-2 border-dashed border-white/10 rounded-2xl p-8 sm:p-12 text-center hover:border-cyan-500/50 transition-colors relative">
-                  <input 
-                    type="file" 
-                    onChange={handleFileUpload} 
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                    accept=".pdf,.docx,.txt"
-                  />
-                  <CloudArrowUpIcon className="w-10 sm:w-12 h-10 sm:h-12 text-cyan-400 mx-auto mb-4" />
-                  <p className="text-white font-medium mb-1 text-sm sm:text-base">Click or drag file to upload</p>
-                  <p className="text-white/30 text-xs">PDF, DOCX, or TXT up to 10MB</p>
-                  {uploadFile.isPending && <p className="mt-4 text-cyan-400 text-sm animate-pulse">Uploading...</p>}
-                </div>
-              )}
-
-              {ingestMode === "url" && (
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                  <input 
-                    type="url" 
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    placeholder="https://example.com/docs"
-                    className="flex-1 h-12 px-4 rounded-xl bg-black/40 border border-white/10 text-white placeholder-white/20 focus:border-cyan-500/50 transition-colors text-sm"
-                  />
-                  <Button 
-                    variant="primary" 
-                    onClick={() => ingestUrl.mutate(url, { onSuccess: () => { setUrl(""); setIngestMode(null); } })}
-                    isLoading={ingestUrl.isPending}
-                    className="justify-center h-12"
-                  >
-                    Add Source
-                  </Button>
-                </div>
-              )}
-
-              {ingestMode === "text" && (
-                <div className="space-y-4">
-                  <input 
-                    type="text"
-                    value={textData.name}
-                    onChange={(e) => setTextData({ ...textData, name: e.target.value })}
-                    placeholder="Source Name (e.g. FAQ Patch)"
-                    className="w-full h-12 px-4 rounded-xl bg-black/40 border border-white/10 text-white placeholder-white/20 focus:border-cyan-500/50 transition-colors"
-                  />
-                  <textarea 
-                    value={textData.text}
-                    onChange={(e) => setTextData({ ...textData, text: e.target.value })}
-                    placeholder="Paste your text content here..."
-                    className="w-full h-40 px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder-white/20 focus:border-cyan-500/50 transition-colors resize-none"
-                  />
-                  <div className="flex justify-end">
-                    <Button 
-                      variant="primary"
-                      onClick={() => ingestText.mutate(textData, { onSuccess: () => { setTextData({ name: "", text: "" }); setIngestMode(null); } })}
-                      isLoading={ingestText.isPending}
-                    >
-                      Process Text
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </Card>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Sources List */}
-      <div className="grid grid-cols-1 gap-4">
-        {sources.length > 0 ? (
-          sources.map((source) => (
-            <Card key={source.id} className="p-5 bg-white/[0.02] border-white/5 flex items-center justify-between group">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
-                  {source.type === 'url' ? <LinkIcon className="w-5 h-5 text-cyan-400" /> : <DocumentIcon className="w-5 h-5 text-violet-400" />}
-                </div>
-                <div>
-                  <h4 className="text-white font-medium">{source.name}</h4>
-                  <div className="flex items-center gap-3 mt-1">
-                    <span className="text-[10px] text-white/30 uppercase tracking-widest">{source.type}</span>
-                    <span className="text-white/10">•</span>
-                    <div className="flex flex-col">
-                      <span className={`text-[10px] font-bold uppercase tracking-widest ${
-                        source.status === 'ready' ? 'text-emerald-500' : 
-                        source.status === 'failed' ? 'text-red-500' : 'text-cyan-400 animate-pulse'
-                      }`}>
-                        {source.status}
-                      </span>
-                      {source.status === 'failed' && source.errorMessage && (
-                        <span className="text-[9px] text-red-400/60 mt-0.5 max-w-[200px] truncate" title={source.errorMessage}>
-                          {source.errorMessage}
-                        </span>
-                      )}
-                    </div>
-
-                    {source.status === 'ready' && (
-                      <>
-                        <span className="text-white/10">•</span>
-                        <span className="text-[10px] text-white/40 uppercase tracking-widest">{source.chunkCount} chunks</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button 
-                  onClick={() => deleteSource.mutate(source.id)}
-                  className="p-2 rounded-lg hover:bg-red-500/10 text-white/20 hover:text-red-500 transition-colors"
-                >
-                  <TrashIcon className="w-5 h-5" />
-                </button>
-              </div>
-            </Card>
-          ))
-        ) : !isLoading && (
-          <div className="py-20 text-center border-2 border-dashed border-white/5 rounded-3xl">
-            <p className="text-white/20">No knowledge sources added yet.</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 function EmbedTab({ bot }: { bot: any }) {
   const [copied, setCopied] = useState(false);

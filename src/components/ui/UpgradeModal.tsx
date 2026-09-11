@@ -39,11 +39,15 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
 
   const handleGoToBilling = () => {
     onClose();
-    router.push("/dashboard/settings?tab=billing");
+    router.push("/dashboard/subscription");
   };
 
   const handleDirectUpgrade = () => {
-    upgradeCheckout.mutate("pro");
+    upgradeCheckout.mutate("pro", {
+      onSuccess: () => {
+        onClose();
+      }
+    });
   };
 
   const features = [

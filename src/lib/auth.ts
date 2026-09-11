@@ -1,9 +1,11 @@
 import Cookies from "js-cookie";
 import { isDisposableEmail } from "./disposableEmail";
 
+const isHttps = () => typeof window !== "undefined" && window.location.protocol === "https:";
+
 export const saveTokens = (accessToken: string, refreshToken: string) => {
-  Cookies.set("accessToken", accessToken, { secure: true, sameSite: "strict" });
-  Cookies.set("refreshToken", refreshToken, { secure: true, sameSite: "strict", expires: 7 });
+  Cookies.set("accessToken", accessToken, { secure: isHttps(), sameSite: "strict" });
+  Cookies.set("refreshToken", refreshToken, { secure: isHttps(), sameSite: "strict", expires: 7 });
 };
 
 export const getAccessToken = () => Cookies.get("accessToken");
@@ -13,8 +15,8 @@ export const clearTokens = () => {
   Cookies.remove("accessToken");
   Cookies.remove("refreshToken");
   Cookies.remove("tenant");
-  localStorage.removeItem("tenant");
   if (typeof window !== "undefined") {
+    localStorage.removeItem("tenant");
     Object.keys(localStorage).forEach((key) => {
       if (key.startsWith("neuraldesk_bot_chats_") || key.startsWith("neuraldesk_active_chat_")) {
         localStorage.removeItem(key);
@@ -30,7 +32,9 @@ export const isAuthenticated = () => {
 
 export const getTenant = () => {
   if (typeof window === "undefined") return null;
-  const tenantStr = localStorage.getItem("tenant");
+  const cookieTenant = Cookies.get("tenant");
+  const localTenant = localStorage.getItem("tenant");
+  const tenantStr = cookieTenant || localTenant;
   if (!tenantStr) return null;
   try {
     const tenant = JSON.parse(tenantStr);
@@ -43,3 +47,4 @@ export const getTenant = () => {
     return null;
   }
 };
+

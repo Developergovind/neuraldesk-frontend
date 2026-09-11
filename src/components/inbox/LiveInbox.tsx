@@ -7,6 +7,7 @@ import { ArrowLeft, Bot, Circle, Send, User, Zap, Trash2 } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 import { api, WS_BASE } from '@/lib/api';
 import { getAccessToken } from '@/lib/auth';
+import { PageLoader } from '@/components/ui/Loader';
 
 type SessionMode = 'bot' | 'human' | 'closed';
 
@@ -341,7 +342,13 @@ export default function LiveInbox() {
         </div>
 
         <div className="flex-1 overflow-y-auto pr-1 sm:pr-2 custom-scrollbar space-y-2.5">
-          {filteredSessions.length === 0 ? (
+          {isSessionsLoading && sessions.length === 0 ? (
+            <PageLoader
+              text="Connecting Live Inbox..."
+              subtext="Subscribing to real-time visitor channels"
+              minHeight="min-h-[220px]"
+            />
+          ) : filteredSessions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <Circle size={32} className="mb-3 text-white/15" />
               <p className="text-sm text-white/40">No active sessions</p>

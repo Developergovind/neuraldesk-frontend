@@ -2,9 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 function resolvePublicApiBase() {
-  let rawBase = process.env.NEXT_PUBLIC_API_URL || "https://neuraldesk-api.duckdns.org/api";
-  if (rawBase && rawBase.includes('neuraldeskapp.duckdns.org')) {
-    rawBase = rawBase.replace('neuraldeskapp.duckdns.org', 'neuraldesk-api.duckdns.org');
+  let rawBase = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api").trim();
+  if (rawBase && (rawBase.includes('neuraldeskapp.duckdns.org') || rawBase.includes('neuraldesk-api.duckdns.org'))) {
+    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      rawBase = 'http://localhost:5001/api';
+    }
   }
   const normalized = rawBase.replace(/\/+$/, "");
   return normalized.endsWith("/api") ? normalized : `${normalized}/api`;

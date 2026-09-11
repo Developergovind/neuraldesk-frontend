@@ -51,9 +51,11 @@ export default function LandingPage() {
   }, []);
 
   useEffect(() => {
-    let apiBase = process.env.NEXT_PUBLIC_API_URL || "https://neuraldesk-api.duckdns.org/api";
-    if (apiBase.includes('neuraldeskapp.duckdns.org')) {
-      apiBase = apiBase.replace('neuraldeskapp.duckdns.org', 'neuraldesk-api.duckdns.org');
+    let apiBase = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api").trim();
+    if (apiBase.includes('neuraldeskapp.duckdns.org') || apiBase.includes('neuraldesk-api.duckdns.org')) {
+      if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+        apiBase = 'http://localhost:5001/api';
+      }
     }
     fetch(`${apiBase.replace(/\/+$/, "")}/public/demo-config`)
       .then((response) => response.json())

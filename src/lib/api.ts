@@ -2,10 +2,14 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { isDisposableEmail, BLOCKED_EMAIL_MESSAGE } from './disposableEmail';
 
+const isHttps = () => typeof window !== 'undefined' && window.location.protocol === 'https:';
+
 const getApiBase = () => {
-  let url = process.env.NEXT_PUBLIC_API_URL || 'https://neuraldesk-api.duckdns.org/api';
-  if (url && url.includes('neuraldeskapp.duckdns.org')) {
-    url = url.replace('neuraldeskapp.duckdns.org', 'neuraldesk-api.duckdns.org');
+  let url = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api').trim();
+  if (url && (url.includes('neuraldeskapp.duckdns.org') || url.includes('neuraldesk-api.duckdns.org'))) {
+    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      url = 'http://localhost:5001/api';
+    }
   }
   const normalized = url.replace(/\/+$/, "");
   return normalized.endsWith("/api") ? normalized : `${normalized}/api`;
@@ -14,31 +18,16 @@ const getApiBase = () => {
 export const API_BASE = getApiBase();
 
 const getWsBase = () => {
-  let wsUrl = process.env.NEXT_PUBLIC_WS_URL;
-  let apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-  if (wsUrl && wsUrl.includes('neuraldeskapp.duckdns.org')) {
-    wsUrl = wsUrl.replace('neuraldeskapp.duckdns.org', 'neuraldesk-api.duckdns.org');
-  }
-  if (apiUrl && apiUrl.includes('neuraldeskapp.duckdns.org')) {
-    apiUrl = apiUrl.replace('neuraldeskapp.duckdns.org', 'neuraldesk-api.duckdns.org');
-  }
+  let wsUrl = process.env.NEXT_PUBLIC_WS_URL ? process.env.NEXT_PUBLIC_WS_URL.trim() : undefined;
+  let apiUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.trim() : undefined;
 
   if (typeof window !== 'undefined') {
     const isCurrentSiteLocalhost = 
       window.location.hostname === 'localhost' || 
       window.location.hostname === '127.0.0.1';
 
-    if (!isCurrentSiteLocalhost) {
-      if (wsUrl && (wsUrl.includes('localhost') || wsUrl.includes('127.0.0.1'))) {
-        wsUrl = undefined;
-      }
-      if (apiUrl && (apiUrl.includes('localhost') || apiUrl.includes('127.0.0.1'))) {
-        apiUrl = undefined;
-      }
-      if (!wsUrl && !apiUrl) {
-        return 'https://neuraldesk-api.duckdns.org';
-      }
+    if (isCurrentSiteLocalhost) {
+      return 'http://localhost:5001';
     }
   }
 
@@ -55,16 +44,7 @@ const getWsBase = () => {
 
   if (wsUrl) return getOrigin(wsUrl);
   if (apiUrl) return getOrigin(apiUrl);
-  
-  if (typeof window !== 'undefined') {
-    const isCurrentSiteLocalhost = 
-      window.location.hostname === 'localhost' || 
-      window.location.hostname === '127.0.0.1';
-    if (!isCurrentSiteLocalhost) {
-      return 'https://neuraldesk-api.duckdns.org';
-    }
-  }
-  return 'https://neuraldesk-api.duckdns.org';
+  return 'http://localhost:5001';
 };
 
 export const WS_BASE = getWsBase();
@@ -180,8 +160,8 @@ api.interceptors.response.use(
           refreshToken,
         });
 
-        Cookies.set('accessToken', data.accessToken, { secure: true, sameSite: 'strict' });
-        Cookies.set('refreshToken', data.refreshToken, { secure: true, sameSite: 'strict', expires: 7 });
+        Cookies.set('accessToken', data.accessToken, { secure: isHttps(), sameSite: 'strict' });
+        Cookies.set('refreshToken', data.refreshToken, { secure: isHttps(), sameSite: 'strict', expires: 7 });
         
         api.defaults.headers.common['Authorization'] = 'Bearer ' + data.accessToken;
         originalRequest.headers.Authorization = 'Bearer ' + data.accessToken;

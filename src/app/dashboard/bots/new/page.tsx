@@ -95,7 +95,7 @@ export default function NewBotPage() {
             </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto shrink-0">
-              <Link href="/dashboard/settings?tab=billing" className="w-full sm:w-auto">
+              <Link href="/dashboard/subscription" className="w-full sm:w-auto">
                 <Button variant="primary" className="w-full sm:w-auto gap-2 shadow-[0_0_20px_rgba(245,143,124,0.35)] justify-center">
                   <CreditCardIcon className="w-4 h-4" />
                   Upgrade Subscription

@@ -18,6 +18,7 @@ interface AuthState {
   logout: () => void;
   setLoading: (loading: boolean) => void;
   checkAuth: () => void;
+  updateTenant: (partial: Partial<Tenant>) => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -38,11 +39,27 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       return;
     }
 
-    Cookies.set('accessToken', accessToken, { secure: true, sameSite: 'strict' });
-    Cookies.set('refreshToken', refreshToken, { secure: true, sameSite: 'strict', expires: 7 });
-    Cookies.set('tenant', JSON.stringify(tenant), { secure: true, sameSite: 'strict' });
+    const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
+    Cookies.set('accessToken', accessToken, { secure: isHttps, sameSite: 'strict' });
+    Cookies.set('refreshToken', refreshToken, { secure: isHttps, sameSite: 'strict', expires: 7 });
+    Cookies.set('tenant', JSON.stringify(tenant), { secure: isHttps, sameSite: 'strict' });
+    if (typeof window !== "undefined") {
+      localStorage.setItem("tenant", JSON.stringify(tenant));
+    }
     
     set({ tenant, isAuthenticated: true, isLoading: false });
+  },
+
+  updateTenant: (partial) => {
+    const current = get().tenant;
+    if (!current) return;
+    const updated = { ...current, ...partial };
+    const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
+    Cookies.set('tenant', JSON.stringify(updated), { secure: isHttps, sameSite: 'strict' });
+    if (typeof window !== "undefined") {
+      localStorage.setItem("tenant", JSON.stringify(updated));
+    }
+    set({ tenant: updated });
   },
 
   logout: () => {

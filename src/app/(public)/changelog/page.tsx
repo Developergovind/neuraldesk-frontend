@@ -67,7 +67,7 @@ export default function ChangelogPage() {
                     </div>
 
                     <ul className="space-y-4">
-                      {item.changes.map((change: string, idx: number) => (
+                      {(Array.isArray(item.changes) ? item.changes : [item.changes || "General improvements"]).map((change: string, idx: number) => (
                         <li key={idx} className="flex gap-3 text-white/60 leading-relaxed">
                           <div className="mt-2 w-1.5 h-1.5 rounded-full bg-white/20 shrink-0" />
                           {change}

@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sidebar, MobileTopHeader, MobileSidebarDrawer, MobileBottomNav } from "@/components/layout/Sidebar";
 import { TorusKnotBackground } from "@/components/3d/TorusKnotBackground";
 import { motion } from "framer-motion";
 import { useMe } from "@/lib/hooks/useAuth";
 import { isAuthenticated } from "@/lib/auth";
+import { GlobalLoader } from "@/components/ui/Loader";
 
 export default function DashboardLayout({
   children,
@@ -14,27 +15,35 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const { data: me, isLoading, error } = useMe();
-  const authed = isAuthenticated();
 
   useEffect(() => {
-    if (!isLoading && (!authed || error)) {
+    setMounted(true);
+  }, []);
+
+  const authed = mounted ? isAuthenticated() : false;
+  const isUnauthorized = (error as any)?.response?.status === 401;
+
+  useEffect(() => {
+    if (mounted && !isLoading && (!authed || isUnauthorized)) {
       router.push("/login");
     }
-  }, [authed, isLoading, error, router]);
+  }, [mounted, authed, isLoading, isUnauthorized, router]);
 
-  if (isLoading) {
+  if (!mounted || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-transparent">
-        <div className="relative w-16 h-16">
-          <div className="absolute inset-0 rounded-full border-t-2 border-coral-400 animate-spin"></div>
-          <div className="absolute inset-2 rounded-full border-r-2 border-blush-400 animate-spin-slow"></div>
-        </div>
-      </div>
+      <GlobalLoader
+        text="Securing NeuralDesk Workspace..."
+        subtext="Verifying authentication and active bots"
+        fullScreen={true}
+      />
     );
   }
 
-  if (!authed || error) return null;
+  if (!authed || isUnauthorized) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-screen bg-[#141316]/60 relative overflow-hidden flex-col lg:flex-row">

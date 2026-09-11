@@ -229,7 +229,7 @@ const POPULAR_DISPOSABLE_DOMAINS = new Set([
 // Dynamic import or load from disposable-email-domains package if present
 let packageDomainsSet: Set<string> | null = null;
 try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line
   const pkgList = require("disposable-email-domains");
   if (Array.isArray(pkgList)) {
     packageDomainsSet = new Set(pkgList.map((d: string) => d.toLowerCase().trim()));

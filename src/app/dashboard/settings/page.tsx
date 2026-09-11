@@ -2,10 +2,13 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { useMe } from "@/lib/hooks/useAuth";
+import { useUpgradeCheckout } from "@/lib/hooks/useBilling";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { PageLoader } from "@/components/ui/Loader";
 import { api } from "@/lib/api";
 import { 
   UserIcon, 
@@ -13,7 +16,8 @@ import {
   ShieldCheckIcon,
   CreditCardIcon,
   KeyIcon,
-  SparklesIcon
+  SparklesIcon,
+  ArrowRightIcon
 } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 
@@ -78,18 +82,14 @@ function SettingsContent() {
     }
   };
 
+  const upgradeCheckout = useUpgradeCheckout();
+
   const handleUpgrade = async (plan: 'pro' | 'enterprise') => {
-    setIsLoading(true);
-    try {
-      const { data } = await api.post("/stripe/checkout", { plan });
-      if (data.url) {
-        window.location.href = data.url;
+    upgradeCheckout.mutate(plan, {
+      onSuccess: () => {
+        fetchBillingInfo();
       }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to start checkout");
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   const handleManageBilling = async () => {
@@ -298,25 +298,34 @@ function SettingsContent() {
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-4">
+                  <div className="flex flex-wrap gap-4 items-center">
                     {(billingInfo?.plan === 'free' || !billingInfo || tenant?.plan === 'free') && (
                       <Button 
                         variant="primary" 
                         className="shadow-[0_0_20px_rgba(245,143,124,0.3)] gap-2"
                         onClick={() => handleUpgrade('pro')}
-                        isLoading={isLoading}
+                        isLoading={upgradeCheckout.isPending}
                       >
                         <SparklesIcon className="w-4 h-4" />
                         Upgrade to Pro ($29/mo)
                       </Button>
                     )}
+                    <Link href="/dashboard/subscription">
+                      <Button 
+                        variant="glass"
+                        className="gap-2"
+                      >
+                        <span>View All Plans & Pricing</span>
+                        <ArrowRightIcon className="w-4 h-4 text-coral-400" />
+                      </Button>
+                    </Link>
                     {billingInfo?.billing?.hasActiveSubscription && (
                       <Button 
                         variant="glass"
                         onClick={handleManageBilling}
                         isLoading={isLoading}
                       >
-                        Manage Billing
+                        Manage Billing Portal
                       </Button>
                     )}
                   </div>
@@ -406,7 +415,15 @@ function SettingsContent() {
 
 export default function SettingsPage() {
   return (
-    <Suspense fallback={<div className="text-white text-center py-12">Loading settings...</div>}>
+    <Suspense
+      fallback={
+        <PageLoader
+          text="Loading Settings..."
+          subtext="Fetching profile, security preferences, and subscription details"
+          minHeight="min-h-[60vh]"
+        />
+      }
+    >
       <SettingsContent />
     </Suspense>
   );

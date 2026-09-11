@@ -3,10 +3,11 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, MessageSquare, Clock, User, Bot, Search, 
          ChevronRight, Zap, TrendingUp, Calendar, Send, Loader2, Trash2, AlertTriangle, X } from 'lucide-react'
-import { formatDistanceToNow, format } from 'date-fns'
+import { safeFormat, safeFormatDistanceToNow } from '@/lib/utils'
 import { api } from '@/lib/api'
 import { useConversations, useConversationThread, useConversationStats, useDeleteConversation, useClearAllConversations } from '@/lib/hooks/useConversations'
 import { useQueryClient } from '@tanstack/react-query'
+import { PageLoader } from '@/components/ui/Loader'
 import toast from 'react-hot-toast'
 
 interface ConversationsTabProps {
@@ -91,7 +92,7 @@ function SessionCard({
             </p>
             <div className="flex items-center gap-1.5 shrink-0">
               <span className="text-[10px] text-white/30 whitespace-nowrap">
-                {formatDistanceToNow(new Date(session.startedAt), { addSuffix: false })}
+                {safeFormatDistanceToNow(session.startedAt, { addSuffix: false })}
               </span>
               <button
                 onClick={(e) => {
@@ -179,7 +180,7 @@ function MessageBubble({ message }: { message: any }) {
         </div>
         <div className="flex items-center gap-2 px-1">
           <span className="text-xs text-white/25">
-            {format(new Date(message.createdAt), 'h:mm a')}
+            {safeFormat(message.createdAt, 'h:mm a')}
           </span>
           {message.responseTimeMs && (
             <span className="text-xs flex items-center gap-1" style={{ color: 'rgba(245,143,124,0.6)' }}>
@@ -310,11 +311,11 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
         {/* Left: Sessions List */}
         <div className={`w-full lg:w-2/5 overflow-y-auto pr-1 flex flex-col ${selectedSessionId ? 'hidden lg:flex' : 'flex'}`}>
           {isLoading ? (
-            // Skeleton
-            Array.from({length: 5}).map((_, i) => (
-              <div key={i} className="h-16 rounded-xl mb-2 animate-pulse"
-                   style={{ background: 'rgba(255,255,255,0.04)' }} />
-            ))
+            <PageLoader
+              text="Loading Conversations..."
+              subtext="Retrieving visitor sessions and chat threads"
+              minHeight="min-h-[260px]"
+            />
           ) : filteredList.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 text-center">
               <MessageSquare size={32} className="text-white/20 mb-3" />
@@ -419,7 +420,7 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
                       )}
                       <p className="text-[11px] text-white/30">
                         {threadData?.session?.startedAt
-                          ? format(new Date(threadData.session.startedAt), 'MMM d, h:mm a')
+                          ? safeFormat(threadData.session.startedAt, 'MMM d, h:mm a')
                           : ''}
                         · {threadData?.messages?.length ?? 0} msgs
                       </p>
@@ -462,7 +463,7 @@ export default function ConversationsTab({ botId }: ConversationsTabProps) {
                   </span>
                   {threadData.session.closedAt && (
                     <span className="text-white/25 ml-auto">
-                      {format(new Date(threadData.session.closedAt), 'MMM d, h:mm a')}
+                      {safeFormat(threadData.session.closedAt, 'MMM d, h:mm a')}
                     </span>
                   )}
                 </div>

@@ -1,6 +1,11 @@
 "use client";
 
-import { Luminous3DBackground } from './Luminous3DBackground';
+import dynamic from "next/dynamic";
 
-export const TorusKnotBackground = Luminous3DBackground;
+export const TorusKnotBackground = dynamic(
+  () => import("./Luminous3DBackground").then((mod) => mod.Luminous3DBackground),
+  { ssr: false }
+);
+
 export default TorusKnotBackground;
+

@@ -25,15 +25,23 @@ export function middleware(request: NextRequest) {
   }
 
   // Define public paths that don't require auth
-  const isPublicPath = pathname === '/' || pathname === '/login' || pathname === '/register';
+  const isAuthPage = pathname === '/login' || pathname === '/register' || pathname.startsWith('/auth');
+  const isPublicPath = isAuthPage || 
+    pathname === '/' || 
+    pathname.startsWith('/about') || 
+    pathname.startsWith('/changelog') || 
+    pathname.startsWith('/contact') || 
+    pathname.startsWith('/docs') || 
+    pathname.startsWith('/privacy') || 
+    pathname.startsWith('/terms');
 
   // If trying to access dashboard without token, redirect to login
-  if (!isPublicPath && !token) {
+  if (pathname.startsWith('/dashboard') && !token) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // If trying to access login/register with token, redirect to dashboard
-  if (isPublicPath && token && pathname !== '/') {
+  // If trying to access login/register while already authenticated with a valid token, redirect to dashboard
+  if (isAuthPage && token && !pathname.includes('reset-password')) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
@@ -46,5 +54,6 @@ export const config = {
     '/dashboard/:path*',
     '/login',
     '/register',
+    '/auth/:path*',
   ],
 };
