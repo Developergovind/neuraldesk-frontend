@@ -4,7 +4,7 @@ export default function AuthLoading() {
   return (
     <GlobalLoader 
       text="Authenticating..." 
-      subtext="Verifying tenant credentials and secure session" 
+      subtext="Verifying tenant credentials and secure session before redirecting to the dashboard." 
       fullScreen={true} 
     />
   );
