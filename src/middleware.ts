@@ -3,26 +3,9 @@ import type { NextRequest } from 'next/server';
 import { isDisposableEmail } from '@/lib/disposableEmail';
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('accessToken')?.value;
-  const tenantCookie = request.cookies.get('tenant')?.value;
+  const token = request.cookies.get('accessToken')?.value || request.cookies.get('refreshToken')?.value;
   const { pathname } = request.nextUrl;
 
-  // Check if existing session cookie has a disposable email
-  if (tenantCookie) {
-    try {
-      const tenant = JSON.parse(decodeURIComponent(tenantCookie));
-      if (tenant?.email && isDisposableEmail(tenant.email)) {
-        // Block & suspend session
-        const response = NextResponse.redirect(new URL('/login?blocked=disposable', request.url));
-        response.cookies.delete('accessToken');
-        response.cookies.delete('refreshToken');
-        response.cookies.delete('tenant');
-        return response;
-      }
-    } catch {
-      // Ignore JSON parse errors in cookie
-    }
-  }
 
   // Define public paths that don't require auth
   const isAuthPage = pathname === '/login' || pathname === '/register' || pathname.startsWith('/auth');

@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/useAuthStore";
 import toast from "react-hot-toast";
+import confetti from "canvas-confetti";
 
 export interface BillingInfo {
   plan: 'free' | 'pro' | 'enterprise';
@@ -74,7 +75,17 @@ export function useUpgradeCheckout() {
   return useMutation({
     mutationFn: async (plan: 'pro' | 'enterprise' = 'pro') => {
       try {
-        const { data } = await api.post("/stripe/checkout", { plan });
+        const origin = typeof window !== "undefined" ? window.location.origin : "";
+        const successUrl = origin
+          ? `${origin}/dashboard/subscription?success=true&plan=${plan}&session_id={CHECKOUT_SESSION_ID}`
+          : undefined;
+        const cancelUrl = origin ? `${origin}/dashboard/subscription?canceled=true` : undefined;
+
+        const { data } = await api.post("/stripe/checkout", {
+          plan,
+          successUrl,
+          cancelUrl,
+        });
         if (data?.url) {
           let checkoutUrl = data.url;
           // Rewrite any previous duckdns domains to local origin / port
@@ -93,6 +104,7 @@ export function useUpgradeCheckout() {
         console.warn("Stripe checkout API not reachable, falling back to local simulated plan:", err);
       }
       return { plan, isLive: false };
+
     },
     onSuccess: (result, plan) => {
       if (result.isLive && result.url) {
@@ -103,6 +115,17 @@ export function useUpgradeCheckout() {
         queryClient.invalidateQueries({ queryKey: ["billing-plan"] });
         queryClient.invalidateQueries({ queryKey: ["auth-me"] });
         queryClient.invalidateQueries({ queryKey: ["bots"] });
+
+        // Trigger confetti
+        try {
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            origin: { y: 0.8 },
+            colors: ["#F58F7C", "#F8A1B5", "#10B981"],
+          });
+        } catch {}
+
         toast.success(`🎉 Plan updated to ${plan.toUpperCase()} on local server! All features unlocked.`, {
           duration: 5000,
           icon: "⚡",
@@ -114,3 +137,4 @@ export function useUpgradeCheckout() {
     }
   });
 }
+

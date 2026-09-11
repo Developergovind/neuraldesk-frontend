@@ -32,13 +32,72 @@ export function usePublicContent(keys: string | string[]) {
   });
 }
 
+export const DEFAULT_PUBLIC_PLANS = [
+  {
+    id: "free",
+    name: "Free Starter",
+    priceMonthly: 0,
+    priceAnnual: 0,
+    maxBots: 1,
+    isPopular: false,
+    features: [
+      "1 Custom AI Assistant",
+      "1,000 Messages / month",
+      "Standard Llama 3 / Groq Model",
+      "Web Ingestion (up to 5 pages)",
+      "Standard Embeddable Widget",
+    ],
+  },
+  {
+    id: "pro",
+    name: "Pro Neural",
+    priceMonthly: 29,
+    priceAnnual: 288,
+    maxBots: 5,
+    isPopular: true,
+    features: [
+      "Up to 5 AI Assistants",
+      "50,000 Messages / month",
+      "Deep Web Crawler (50 pages)",
+      "Full Live Visitor Inbox & Handoff",
+      "Custom Glassmorphic Branding",
+      "Sentiment & Analytics Insights",
+    ],
+  },
+  {
+    id: "enterprise",
+    name: "Enterprise Scale",
+    priceMonthly: 99,
+    priceAnnual: 948,
+    maxBots: 999,
+    isPopular: false,
+    features: [
+      "Unlimited AI Assistants (∞)",
+      "500,000 Messages / month",
+      "Full Domain Bulk Crawling & PDF",
+      "Multi-Agent Orchestration",
+      "Custom Fine-Tuning & Knowledge Graph",
+      "99.9% Uptime SLA & Priority Support",
+    ],
+  },
+];
+
 export function usePublicPlans() {
   return useQuery({
     queryKey: ["public-plans"],
     queryFn: async () => {
-      const { data } = await axios.get(`${API_BASE}/public/plans`);
-      return data;
+      try {
+        const { data } = await axios.get(`${API_BASE}/public/plans`, { timeout: 4000 });
+        if (Array.isArray(data) && data.length > 0) {
+          return data;
+        }
+      } catch (err) {
+        // Fallback to pre-defined plans if endpoint is unavailable
+      }
+      return DEFAULT_PUBLIC_PLANS;
     },
+    initialData: DEFAULT_PUBLIC_PLANS,
     staleTime: 60000,
   });
 }
+

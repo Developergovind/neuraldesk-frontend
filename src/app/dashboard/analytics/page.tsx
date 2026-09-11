@@ -164,36 +164,44 @@ export default function AnalyticsPage() {
     staleTime: 60000,
   });
 
+  const totalSessions = dashboardStats?.totalSessions || 0;
+  const resolutionRate = dashboardStats?.resolutionRate 
+    ? `${dashboardStats.resolutionRate}%` 
+    : totalSessions > 0 
+    ? "100%" 
+    : "0%";
+
   const metrics = [
     { 
       label: "Total Conversations", 
-      value: dashboardStats?.totalSessions ? dashboardStats.totalSessions.toLocaleString() : "0", 
-      trend: "+12.5%", 
+      value: totalSessions.toLocaleString(), 
+      trend: totalSessions > 0 ? "+12.5%" : "0%", 
       icon: ChatBubbleLeftEllipsisIcon,
       color: "text-coral-400"
     },
     { 
       label: "Unique Visitors", 
-      value: dashboardStats?.totalVisitors ? dashboardStats.totalVisitors.toLocaleString() : "0", 
-      trend: "+8.2%", 
+      value: (dashboardStats?.totalVisitors || 0).toLocaleString(), 
+      trend: (dashboardStats?.totalVisitors || 0) > 0 ? "+8.2%" : "0%", 
       icon: UserGroupIcon,
       color: "text-blush-400"
     },
     { 
       label: "Avg. Response Time", 
       value: `${dashboardStats?.avgResponseTime || 0}s`, 
-      trend: "-4.1%", 
+      trend: totalSessions > 0 ? "-4.1%" : "0s", 
       icon: ClockIcon,
       color: "text-emerald-400"
     },
     { 
       label: "Resolution Rate", 
-      value: "94.2%", 
-      trend: "+2.3%", 
+      value: resolutionRate, 
+      trend: totalSessions > 0 ? "+2.3%" : "0%", 
       icon: CheckCircleIcon,
       color: "text-amber-400"
     },
   ];
+
 
   if (isLoading) {
     return (

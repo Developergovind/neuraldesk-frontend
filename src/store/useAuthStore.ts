@@ -27,8 +27,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isLoading: true,
 
   login: (tenant, accessToken, refreshToken) => {
-    if (!tenant || !tenant.email || isDisposableEmail(tenant.email)) {
-      // Disposable emails are blocked and suspended
+    if (!tenant || !tenant.email) {
       Cookies.remove('accessToken');
       Cookies.remove('refreshToken');
       Cookies.remove('tenant');
@@ -40,9 +39,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
 
     const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
-    Cookies.set('accessToken', accessToken, { secure: isHttps, sameSite: 'strict' });
-    Cookies.set('refreshToken', refreshToken, { secure: isHttps, sameSite: 'strict', expires: 7 });
-    Cookies.set('tenant', JSON.stringify(tenant), { secure: isHttps, sameSite: 'strict' });
+    Cookies.set('accessToken', accessToken, { secure: isHttps, sameSite: 'lax', expires: 7 });
+    Cookies.set('refreshToken', refreshToken, { secure: isHttps, sameSite: 'lax', expires: 7 });
+    Cookies.set('tenant', JSON.stringify(tenant), { secure: isHttps, sameSite: 'lax', expires: 7 });
     if (typeof window !== "undefined") {
       localStorage.setItem("tenant", JSON.stringify(tenant));
     }
@@ -55,7 +54,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (!current) return;
     const updated = { ...current, ...partial };
     const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
-    Cookies.set('tenant', JSON.stringify(updated), { secure: isHttps, sameSite: 'strict' });
+    Cookies.set('tenant', JSON.stringify(updated), { secure: isHttps, sameSite: 'lax', expires: 7 });
     if (typeof window !== "undefined") {
       localStorage.setItem("tenant", JSON.stringify(updated));
     }
@@ -80,17 +79,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setLoading: (loading) => set({ isLoading: loading }),
 
   checkAuth: () => {
-    const token = Cookies.get('accessToken');
-    const tenantStr = Cookies.get('tenant');
+    const token = Cookies.get('accessToken') || Cookies.get('refreshToken');
+    const tenantStr = Cookies.get('tenant') || (typeof window !== "undefined" ? localStorage.getItem('tenant') : null);
     
     if (token && tenantStr) {
       try {
         const tenant = JSON.parse(tenantStr);
-        if (tenant?.email && isDisposableEmail(tenant.email)) {
-          // Blocked disposable email session, purge immediately
-          get().logout();
-          return;
-        }
         set({ tenant, isAuthenticated: true, isLoading: false });
       } catch (e) {
         set({ tenant: null, isAuthenticated: false, isLoading: false });
@@ -99,5 +93,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ tenant: null, isAuthenticated: false, isLoading: false });
     }
   },
+
 }));
 

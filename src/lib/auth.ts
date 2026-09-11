@@ -4,9 +4,10 @@ import { isDisposableEmail } from "./disposableEmail";
 const isHttps = () => typeof window !== "undefined" && window.location.protocol === "https:";
 
 export const saveTokens = (accessToken: string, refreshToken: string) => {
-  Cookies.set("accessToken", accessToken, { secure: isHttps(), sameSite: "strict" });
-  Cookies.set("refreshToken", refreshToken, { secure: isHttps(), sameSite: "strict", expires: 7 });
+  Cookies.set("accessToken", accessToken, { secure: isHttps(), sameSite: "lax", expires: 7 });
+  Cookies.set("refreshToken", refreshToken, { secure: isHttps(), sameSite: "lax", expires: 7 });
 };
+
 
 export const getAccessToken = () => Cookies.get("accessToken");
 export const getRefreshToken = () => Cookies.get("refreshToken");
@@ -27,7 +28,7 @@ export const clearTokens = () => {
 
 export const isAuthenticated = () => {
   const tenant = getTenant();
-  return !!getAccessToken() && !!tenant && !isDisposableEmail(tenant.email);
+  return (!!getAccessToken() || !!getRefreshToken()) && !!tenant;
 };
 
 export const getTenant = () => {
@@ -38,13 +39,10 @@ export const getTenant = () => {
   if (!tenantStr) return null;
   try {
     const tenant = JSON.parse(tenantStr);
-    if (tenant?.email && isDisposableEmail(tenant.email)) {
-      clearTokens();
-      return null;
-    }
     return tenant;
   } catch {
     return null;
   }
 };
+
 

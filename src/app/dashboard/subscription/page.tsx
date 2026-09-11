@@ -1,8 +1,11 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import confetti from "canvas-confetti";
+import { useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { PageLoader } from "@/components/ui/Loader";
@@ -25,12 +28,68 @@ import {
 import toast from "react-hot-toast";
 
 function SubscriptionContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
   const { tenant, updateTenant } = useAuthStore();
   const { data: billingInfo, isLoading: isBillingLoading } = useBillingPlan();
   const { data: bots } = useBots();
   const upgradeCheckout = useUpgradeCheckout();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
+  // Check for return from payment checkout
+  useEffect(() => {
+    const isSuccess = searchParams.get("success") === "true" || !!searchParams.get("session_id");
+    const isCanceled = searchParams.get("canceled") === "true" || searchParams.get("cancelled") === "true";
+    const requestedPlan = searchParams.get("plan");
+
+    if (isSuccess) {
+      const activeTier = requestedPlan === "enterprise" ? "enterprise" : "pro";
+      updateTenant({ plan: activeTier });
+      queryClient.invalidateQueries({ queryKey: ["billing-plan"] });
+      queryClient.invalidateQueries({ queryKey: ["auth-me"] });
+      queryClient.invalidateQueries({ queryKey: ["bots"] });
+
+      // Trigger celebratory confetti
+      const end = Date.now() + 2 * 1000;
+      (function frame() {
+        confetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0, y: 0.7 },
+          colors: ["#F58F7C", "#F8A1B5", "#10B981"],
+        });
+        confetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1, y: 0.7 },
+          colors: ["#F58F7C", "#F8A1B5", "#10B981"],
+        });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+
+      toast.success(`🎉 Payment Successful! Your ${activeTier.toUpperCase()} Plan is now active.`, {
+        duration: 6000,
+        icon: "⚡",
+      });
+
+      // Clean query parameters from URL without reloading
+      if (typeof window !== "undefined") {
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    } else if (isCanceled) {
+      toast("Checkout session was cancelled. No charges were made.", {
+        icon: "ℹ️",
+        duration: 4000,
+      });
+      if (typeof window !== "undefined") {
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    }
+  }, [searchParams, updateTenant, queryClient]);
 
   const currentPlan = (billingInfo?.plan || tenant?.plan || "free").toLowerCase();
   const botsCount = bots?.length || 0;
@@ -52,6 +111,7 @@ function SubscriptionContent() {
 
     upgradeCheckout.mutate(plan);
   };
+
 
   const plans = [
     {

@@ -160,8 +160,9 @@ api.interceptors.response.use(
           refreshToken,
         });
 
-        Cookies.set('accessToken', data.accessToken, { secure: isHttps(), sameSite: 'strict' });
-        Cookies.set('refreshToken', data.refreshToken, { secure: isHttps(), sameSite: 'strict', expires: 7 });
+        Cookies.set('accessToken', data.accessToken, { secure: isHttps(), sameSite: 'lax', expires: 7 });
+        Cookies.set('refreshToken', data.refreshToken, { secure: isHttps(), sameSite: 'lax', expires: 7 });
+
         
         api.defaults.headers.common['Authorization'] = 'Bearer ' + data.accessToken;
         originalRequest.headers.Authorization = 'Bearer ' + data.accessToken;

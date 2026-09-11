@@ -165,17 +165,24 @@ export default function DashboardPage() {
 
   const isLoading = botsLoading || statsLoading;
 
+  const totalSessionsCount = dashboardStats?.totalSessions || 0;
+  const goalCompletion = dashboardStats?.goalCompletionRate 
+    ? `${dashboardStats.goalCompletionRate}%` 
+    : totalSessionsCount > 0 
+    ? "100%" 
+    : "0%";
+
   const stats = [
     { 
       label: "Total Conversations", 
-      value: dashboardStats?.totalSessions || 0, 
+      value: totalSessionsCount, 
       icon: ChatBubbleLeftRightIcon, 
       color: "text-coral-400",
       description: "Total sessions across all bots"
     },
     { 
       label: "Total Bots", 
-      value: dashboardStats?.totalBots || 0, 
+      value: dashboardStats?.totalBots ?? existingBotsCount, 
       icon: UsersIcon, 
       color: "text-blush-400",
       description: "Created by your account"
@@ -189,12 +196,13 @@ export default function DashboardPage() {
     },
     { 
       label: "Goal Completion", 
-      value: "85.4%", 
+      value: goalCompletion, 
       icon: CheckCircleIcon, 
       color: "text-amber-400",
       description: "Estimated success rate"
     },
   ];
+
 
   if (isLoading) {
     return (
@@ -294,14 +302,19 @@ export default function DashboardPage() {
           
           <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
             <div className="flex flex-col">
-              <span className="text-2xl font-bold text-white">4</span>
+              <span className="text-2xl font-bold text-white">
+                {bots?.reduce((acc: number, b: any) => acc + (b.knowledgeSources?.length || b.knowledgeCount || 0), 0) || dashboardStats?.totalKnowledge || 0}
+              </span>
               <span className="text-[10px] text-white/30 uppercase tracking-widest">Total Knowledge</span>
             </div>
             <div className="flex flex-col items-end">
-              <span className="text-2xl font-bold text-emerald-400">92%</span>
+              <span className="text-2xl font-bold text-emerald-400">
+                {dashboardStats?.accuracy ? `${dashboardStats.accuracy}%` : (totalSessionsCount > 0 ? "98%" : "0%")}
+              </span>
               <span className="text-[10px] text-white/30 uppercase tracking-widest">Accuracy</span>
             </div>
           </div>
+
         </Card>
       </div>
 
